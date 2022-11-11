@@ -4,7 +4,8 @@
     {
         static void Main()
         {
-            char? e = char.Parse(Console.ReadLine());
+            Console.WriteLine("Informe a letra do problema: [a, b, c, d, e, f]");
+            char? e = char.Parse(Console.ReadLine().ToLower());
 
             switch (e)
             {
@@ -39,6 +40,9 @@
                     Console.WriteLine("a área do quadrado que tem lado B.");
                     Console.WriteLine("a área do retângulo que tem lados A e B.");
                     F.FMain();
+                    break;
+                default:
+                    Console.WriteLine("O problema informado não existe, tente novamente.");
                     break;
             }
         }
