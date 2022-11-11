@@ -2,10 +2,11 @@
 
 namespace S03_E04
 {
-    static class F
+    internal static class F
     {
         public static void FMain()
         {
+            Console.WriteLine("ler um valor qualquer e apresente uma mensagem dizendo em qual dos seguintes intervalos ([0,25], (25,50], (50,75], (75,100]) este valor se encontra. Obviamente se o valor não estiver em nenhum destes intervalos, deverá ser impressa a mensagem “Fora de intervalo");
             double ponto = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
             if (ponto >= 0 && ponto <= 25)
