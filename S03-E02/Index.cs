@@ -2,9 +2,9 @@
 
 namespace S03_E02
 {
-    static class Index
+    internal static class Index
     {
-        static void Main()
+        private static void Main()
         {
             Console.WriteLine("Entre com o seu nome completo:");
             string? nomeCompleto = Console.ReadLine();

@@ -2,10 +2,11 @@
 
 namespace S03_E04
 {
-    static class H
+    internal static class H
     {
         public static void HMain()
         {
+            Console.WriteLine("Em um país imaginário denominado Lisarb, todos os habitantes ficam felizes em pagar seus impostos, pois sabem que nele não existem políticos corruptos e os recursos arrecadados são utilizados em benefício da população, sem qualquer desvio. A moeda deste país é o Rombus, cujo símbolo é o R$.");
             double salario = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
             double imposto;

@@ -2,9 +2,9 @@
 
 namespace S03_E01
 {
-    static class Index
+    internal static class Index
     {
-        static void Main()
+        private static void Main()
         {
             string produto1 = "Computador";
             string produto2 = "Mesa de Escritório";
