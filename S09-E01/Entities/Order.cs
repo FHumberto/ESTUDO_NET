@@ -43,7 +43,7 @@ namespace S09_E01.Entities
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.AppendLine($"Order moment: {Moment.ToString("dd/MM/yyyy HH:mm:ss")}");
             sb.AppendLine($"Order status: {Status}");
             sb.AppendLine($"Client: {Client.Name} ({Client.BirthDate}) - {Client.Email}");

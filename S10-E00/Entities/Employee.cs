@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace S10_E00
+namespace S10_E00.Entities
 {
     internal class Employee
     {
