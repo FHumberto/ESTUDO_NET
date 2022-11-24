@@ -34,7 +34,7 @@ namespace S09_E01
                 Console.Write("Product Price: ");
                 double pPrice = double.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
 
-                Product product = new Product(pName, pPrice);
+                Product product = new(pName, pPrice);
 
                 Console.Write("Quantity: ");
                 int pQuantity = int.Parse(Console.ReadLine());

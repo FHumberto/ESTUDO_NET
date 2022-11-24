@@ -2,7 +2,7 @@
 {
     internal static class Index
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             Console.WriteLine("Ler dois números inteiros M e N, e depois ler uma matriz de M linhas por N colunas contendo números inteiros");
             Console.WriteLine("podendo haver repetições. Em seguida, ler um número inteiro X que pertence à matriz. Para cada ocorrência de X");

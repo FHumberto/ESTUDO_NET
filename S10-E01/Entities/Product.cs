@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace S10_E01
+namespace S10_E01.Entities
 {
     internal class Product
     {

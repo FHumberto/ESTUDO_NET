@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 
+using S10_E00.Entities;
+
 namespace S10_E00
 {
     internal static class Program

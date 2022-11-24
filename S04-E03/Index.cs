@@ -4,7 +4,7 @@ namespace S04_E03
 {
     internal static class Index
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
             Console.WriteLine("Faça um programa para ler a cotação do dólar, e depois um valor em dólares a ser comprado por uma pessoa em reais.");
             Console.WriteLine("Informar quantos reais a pessoa vai pagar pelos dólares, considerando ainda que a pessoa terá que pagar 6% de IOF");

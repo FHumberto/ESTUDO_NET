@@ -1,4 +1,4 @@
-﻿namespace S10_E00
+﻿namespace S10_E00.Entities
 {
     internal class OutsourcedEmployee : Employee
     {
