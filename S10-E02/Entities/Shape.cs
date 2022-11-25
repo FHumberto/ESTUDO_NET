@@ -6,7 +6,7 @@ namespace S10_E02.Entities
     {
         public Color Color { get; set; }
 
-        public Shape(Color color)
+        protected Shape(Color color)
         {
             Color = color;
         }
