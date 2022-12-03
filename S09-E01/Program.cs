@@ -1,7 +1,7 @@
-﻿using System.Globalization;
-
-using S09_E01.Entities;
+﻿using S09_E01.Entities;
 using S09_E01.Entities.Enums;
+
+using System.Globalization;
 
 namespace S09_E01
 {
