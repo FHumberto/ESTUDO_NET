@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using S09_E01.Entities.Enums;
 
-using S09_E01.Entities.Enums;
+using System.Text;
 
 namespace S09_E01.Entities
 {
