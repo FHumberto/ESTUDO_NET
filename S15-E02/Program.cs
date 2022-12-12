@@ -2,7 +2,7 @@
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             var defaultPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + @"\File.csv";
 
@@ -31,29 +31,27 @@
 
             try
             {
-                using (StreamReader sr = File.OpenText(sourceFilePath))
+                using StreamReader sr = File.OpenText(sourceFilePath);
+                Dictionary<string, int> dictionary = new Dictionary<string, int>();
+
+                while (!sr.EndOfStream)
                 {
-                    Dictionary<string, int> dictionary = new Dictionary<string, int>();
+                    string[] votingRecord = sr.ReadLine().Split(',');
+                    string candidate = votingRecord[0];
+                    int votes = int.Parse(votingRecord[1]);
 
-                    while (!sr.EndOfStream)
+                    if (dictionary.ContainsKey(candidate))
                     {
-                        string[] votingRecord = sr.ReadLine().Split(',');
-                        string candidate = votingRecord[0];
-                        int votes = int.Parse(votingRecord[1]);
-
-                        if (dictionary.ContainsKey(candidate))
-                        {
-                            dictionary[candidate] += votes;
-                        }
-                        else
-                        {
-                            dictionary[candidate] = votes;
-                        }
+                        dictionary[candidate] += votes;
                     }
-                    foreach (KeyValuePair<string, int> item in dictionary)
+                    else
                     {
-                        Console.WriteLine(item.Key + ": " + item.Value);
+                        dictionary[candidate] = votes;
                     }
+                }
+                foreach (KeyValuePair<string, int> item in dictionary)
+                {
+                    Console.WriteLine(item.Key + ": " + item.Value);
                 }
             }
             catch (IOException e)
