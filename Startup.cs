@@ -1,16 +1,21 @@
-﻿namespace CNA_SalesWebMvc
+﻿using CNA_SalesWebMvc.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace CNA_SalesWebMvc
 {
     public class Startup
     {
-        public IConfiguration ConfigRoot { get; }
+        public IConfiguration CFG { get; }
 
         public Startup(IConfiguration configuration)
         {
-            ConfigRoot = configuration;
+            CFG = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<SalesWebMvcContext>
+                (options => options.UseSqlServer(CFG.GetConnectionString("DefaultConnection")));
             services.AddRazorPages();
         }
 
