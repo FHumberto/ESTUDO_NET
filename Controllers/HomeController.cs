@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using CNA_SalesWebMvc.Models;
+using CNA_SalesWebMvc.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CNA_SalesWebMvc.Controllers

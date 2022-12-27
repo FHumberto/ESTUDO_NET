@@ -1,4 +1,4 @@
-namespace CNA_SalesWebMvc.Models
+namespace CNA_SalesWebMvc.Models.ViewModels
 {
     public class ErrorViewModel
     {
