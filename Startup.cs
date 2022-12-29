@@ -1,4 +1,5 @@
 ﻿using CNA_SalesWebMvc.Data;
+using CNA_SalesWebMvc.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc
@@ -16,6 +17,7 @@ namespace CNA_SalesWebMvc
         {
             services.AddDbContext<SalesWebMvcContext>
                 (options => options.UseSqlServer(CFG.GetConnectionString("DefaultConnection")));
+            services.AddScoped<SellerService>();
             services.AddRazorPages();
         }
 

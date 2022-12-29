@@ -1,0 +1,36 @@
+﻿@model CNA_SalesWebMvc.Models.Seller; //informa a view que vai usar os dados desse model.
+
+@{
+    ViewData["Tittle"] = "Create";
+}
+
+<h2>@ViewData["Tittle"]</h2>
+<br />
+<h4>Seller</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="card-group">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="BirthDate" class="form-label"></label>
+                <input asp-for="BirthDate" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="BaseSalary" class="form-label"></label>
+                <input asp-for="BaseSalary" class="form-control" />
+            </div>
+            <div class="card-group">
+                <input type="submit" value="Create" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
