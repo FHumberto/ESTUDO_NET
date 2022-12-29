@@ -18,6 +18,7 @@ namespace CNA_SalesWebMvc
             services.AddDbContext<SalesWebMvcContext>
                 (options => options.UseSqlServer(CFG.GetConnectionString("DefaultConnection")));
             services.AddScoped<SellerService>();
+            services.AddScoped<DepartmentService>();
             services.AddRazorPages();
         }
 

@@ -1,4 +1,5 @@
 ﻿using CNA_SalesWebMvc.Models;
+using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,12 @@ namespace CNA_SalesWebMvc.Controllers
         // injeção de dependencia
         private readonly SellerService _sellerService;
 
-        public SellersController(SellerService sellerService)
+        private readonly DepartmentService _departmentService;
+
+        public SellersController(SellerService sellerService, DepartmentService departmentService)
         {
             _sellerService = sellerService;
+            _departmentService = departmentService;
         }
 
         public IActionResult Index()
@@ -22,7 +26,9 @@ namespace CNA_SalesWebMvc.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var departments = _departmentService.FindAll(); // encontra todos os departamentos
+            var viewModel = new SellerFormViewModel { Departments = departments }; // recebe a lista dos departamentos
+            return View(viewModel); // envia para a view
         }
 
         [HttpPost] // indica que a ação é de Post
