@@ -1,4 +1,4 @@
-﻿@model CNA_SalesWebMvc.Models.Seller; //informa a view que vai usar os dados desse model.
+﻿@model CNA_SalesWebMvc.Models.ViewModels.SellerFormViewModel; //informa a view que vai usar os dados desse model.
 
 @{
     ViewData["Tittle"] = "Create";
@@ -13,20 +13,25 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div class="card-group">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <label asp-for="Seller.Name" class="form-label"></label>
+                <input asp-for="Seller.Name" class="form-control" />
             </div>
             <div class="card-group">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
+                <label asp-for="Seller.Email" class="form-label"></label>
+                <input asp-for="Seller.Email" class="form-control" />
             </div>
             <div class="card-group">
-                <label asp-for="BirthDate" class="form-label"></label>
-                <input asp-for="BirthDate" class="form-control" />
+                <label asp-for="Seller.BirthDate" class="form-label"></label>
+                <input asp-for="Seller.BirthDate" class="form-control" />
             </div>
             <div class="card-group">
-                <label asp-for="BaseSalary" class="form-label"></label>
-                <input asp-for="BaseSalary" class="form-control" />
+                <label asp-for="Seller.BaseSalary" class="form-label"></label>
+                <input asp-for="Seller.BaseSalary" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="Seller.DepartmentId" class="form-label"></label>
+                <!--Select list (modelo, Atributo chave "Coluna", Atributo que vai aparecer "Coluna"-->
+                <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments,"Id","Name"))" class="form-control"></select>
             </div>
             <div class="card-group">
                 <input type="submit" value="Create" class="btn btn-primary"/>
