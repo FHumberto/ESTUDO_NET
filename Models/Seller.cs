@@ -1,12 +1,24 @@
-﻿namespace CNA_SalesWebMvc.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CNA_SalesWebMvc.Models
 {
     public class Seller
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        [Display(Name = "Birth Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")] // altera o formato de como a data é mostrada
         public DateTime BirthDate { get; set; }
+
+        [Display(Name = "Base Salary")]
+        [DisplayFormat(DataFormatString = "{0:F2}")] // indica a formatação do atributo.
         public double BaseSalary { get; set; }
+
         public Department Department { get; set; }
         public int DepartmentId { get; set; }
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();

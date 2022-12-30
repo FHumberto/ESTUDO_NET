@@ -1,5 +1,7 @@
-﻿using CNA_SalesWebMvc.Data;
+﻿using System.Globalization;
+using CNA_SalesWebMvc.Data;
 using CNA_SalesWebMvc.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc
@@ -24,12 +26,26 @@ namespace CNA_SalesWebMvc
 
         public void Configure(WebApplication app, IWebHostEnvironment env)
         {
+            // DEFINE A LOCALIZAÇÃO DA APLICAÇÃO
+            var enUS = new CultureInfo("en-US");
+
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(enUS),
+                SupportedCultures = new List<CultureInfo> { enUS },
+                SupportedUICultures = new List<CultureInfo> { enUS }
+            };
+
+            // passa a localização como argumento
+            app.UseRequestLocalization(localizationOptions);
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
