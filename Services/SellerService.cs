@@ -1,5 +1,6 @@
 ﻿using CNA_SalesWebMvc.Data;
 using CNA_SalesWebMvc.Models;
+using CNA_SalesWebMvc.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc.Services
@@ -37,6 +38,24 @@ namespace CNA_SalesWebMvc.Services
         {
             _context.Add(obj); // adiciona o objeto ao banco de dados.
             _context.SaveChanges();
+        }
+
+        public void Update(Seller obj)
+        {
+            // verifica se não existe o objeto no banco
+            if (!_context.Seller.Any(x => x.Id == obj.Id))
+            {
+                throw new NotFoundException("Id not found");
+            }
+            try
+            {
+                _context.Update(obj); // pode retornar uma exceção (DB update concurrence exception)
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                throw new DBConcurrencyException(e.Message);
+            }
         }
     }
 }

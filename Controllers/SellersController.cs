@@ -1,6 +1,7 @@
 ﻿using CNA_SalesWebMvc.Models;
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
+using CNA_SalesWebMvc.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,6 +66,7 @@ namespace CNA_SalesWebMvc.Controllers
             return RedirectToAction(nameof(Index)); // Redireciona para a interface index
         }
 
+        [HttpGet]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -80,6 +82,55 @@ namespace CNA_SalesWebMvc.Controllers
             }
 
             return View(obj);
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            // procura os departamento para povoar a lista de departamentos
+            List<Department> departments = _departmentService.FindAll();
+
+            // preenche o formulário com os dados que já existem o OBJ buscado e os Departamentos
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+
+            return View(viewModel);
+        }
+
+        [HttpPost] // indica que a ação é de Post
+        [ValidateAntiForgeryToken] //prefine ataque CSRF
+        public IActionResult Edit(int id, Seller seller)
+        {
+            // o ID do vendedor que tá atualizando não pode ser diferente do da requisição
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+
+            // pode gerar excessão na camada de serviço
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DBConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
     }
 }
