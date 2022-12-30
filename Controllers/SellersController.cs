@@ -2,7 +2,6 @@
 using CNA_SalesWebMvc.Models;
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
-using CNA_SalesWebMvc.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CNA_SalesWebMvc.Controllers
