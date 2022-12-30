@@ -1,0 +1,45 @@
+﻿@model CNA_SalesWebMvc.Models.ViewModels.SellerFormViewModel; //informa a view que vai usar os dados desse model.
+
+@{
+    ViewData["Tittle"] = "Edit";
+}
+
+<h2>@ViewData["Tittle"]</h2>
+<br />
+<h4>Seller</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <!--A ACÃO QUE ESSE FORMUÁRIO VAI CHAMAR-->
+        <form asp-action="Edit">
+            <!--ID OCULTO QUE VAI SER PASSADO-->
+            <input type="hidden" asp-for="Seller.Id" />
+            <div class="card-group">
+                <label asp-for="Seller.Name" class="form-label"></label>
+                <input asp-for="Seller.Name" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="Seller.Email" class="form-label"></label>
+                <input asp-for="Seller.Email" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="Seller.BirthDate" class="form-label"></label>
+                <input asp-for="Seller.BirthDate" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="Seller.BaseSalary" class="form-label"></label>
+                <input asp-for="Seller.BaseSalary" class="form-control" />
+            </div>
+            <div class="card-group">
+                <label asp-for="Seller.DepartmentId" class="form-label"></label>
+                <!--Select list (modelo, Atributo chave "Coluna", Atributo que vai aparecer "Coluna"-->
+                <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments,"Id","Name"))" class="form-control"></select>
+            </div>
+            <div class="card-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index">Back to list</a>
+            </div>
+        </form>
+    </div>
+</div>
