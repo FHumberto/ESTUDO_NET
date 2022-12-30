@@ -1,9 +1,9 @@
-﻿using CNA_SalesWebMvc.Models;
+﻿using System.Diagnostics;
+using CNA_SalesWebMvc.Models;
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
 using CNA_SalesWebMvc.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc.Controllers
 {
@@ -45,14 +45,14 @@ namespace CNA_SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return NotFound(); // instancia uma resposta que não encontrou o arquivo
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             return View(obj);
@@ -71,14 +71,14 @@ namespace CNA_SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return NotFound(); // instancia uma resposta que não encontrou o arquivo
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             return View(obj);
@@ -88,14 +88,14 @@ namespace CNA_SalesWebMvc.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             // procura os departamento para povoar a lista de departamentos
@@ -114,7 +114,7 @@ namespace CNA_SalesWebMvc.Controllers
             // o ID do vendedor que tá atualizando não pode ser diferente do da requisição
             if (id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             }
 
             // pode gerar excessão na camada de serviço
@@ -123,14 +123,24 @@ namespace CNA_SalesWebMvc.Controllers
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            catch (ApplicationException e)
             {
-                return NotFound();
+                // manda a mensagem da exceção para o redirect
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DBConcurrencyException)
+        }
+
+        //QUANDO OCORRE O ERRO
+        public IActionResult Error(string message)
+        {
+            // PASSA A MENSAGEM E PEGA TRACE PARA PASSAR PRA VIEW
+            var viewModel = new ErrorViewModel
             {
-                return BadRequest();
-            }
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            return View(viewModel);
         }
     }
 }
