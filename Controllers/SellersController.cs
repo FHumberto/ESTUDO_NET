@@ -2,6 +2,7 @@
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc.Controllers
 {
@@ -47,6 +48,7 @@ namespace CNA_SalesWebMvc.Controllers
             }
 
             var obj = _sellerService.FindById(id.Value);
+
             if (obj == null)
             {
                 return NotFound();
@@ -61,6 +63,23 @@ namespace CNA_SalesWebMvc.Controllers
         {
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index)); // Redireciona para a interface index
+        }
+
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound(); // instancia uma resposta que não encontrou o arquivo
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
         }
     }
 }

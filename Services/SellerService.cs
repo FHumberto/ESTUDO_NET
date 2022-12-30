@@ -1,5 +1,6 @@
 ﻿using CNA_SalesWebMvc.Data;
 using CNA_SalesWebMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc.Services
 {
@@ -20,7 +21,9 @@ namespace CNA_SalesWebMvc.Services
         // encontra o seller com o ID informado
         public Seller FindById(int id)
         {
-            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+            // eager loading carregar dois ou mais objetos
+            // carrega o department e junta com o seller
+            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
         }
 
         public void Remove(int id)
