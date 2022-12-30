@@ -3,6 +3,7 @@ using CNA_SalesWebMvc.Models;
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Plugins;
 
 namespace CNA_SalesWebMvc.Controllers
 {
@@ -36,6 +37,15 @@ namespace CNA_SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] //prefine ataque CSRF
         public IActionResult Create(Seller seller)
         {
+            // testa se o formulário é valido (previnindo bug do JS desabilitado)
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll(); // encontra todos os departamentos
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments }; // recebe a lista dos departamentos
+
+                return View(viewModel); // retorna a view com o mesmo objeto
+            }
+
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index)); // Redireciona para a interface index
         }
@@ -110,6 +120,14 @@ namespace CNA_SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] //prefine ataque CSRF
         public IActionResult Edit(int id, Seller seller)
         {
+            // testa se o formulário é valido (previnindo bug do JS desabilitado)
+            if (!ModelState.IsValid)
+            {
+                var departments = _departmentService.FindAll(); // encontra todos os departamentos
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments }; // recebe a lista dos departamentos
+
+                return View(viewModel); // retorna a view com o mesmo objeto
+            }
             // o ID do vendedor que tá atualizando não pode ser diferente do da requisição
             if (id != seller.Id)
             {
