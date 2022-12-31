@@ -40,9 +40,10 @@
                 <!--Select list (modelo, Atributo chave "Coluna", Atributo que vai aparecer "Coluna"-->
                 <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments,"Id","Name"))" class="form-control"></select>
             </div>
-            <div class="card-group">
+            <br />
+            <div class="form">
                 <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index">Back to list</a>
+                <a asp-action="Index" class="btn btn-secondary">Back to list</a>
             </div>
         </form>
     </div>
