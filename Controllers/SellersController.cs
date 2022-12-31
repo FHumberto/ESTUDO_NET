@@ -2,6 +2,7 @@
 using CNA_SalesWebMvc.Models;
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
+using CNA_SalesWebMvc.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CNA_SalesWebMvc.Controllers
@@ -70,8 +71,15 @@ namespace CNA_SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] //prefine ataque CSRF
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index)); // Redireciona para a interface index
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index)); // Redireciona para a interface index
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
 
         [HttpGet]
