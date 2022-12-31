@@ -19,44 +19,44 @@ namespace CNA_SalesWebMvc.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellerService.FindAll();
+            var list = await _sellerService.FindAllAsync();
             return View(list);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll(); // encontra todos os departamentos
+            var departments = await _departmentService.FindAllAsync(); // encontra todos os departamentos
             var viewModel = new SellerFormViewModel { Departments = departments }; // recebe a lista dos departamentos
             return View(viewModel); // envia para a view
         }
 
         [HttpPost] // indica que a ação é de Post
         [ValidateAntiForgeryToken] //prefine ataque CSRF
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             // testa se o formulário é valido (previnindo bug do JS desabilitado)
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll(); // encontra todos os departamentos
+                var departments = await _departmentService.FindAllAsync(); // encontra todos os departamentos
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments }; // recebe a lista dos departamentos
 
                 return View(viewModel); // retorna a view com o mesmo objeto
             }
 
-            _sellerService.Insert(seller);
+            await _sellerService.InsertAsync(seller);
             return RedirectToAction(nameof(Index)); // Redireciona para a interface index
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             if (obj == null)
             {
@@ -68,21 +68,21 @@ namespace CNA_SalesWebMvc.Controllers
 
         [HttpPost] // indica que a ação é de Post
         [ValidateAntiForgeryToken] //prefine ataque CSRF
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Remove(id);
+            await _sellerService.RemoveAsync(id);
             return RedirectToAction(nameof(Index)); // Redireciona para a interface index
         }
 
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             if (obj == null)
             {
@@ -92,14 +92,14 @@ namespace CNA_SalesWebMvc.Controllers
             return View(obj);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             if (obj == null)
             {
@@ -107,22 +107,22 @@ namespace CNA_SalesWebMvc.Controllers
             }
 
             // procura os departamento para povoar a lista de departamentos
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
 
             // preenche o formulário com os dados que já existem o OBJ buscado e os Departamentos
-            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            SellerFormViewModel viewModel = new() { Seller = obj, Departments = departments };
 
             return View(viewModel);
         }
 
         [HttpPost] // indica que a ação é de Post
         [ValidateAntiForgeryToken] //prefine ataque CSRF
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             // testa se o formulário é valido (previnindo bug do JS desabilitado)
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll(); // encontra todos os departamentos
+                var departments = await _departmentService.FindAllAsync(); // encontra todos os departamentos
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments }; // recebe a lista dos departamentos
 
                 return View(viewModel); // retorna a view com o mesmo objeto
@@ -136,7 +136,7 @@ namespace CNA_SalesWebMvc.Controllers
             // pode gerar excessão na camada de serviço
             try
             {
-                _sellerService.Update(seller);
+                await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException e)
