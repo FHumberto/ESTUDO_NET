@@ -1,5 +1,6 @@
 ﻿using CNA_SalesWebMvc.Data;
 using CNA_SalesWebMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CNA_SalesWebMvc.Services
 {
@@ -12,10 +13,10 @@ namespace CNA_SalesWebMvc.Services
             _context = context;
         }
 
-        public List<Department> FindAll()
+        public async Task<List<Department>> FindAllAsync()
         {
             // retornar a lista de departamentos ordenados por nome
-            return _context.Department.OrderBy(x => x.Name).ToList();
+            return await _context.Department.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }

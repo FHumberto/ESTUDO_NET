@@ -14,33 +14,33 @@ namespace CNA_SalesWebMvc.Services
             _context = context;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
         }
 
         // encontra o seller com o ID informado
-        public Seller FindById(int id)
+        public async Task<Seller> FindByIdAsync(int id)
         {
             // eager loading carregar dois ou mais objetos
             // carrega o department e junta com o seller
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var obj = _context.Seller.Find(id);
+            var obj = await _context.Seller.FindAsync(id);
             _context.Seller.Remove(obj); // remove o objeto encontrado do DBSet
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Insert(Seller obj)
+        public async Task InsertAsync(Seller obj)
         {
             _context.Add(obj); // adiciona o objeto ao banco de dados.
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Seller obj)
+        public async Task UpdateAsync(Seller obj)
         {
             // verifica se não existe o objeto no banco
             if (!_context.Seller.Any(x => x.Id == obj.Id))
@@ -50,7 +50,7 @@ namespace CNA_SalesWebMvc.Services
             try
             {
                 _context.Update(obj); // pode retornar uma exceção (DB update concurrence exception)
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException e)
             {
