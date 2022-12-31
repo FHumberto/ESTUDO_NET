@@ -8,12 +8,12 @@ namespace CNA_SalesWebMvc.Models
 
         [Required(ErrorMessage = "{0} required")]
         [StringLength(60, MinimumLength = 3, ErrorMessage = "{0} size shoude be between {2} and {1}")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Required(ErrorMessage = "{0} required")]
         [DataType(DataType.EmailAddress)]
         [EmailAddress(ErrorMessage = "Enter a valid email")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "{0} required")]
         [Display(Name = "Birth Date")]
@@ -27,8 +27,11 @@ namespace CNA_SalesWebMvc.Models
         [DisplayFormat(DataFormatString = "{0:F2}")] // indica a formatação do atributo.
         public double BaseSalary { get; set; }
 
-        public Department Department { get; set; }
+        public Department? Department { get; set; }
+
+        [Display(Name = "Detartment")]
         public int DepartmentId { get; set; }
+
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
 
         public Seller()

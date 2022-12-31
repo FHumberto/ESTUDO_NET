@@ -3,7 +3,6 @@ using CNA_SalesWebMvc.Models;
 using CNA_SalesWebMvc.Models.ViewModels;
 using CNA_SalesWebMvc.Services;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol.Plugins;
 
 namespace CNA_SalesWebMvc.Controllers
 {
