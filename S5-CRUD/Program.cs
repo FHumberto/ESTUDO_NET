@@ -7,37 +7,41 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
-
 // CREATE
-app.MapPost("/saveproduct", (Product product) =>
+app.MapPost("/products", (Product product) =>
 {
     ProductRepository.Add(product);
-    return $"{product.Name} saved";
+    return Results.Created($"/products/{product.Code}", product.Code);
 });
 
 // READ
-app.MapGet("/getproduct/{code}", ([FromRoute] string code) =>
+app.MapGet("/products/{code}", ([FromRoute] string code) =>
 {
     var product = ProductRepository.GetBy(code);
-    return product;
+    if (product != null)
+    {
+        Results.Ok(product);
+    }
+    else
+    {
+        Results.NotFound();
+    }
 });
 
 // EDIT
-app.MapPut("/editproduct", (Product product) =>
+app.MapPut("/products", (Product product) =>
 {
     var productSaved = ProductRepository.GetBy(product.Code);
     productSaved.Name = product.Name;
-    return $"{product.Name} atualizado!";
+    return Results.Ok();
 });
 
 // DELETE
-app.MapDelete("/getproduct/{code}", ([FromRoute] string code) =>
+app.MapDelete("/products/{code}", ([FromRoute] string code) =>
 {
     var product = ProductRepository.GetBy(code);
     ProductRepository.Remove(product);
-    return "Produto removido";
+    return Results.Ok();
 });
-
 
 app.Run();

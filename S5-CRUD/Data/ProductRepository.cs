@@ -4,7 +4,7 @@ namespace S5_CRUD.Data
 {
     public static class ProductRepository
     {
-        public static List<Product>? Products { get; set; }
+        public static List<Product> Products { get; set; }
 
         public static void Add(Product product)
         {
