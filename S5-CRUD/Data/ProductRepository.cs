@@ -8,17 +8,21 @@ namespace S5_CRUD.Data
 
         public static void Add(Product product)
         {
-            if(Products == null)
-                Products = new List<Product>();
+            Products ??= new List<Product>();
             Products.Add(product);
         }
 
         public static void Remove(Product product)
         {
-            if (Products != null)
-            {
-                Products.Remove(product);
-            }
+            /*
+                if (Products != null)
+                {
+                    Products.Remove(product);
+                }
+
+                Pode ser substituido por Products?.Remove(product);
+             */
+            Products?.Remove(product);
         }
 
         public static Product GetBy(string code)
