@@ -3,9 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S4-API", "S4-API\S4-API.csproj", "{7C38D22E-E0EA-4A68-8EE5-8B9671E4CCF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S04-API", "S4-API\S04-API.csproj", "{7C38D22E-E0EA-4A68-8EE5-8B9671E4CCF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S5-CRUD", "S5-CRUD\S5-CRUD.csproj", "{832BDF34-D5E1-41DC-8F0E-D7A254185AE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "S05-CRUD", "S5-CRUD\S05-CRUD.csproj", "{832BDF34-D5E1-41DC-8F0E-D7A254185AE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S12-PFC", "S12-PFC\S12-PFC.csproj", "{8D1CB0A5-AFF3-44D9-A815-300596310135}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8C4846E4-CCE3-4B83-A47E-587857DCE2A1}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{832BDF34-D5E1-41DC-8F0E-D7A254185AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{832BDF34-D5E1-41DC-8F0E-D7A254185AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{832BDF34-D5E1-41DC-8F0E-D7A254185AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D1CB0A5-AFF3-44D9-A815-300596310135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D1CB0A5-AFF3-44D9-A815-300596310135}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D1CB0A5-AFF3-44D9-A815-300596310135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D1CB0A5-AFF3-44D9-A815-300596310135}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
