@@ -18,17 +18,13 @@ public static class CategoryPost // metodo de criar
         //    return Results.BadRequest("Name is required");
         //}
 
-        var category = new Category(categoryRequest.Name)
-        {
-            CreatedBy = "Test",
-            CreatedOn = DateTime.Now,
-            EditedBy = "Test",
-            EditedOn = DateTime.Now,
-        };
+        var category = new Category(categoryRequest.Name, "Test", "Test");
 
         // VALIDAÇÃO USANDO O FLUNT
         if (!category.IsValid)
-            return Results.BadRequest(category.Notifications);
+        {
+            return Results.ValidationProblem(category.Notifications.ConvertToProblemDetails()); // PASSA OS DADOS DE ERRO PARA A EXTENSÃO
+        }
 
         context.Categories.Add(category);
         context.SaveChanges();
