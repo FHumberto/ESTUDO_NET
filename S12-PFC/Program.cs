@@ -23,10 +23,10 @@ app.UseHttpsRedirection();
 //app.MapGet("/", () => "Hello World!");
 
 //// (url, metodo, ação)
-app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle); // ROTA CREATE
-app.MapMethods(CategoryGetAll.Template, CategoryGetAll.Methods, CategoryGetAll.Handle); // ROTA LISTA
-app.MapMethods(CategoryPut.Template, CategoryPut.Methods, CategoryPut.Handle); // ROTA EDITAR
-app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.Handle); // ROTA EDITAR
+app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle).WithTags("Categories"); // ROTA CREATE
+app.MapMethods(CategoryGetAll.Template, CategoryGetAll.Methods, CategoryGetAll.Handle).WithTags("Categories"); // ROTA LISTA
+app.MapMethods(CategoryPut.Template, CategoryPut.Methods, CategoryPut.Handle).WithTags("Categories"); // ROTA EDITAR
+app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.Handle).WithTags("Categories"); // ROTA EDITAR
 
 
 app.Run();
