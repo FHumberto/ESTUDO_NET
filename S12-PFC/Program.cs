@@ -1,5 +1,12 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
 
+using S12_PFC.Endpoints.Categories;
+using S12_PFC.Infra.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionStr));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -13,6 +20,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Hello World!");
+//app.MapGet("/", () => "Hello World!");
+
+//// (url, metodo, ação)
+app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle); // ROTA CREATE
+app.MapMethods(CategoryGetAll.Template, CategoryGetAll.Methods, CategoryGetAll.Handle); // ROTA LISTA
+app.MapMethods(CategoryPut.Template, CategoryPut.Methods, CategoryPut.Handle); // ROTA EDITAR
+app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.Handle); // ROTA EDITAR
+
 
 app.Run();
