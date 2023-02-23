@@ -1,12 +1,14 @@
 ﻿using Flunt.Notifications;
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using S12_PFC.Domain.Products;
 
 namespace S12_PFC.Infra.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public AppDbContext(DbContextOptions options) : base(options)
     {
@@ -16,17 +18,20 @@ public class AppDbContext : DbContext
     public DbSet<Category> Categories { get; set; }
 
     // método para personalizar os modelos do banco
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        // ignora a classe notification de validação, durante a construção do banco
-        modelBuilder.Ignore<Notification>();
+        // CHANDO A BASE PARA O IDENTITY (CLASSE PAI)
+        base.OnModelCreating(builder);
 
-        modelBuilder.Entity<Product>()
+        // ignora a classe notification de validação, durante a construção do banco
+        builder.Ignore<Notification>();
+
+        builder.Entity<Product>()
             .Property(p => p.Name).IsRequired();
-        modelBuilder.Entity<Product>()
+        builder.Entity<Product>()
             .Property(p => p.Description).HasMaxLength(255);
 
-        modelBuilder.Entity<Category>()
+        builder.Entity<Category>()
             .Property(c => c.Name).IsRequired();
     }
 
