@@ -17,21 +17,22 @@ public static class EmployeePost // metodo de criar
 
         if (!result.Succeeded)
         {
-            return Results.BadRequest(result.Errors.First());
+            return Results.BadRequest(result.Errors.ConvertToProblemDetails());
         }
 
-        var claimResult = userManager.AddClaimAsync(user, new Claim("EmployeeCode", employeeRequest.EmployeeCode)).Result;
+        // AGRUPANDO AS CLAIM EM UMA LISTA
+        var userClaims = new List<Claim>
+        {
+            new Claim("EmployeeCode", employeeRequest.EmployeeCode),
+            new Claim("Name", employeeRequest.Name)
+        };
+
+        var claimResult = userManager.AddClaimsAsync(user, userClaims).Result;
+
 
         if (!claimResult.Succeeded)
         {
-            return Results.BadRequest(claimResult.Errors.First());
-        }
-
-        claimResult = userManager.AddClaimAsync(user, new Claim("Name", employeeRequest.Name)).Result;
-
-        if (!claimResult.Succeeded)
-        {
-            return Results.BadRequest(claimResult.Errors.First());
+            return Results.BadRequest(claimResult.Errors.ConvertToProblemDetails());
         }
 
         return Results.Created($"/categories/{user.Id}", user.Id);
