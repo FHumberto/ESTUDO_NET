@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-using S12_PFC.Endpoints.Categories;
+﻿using S12_PFC.Infra.Data;
 
 namespace S12_PFC.Endpoints.Employees;
 
@@ -11,22 +9,9 @@ public static class EmployeeGetAll // metodo de criar
     public static Delegate Handle => Action;
 
     // RECEBER O PAGE E O ROWS POR QUERY PARAMTERS
-    public static IResult Action(int page, int rows, UserManager<IdentityUser> userManager)
+    public static IResult Action(int? page, int? rows, QueryAllUsersWithClaimName query)
     {
-        // FAZ A PAGINAÇÃO
-        var users = userManager.Users.Skip((page - 1) * rows).Take(rows);
-
-        var employees = new List<EmployeeResponse>();
-
-        foreach (var item in users)
-        {
-            var claims = userManager.GetClaimsAsync(item).Result;
-            var claimName = claims.FirstOrDefault(c => c.Type == "Name"); // obtem o primeiro clain que tem a chave name.
-            var userName = claimName != null ? claimName.Value : string.Empty;
-            employees.Add(new EmployeeResponse(item.Email, userName));
-        }
-
-        var employess = users.Select(u => new EmployeeResponse(u.Email, "Name")); // Convertendo a listagem para employeresponse
-        return Results.Ok(employess);
+        var result = query.Execute(page.Value, rows.Value);
+        return Results.Ok(result);
     }
 }
