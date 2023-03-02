@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using TDLS.Data;
+using TDLS.EndPoints;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -24,5 +25,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Hello World!");
+
+app.MapMethods(TodoItemGetAll.Template, TodoItemGetAll.Methods, TodoItemGetAll.Handle).WithTags("Todo"); // ROTA CREATE
 
 app.Run();
