@@ -1,4 +1,6 @@
-﻿using TDLS.Data;
+﻿using Microsoft.EntityFrameworkCore;
+
+using TDLS.Data;
 
 namespace TDLS.EndPoints.TodoItem;
 
@@ -8,9 +10,9 @@ public static class TodoItemGetAll
     public static string[] Methods => new string[] { HttpMethod.Get.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action;
 
-    public static IResult Action(TdlsContext context)
+    public static async Task<IResult> Action(TdlsContext context)
     {
-        var todoItems = context.TodoItems.ToList();
+        var todoItems = await context.TodoItems.ToListAsync();
 
         // FAZ COM QUE A RESPOSTA SÓ EXIBA OS DADOS NECESSÁRIOS
         var response = todoItems

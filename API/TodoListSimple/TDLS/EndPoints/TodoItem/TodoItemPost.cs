@@ -8,7 +8,7 @@ public static class TodoItemPost
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action;
 
-    public static IResult Action(TodoItemRequest todoItemRequest, TdlsContext context)
+    public static async Task<IResult> Action(TodoItemRequest todoItemRequest, TdlsContext context)
     {
         var todoItem = new Models.TodoItem(todoItemRequest.Tittle, todoItemRequest.Description);
 
@@ -18,7 +18,7 @@ public static class TodoItemPost
         }
 
         context.TodoItems.Add(todoItem);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Results.Created($"/todoitem/{todoItem.Id}", todoItem.Id);
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using TDLS.Data;
 
@@ -10,9 +11,9 @@ public static class TodoItemPut
     public static string[] Methods => new string[] { HttpMethod.Put.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action;
 
-    public static IResult Action([FromRoute] int id, TodoItemRequest todoItemRequest, bool isCompleted, TdlsContext context)
+    public static async Task<IResult> Action([FromRoute] int id, TodoItemRequest todoItemRequest, bool isCompleted, TdlsContext context)
     {
-        var todoItem = context.TodoItems.Where(x => x.Id == id).FirstOrDefault();
+        var todoItem = await context.TodoItems.Where(x => x.Id == id).FirstOrDefaultAsync();
 
         if (todoItem == null)
             return Results.NotFound();
@@ -22,7 +23,7 @@ public static class TodoItemPut
         if (!todoItem.IsValid)
             return Results.ValidationProblem(todoItem.Notifications.ConvertToProblemDetails());
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         return Results.Ok();
     }
 }
