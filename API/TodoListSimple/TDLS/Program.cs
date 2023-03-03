@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using TDLS.Data;
-using TDLS.EndPoints;
+using TDLS.EndPoints.TodoItem;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -11,7 +11,6 @@ var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TdlsContext>(options => options.UseSqlServer(connectionStr));
-
 
 var app = builder.Build();
 
@@ -24,8 +23,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/", () => "Hello World!");
-
-app.MapMethods(TodoItemGetAll.Template, TodoItemGetAll.Methods, TodoItemGetAll.Handle).WithTags("Todo"); // ROTA CREATE
+app.MapMethods(TodoItemPost.Template, TodoItemPost.Methods, TodoItemPost.Handle).WithTags("Todo"); // ROTA CREATE
+app.MapMethods(TodoItemGetAll.Template, TodoItemGetAll.Methods, TodoItemGetAll.Handle).WithTags("Todo"); // ROTA READ
+app.MapMethods(TodoItemPut.Template, TodoItemPut.Methods, TodoItemPut.Handle).WithTags("Todo"); // ROTA UPDATE
+app.MapMethods(TodoItemDelete.Template, TodoItemDelete.Methods, TodoItemDelete.Handle).WithTags("Todo"); // ROTA DELETE
 
 app.Run();
