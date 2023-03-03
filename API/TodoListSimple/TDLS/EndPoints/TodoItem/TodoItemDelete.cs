@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using TDLS.Data;
 
@@ -10,15 +11,15 @@ public static class TodoItemDelete
     public static string[] Methods => new string[] { HttpMethod.Delete.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action;
 
-    public static IResult Action([FromRoute] int id, TdlsContext context)
+    public static async Task<IResult> Action([FromRoute] int id, TdlsContext context)
     {
-        var todoItem = context.TodoItems.Where(x => x.Id == id).FirstOrDefault();
+        var todoItem = await context.TodoItems.Where(x => x.Id == id).FirstOrDefaultAsync();
 
         if (todoItem == null)
             return Results.NotFound();
 
         context.TodoItems.Remove(todoItem);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Results.Ok();
     }
