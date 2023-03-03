@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Flunt.Notifications;
+
+using Microsoft.EntityFrameworkCore;
 
 using TDLS.Models;
 
@@ -10,5 +12,11 @@ public class TdlsContext : DbContext
 
     public TdlsContext(DbContextOptions options) : base(options)
     {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // ignora a classe notification de validação, durante a construção do banco
+        modelBuilder.Ignore<Notification>();
     }
 }
