@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-using S12_PFC.Endpoints.Employees;
-
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,7 +14,7 @@ public static class TokenPost
     public static Delegate Handle => Action; // chama a action v
 
     // método created
-    public static IResult Action(LoginRequest loginRequest, EmployeeRequest employeeRequest, UserManager<IdentityUser> userManager)
+    public static IResult Action(LoginRequest loginRequest, UserManager<IdentityUser> userManager)
     {
         // ENCONTRA O USUÁRIO POR E-MAIL
         var user = userManager.FindByEmailAsync(loginRequest.Email).Result;

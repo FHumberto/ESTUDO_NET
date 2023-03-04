@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 using S12_PFC.Endpoints.Categories;
 using S12_PFC.Endpoints.Employees;
+using S12_PFC.Endpoints.Security;
 using S12_PFC.Infra.Data;
+
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -19,6 +24,25 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters() // VALIDA O TOKEN
+    {
+        ValidateActor = true,
+        ValidateAudience = true,
+        ValidateLifetime = true, // VALIDA CILCODEVIDA
+        ValidateIssuerSigningKey = true, // VALIDA CHAVE DE ASSINATURA
+        ValidIssuer = builder.Configuration["JwtBearerTokenSettings:Issuer"], // SE A ISSUER É A QUE TA ESPERANDO
+        ValidAudience = builder.Configuration["JwtBearerTokenSettings:Audience"], // SE A AUDENCIA É A QUE TA ESPERANDO
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtBearerTokenSettings:SecretKey"]))
+    };
+});
+
 // ADICIONA A CLASSE COMO SERVIÇO
 builder.Services.AddScoped<QueryAllUsersWithClaimName>();
 
@@ -26,6 +50,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseAuthorization();
+app.UseAuthentication();
 
 if (app.Environment.IsDevelopment())
 {
@@ -46,6 +73,6 @@ app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.H
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle).WithTags("Employees");
 app.MapMethods(EmployeePost.Template, EmployeePost.Methods, EmployeePost.Handle).WithTags("Employees");
 
-
+app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle).WithTags("Security");
 
 app.Run();
