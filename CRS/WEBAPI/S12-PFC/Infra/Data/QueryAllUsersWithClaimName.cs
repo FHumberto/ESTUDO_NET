@@ -21,12 +21,12 @@ public class QueryAllUsersWithClaimName
         var dataBase = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")); // FAZ A CONEXÃO COM O BANCO
 
         var query =
-        @"select Email, ClaimValue as Name
-        from AspNetUsers u inner
-        join AspNetUserClaims c
-        on u.id = c.UserId and claimtype = 'Name'
-        order by name
-        OFFSET (@page - 1) * @rows ROWS FETCH NEXT @rows ROWS ONLY"; // PAGINAÇÃO
+            @"select Email, ClaimValue as Name
+            from AspNetUsers u inner
+            join AspNetUserClaims c
+            on u.id = c.UserId and claimtype = 'Name'
+            order by name
+            OFFSET (@page -1 ) * @rows ROWS FETCH NEXT @rows ROWS ONLY"; // PAGINAÇÃO
 
         // CONVERTE A QUERY EM EMPLOYEE RESPONSE (COMO NÃO TEM NAME, TEM Q UE COLOCAR APELIDO (as)
         return dataBase.Query<EmployeeResponse>(
