@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 using System.IdentityModel.Tokens.Jwt;
@@ -13,8 +14,9 @@ public static class TokenPost
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action; // chama a action v
 
+    [AllowAnonymous] // permite que todos os users possam acessar.
     // método created
-    public static IResult Action(LoginRequest loginRequest, UserManager<IdentityUser> userManager)
+    public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager)
     {
         // ENCONTRA O USUÁRIO POR E-MAIL
         var user = userManager.FindByEmailAsync(loginRequest.Email).Result;
@@ -25,10 +27,12 @@ public static class TokenPost
         if (!userManager.CheckPasswordAsync(user, loginRequest.Password).Result)
             Results.BadRequest();
 
-        var key = Encoding.ASCII.GetBytes("A@fderwfQQSDXCCer34"); // CHAVE
+        // RECEBE O ACESSO DA CONFIGURAÇÃO POR INJEÇÃO DE DEPENDÊNCIA
+        var key = Encoding.ASCII.GetBytes(configuration["JwtBearerTokenSettings:SecretKey"]); // CHAVE
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            // CLAIM INFORMA O E-MAIL DO USUÁRIO
             Subject = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Email, loginRequest.Email)
@@ -37,8 +41,8 @@ public static class TokenPost
             // ASSINATURA DA CREDENCIAL COM A KEY E O TIPO DE ALGORÍTIMO DE SEGURANÇA
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-            Audience = "PFC",
-            Issuer = "Issuer"
+            Audience = configuration["JwtBearerTokenSettings:Audience"],
+            Issuer = configuration["JwtBearerTokenSettings:Issuer"]
         };
 
         // GERA O TOKEN
