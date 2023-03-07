@@ -1,4 +1,6 @@
-﻿using S12_PFC.Domain.Products;
+﻿using Microsoft.AspNetCore.Authorization;
+
+using S12_PFC.Domain.Products;
 using S12_PFC.Infra.Data;
 
 namespace S12_PFC.Endpoints.Categories;
@@ -9,6 +11,7 @@ public static class CategoryPost // metodo de criar
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action; // chama a action v
 
+    [Authorize]
     // método created
     public static IResult Action(CategoryRequest categoryRequest, AppDbContext context)
     {
