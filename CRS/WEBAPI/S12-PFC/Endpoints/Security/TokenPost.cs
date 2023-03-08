@@ -27,17 +27,25 @@ public static class TokenPost
         if (!userManager.CheckPasswordAsync(user, loginRequest.Password).Result)
             Results.BadRequest();
 
+        var claims = userManager.GetClaimsAsync(user).Result;
+
+        // CLAIM INFORMA O E-MAIL DO USUÁRIO
+        var Subject = new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Email, loginRequest.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+        });
+        Subject.AddClaims(claims); // adiciona esses dadosao subject
+
+
         // RECEBE O ACESSO DA CONFIGURAÇÃO POR INJEÇÃO DE DEPENDÊNCIA
         var key = Encoding.ASCII.GetBytes(configuration["JwtBearerTokenSettings:SecretKey"]); // CHAVE
 
+
+        // TODAS AS INFORMAÇÕES CONTIDAS NO TOKEN
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            // CLAIM INFORMA O E-MAIL DO USUÁRIO
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Email, loginRequest.Email)
-            }),
-
+            Subject = Subject, // ENVIA OS DADOS DO USUÁRIO JUNTO COM O TOKEN
             // ASSINATURA DA CREDENCIAL COM A KEY E O TIPO DE ALGORÍTIMO DE SEGURANÇA
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),

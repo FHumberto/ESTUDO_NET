@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 using S12_PFC.Endpoints.Categories;
 using S12_PFC.Endpoints.Employees;
@@ -24,7 +26,22 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.AddAuthorization();
+// PROTEGE TODAS AS ROTAS, QUE NÃO TEM AUTHORIZE
+builder.Services.AddAuthorization(options =>
+{
+    // POLITICA QUE INFORMA QUE TODOS OS ENDPOINTS PRECISAM DE AUTORIZAÇÃO
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    .RequireAuthenticatedUser() // obriga o usuário a está autenticado
+    .Build();
+    // PARA O USER ACESSAR O ENDPOINT NESSA POLICE ELE DEVE TER UM EMPLOYECODE
+    options.AddPolicy("EmployePolice", p =>
+    p.RequireAuthenticatedUser().RequireClaim("EmployeeCode"));
+    // EXEMPLO DE REGRA PARA EMPLOYE 005
+    options.AddPolicy("Employe005Policy", p =>
+    p.RequireAuthenticatedUser().RequireClaim("EMployeeCode", "005"));
+});
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -37,6 +54,7 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = true,
         ValidateLifetime = true, // VALIDA CILCODEVIDA
         ValidateIssuerSigningKey = true, // VALIDA CHAVE DE ASSINATURA
+        ClockSkew = TimeSpan.Zero, // DA ZERO TEMPO DE BONUS QUANDO O TOKEN EXPIRAR, QUANDO ACABA O TEMPO ACABOU
         ValidIssuer = builder.Configuration["JwtBearerTokenSettings:Issuer"], // SE A ISSUER É A QUE TA ESPERANDO
         ValidAudience = builder.Configuration["JwtBearerTokenSettings:Audience"], // SE A AUDENCIA É A QUE TA ESPERANDO
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtBearerTokenSettings:SecretKey"]))
@@ -47,12 +65,36 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddScoped<QueryAllUsersWithClaimName>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type=ReferenceType.SecurityScheme,
+                        Id="Bearer"
+                    }
+                },
+                new string[]{}
+            }
+        });
+}); //Swagger Service
 
 var app = builder.Build();
 
-app.UseAuthorization();
-app.UseAuthentication();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -60,9 +102,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthorization();
+app.UseAuthentication();
 
-//app.MapGet("/", () => "Hello World!");
+app.UseHttpsRedirection();
 
 //// (url, metodo, ação)
 app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle).WithTags("Categories"); // ROTA CREATE
