@@ -1,4 +1,6 @@
-﻿using S12_PFC.Infra.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+
+using S12_PFC.Infra.Data;
 
 namespace S12_PFC.Endpoints.Categories;
 
@@ -9,6 +11,8 @@ public static class CategoryGetAll // metodo de criar
     public static Delegate Handle => Action; // chama a action v
 
     // método de listagem
+
+    [Authorize(Policy = "EmployeeCode")]
     public static IResult Action(AppDbContext context)
     {
         var category = context.Categories.ToList();

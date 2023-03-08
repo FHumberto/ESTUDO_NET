@@ -3,6 +3,8 @@
 using S12_PFC.Domain.Products;
 using S12_PFC.Infra.Data;
 
+using System.Security.Claims;
+
 namespace S12_PFC.Endpoints.Categories;
 
 public static class CategoryPost // metodo de criar
@@ -11,9 +13,9 @@ public static class CategoryPost // metodo de criar
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() }; // para determinar os 4 métodos
     public static Delegate Handle => Action; // chama a action v
 
-    [Authorize]
+    [Authorize(Policy = "EmployeePolicy")]
     // método created
-    public static IResult Action(CategoryRequest categoryRequest, AppDbContext context)
+    public static IResult Action(CategoryRequest categoryRequest, HttpContext http, AppDbContext context)
     {
         //OUTRA FORMA DE VALIDAÇÃO SEM MECHER NO MODEL OU USAR FLUNT
         //if (string.IsNullOrEmpty(categoryRequest.Name))
@@ -21,7 +23,9 @@ public static class CategoryPost // metodo de criar
         //    return Results.BadRequest("Name is required");
         //}
 
-        var category = new Category(categoryRequest.Name, "Test", "Test");
+        var userId = http.User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier).Value;    
+
+        var category = new Category(categoryRequest.Name, userId, userId);
 
         // VALIDAÇÃO USANDO O FLUNT
         if (!category.IsValid)
