@@ -5,6 +5,7 @@ using S12_PFC.Infra.Data;
 using static System.Net.WebRequestMethods;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace S12_PFC.Endpoints.Categories;
 
@@ -16,13 +17,13 @@ public static class CategoryPut // metodo de editar
 
     [Authorize(Policy = "EmployeePolicy")]
     // método created
-    public static IResult Action([FromRoute] Guid id, HttpContext http, CategoryRequest categoryRequest, AppDbContext context)
+    public static async Task<IResult> Action([FromRoute] Guid id, HttpContext http, CategoryRequest categoryRequest, AppDbContext context)
     {
 
         // PEGA OS DADOS O NOME QUE ESTÁ NO TOKEN
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-        var category = context.Categories.Where(c => c.Id == id).FirstOrDefault();
+        var category = await context.Categories.Where(c => c.Id == id).FirstOrDefaultAsync();
 
         // VALIDAÇÃO SE NÃO ENCONTRE NO BANCO DE DADOS
         if (category == null)
@@ -33,7 +34,7 @@ public static class CategoryPut // metodo de editar
         if (!category.IsValid)
             return Results.ValidationProblem(category.Notifications.ConvertToProblemDetails()); // FAZ A VALIDAÇÃO BASEADO NO MODEL
 
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         return Results.Ok();
     }

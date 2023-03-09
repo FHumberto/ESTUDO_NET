@@ -14,14 +14,14 @@ public static class EmployeePost // metodo de criar
     public static Delegate Handle => Action;
 
     [Authorize(Policy = "EmployeePolicy")]
-    public static IResult Action(EmployeeRequest employeeRequest, HttpContext http, UserManager<IdentityUser> userManager)
+    public static async Task<IResult> Action(EmployeeRequest employeeRequest, HttpContext http, UserManager<IdentityUser> userManager)
     {
 
         // PEGA OS DADOS O NOME QUE ESTÁ NO TOKEN
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
         var newUser = new IdentityUser { UserName = employeeRequest.Email, Email = employeeRequest.Email };
-        var result = userManager.CreateAsync(newUser, employeeRequest.Password).Result;
+        var result = await userManager.CreateAsync(newUser, employeeRequest.Password);
 
         if (!result.Succeeded)
         {
@@ -36,7 +36,7 @@ public static class EmployeePost // metodo de criar
             new Claim("CreatedBy", userId), // PEGA PELA CLAIM QUEM FOI O USUÁRIO
         };
 
-        var claimResult = userManager.AddClaimsAsync(newUser, userClaims).Result;
+        var claimResult = await userManager.AddClaimsAsync(newUser, userClaims);
 
 
         if (!claimResult.Succeeded)

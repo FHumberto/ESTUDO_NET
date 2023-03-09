@@ -14,8 +14,7 @@ public static class CategoryPost // metodo de criar
     public static Delegate Handle => Action; // chama a action v
 
     [Authorize(Policy = "EmployeePolicy")]
-    // método created
-    public static IResult Action(CategoryRequest categoryRequest, HttpContext http, AppDbContext context)
+    public static async Task<IResult> Action(CategoryRequest categoryRequest, HttpContext http, AppDbContext context)
     {
         //OUTRA FORMA DE VALIDAÇÃO SEM MECHER NO MODEL OU USAR FLUNT
         //if (string.IsNullOrEmpty(categoryRequest.Name))
@@ -33,8 +32,8 @@ public static class CategoryPost // metodo de criar
             return Results.ValidationProblem(category.Notifications.ConvertToProblemDetails()); // PASSA OS DADOS DE ERRO PARA A EXTENSÃO
         }
 
-        context.Categories.Add(category);
-        context.SaveChanges();
+        await context.Categories.AddAsync(category);
+        await context.SaveChangesAsync();
 
         return Results.Created($"/categories/{category.Id}", category.Id);
     }
