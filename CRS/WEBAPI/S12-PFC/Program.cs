@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -120,5 +122,23 @@ app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.H
 app.MapMethods(EmployeePost.Template, EmployeePost.Methods, EmployeePost.Handle).WithTags("Employees");
 
 app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle).WithTags("Security");
+
+
+// FAZ O TRATAMENTO DE EXCEPTION
+app.UseExceptionHandler("/error");
+
+app.Map("/error", (HttpContext http) =>
+{
+
+    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
+
+    if(error != null)
+    {
+        if (error is SqlException)
+            return Results.Problem(title: "Database out", statusCode: 500);
+    }
+
+    return Results.Problem(title: "An error ocurred", statusCode: 500);
+});
 
 app.Run();
