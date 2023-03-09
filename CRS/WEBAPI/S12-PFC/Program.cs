@@ -12,6 +12,9 @@ using S12_PFC.Endpoints.Employees;
 using S12_PFC.Endpoints.Security;
 using S12_PFC.Infra.Data;
 
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
+
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -97,6 +100,19 @@ builder.Services.AddSwaggerGen(option =>
         });
 }); //Swagger Service
 
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration
+        .WriteTo.Console()
+        .WriteTo.MSSqlServer(
+            context.Configuration.GetConnectionString("DefaultConnection"),
+              sinkOptions: new MSSqlServerSinkOptions()
+              {
+                  AutoCreateSqlTable = true,
+                  TableName = "LogAPI"
+              });
+});
+
 var app = builder.Build();
 
 
@@ -129,7 +145,6 @@ app.UseExceptionHandler("/error");
 
 app.Map("/error", (HttpContext http) =>
 {
-
     var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
 
     if(error != null)

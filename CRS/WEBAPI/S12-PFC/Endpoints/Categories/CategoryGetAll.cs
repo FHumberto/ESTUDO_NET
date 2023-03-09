@@ -16,10 +16,10 @@ public static class CategoryGetAll // metodo de criar
     [Authorize(Policy = "EmployeeCode")]
     public static async Task<IResult> Action(AppDbContext context)
     {
-        var category = await context.Categories.ToListAsync();
+        var categories = await context.Categories.ToListAsync();
 
         // retorna uma nova lista do tipo (category response) || para não passar a entity
-        var response = category.Select(c => new CategoryResponse { Id = c.Id, Name = c.Name, Active = c.Active });
+        var response = categories.Select(c => new CategoryResponse(c.Id, c.Name, c.Active));
 
         return Results.Ok(response);
     }
