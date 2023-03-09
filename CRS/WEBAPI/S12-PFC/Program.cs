@@ -31,15 +31,18 @@ builder.Services.AddAuthorization(options =>
 {
     // POLITICA QUE INFORMA QUE TODOS OS ENDPOINTS PRECISAM DE AUTORIZAÇÃO
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
-    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-    .RequireAuthenticatedUser() // obriga o usuário a está autenticado
-    .Build();
+        .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser() // obriga o usuário a está autenticado
+        .Build();
+
     // PARA O USER ACESSAR O ENDPOINT NESSA POLICE ELE DEVE TER UM EMPLOYECODE
-    options.AddPolicy("EmployePolice", p =>
-    p.RequireAuthenticatedUser().RequireClaim("EmployeeCode"));
-    // EXEMPLO DE REGRA PARA EMPLOYE 005
-    options.AddPolicy("Employe005Policy", p =>
-    p.RequireAuthenticatedUser().RequireClaim("EMployeeCode", "005"));
+    options.AddPolicy("EmployeePolicy", p =>
+        p.RequireAuthenticatedUser().RequireClaim("EmployeeCode"));
+
+
+    //// EXEMPLO DE REGRA PARA EMPLOYE 005
+    //options.AddPolicy("Employe005Policy", p =>
+    //p.RequireAuthenticatedUser().RequireClaim("EmployeeCode", "005"));
 });
 
 builder.Services.AddAuthentication(x =>

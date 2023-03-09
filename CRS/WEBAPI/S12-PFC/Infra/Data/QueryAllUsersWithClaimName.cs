@@ -16,7 +16,7 @@ public class QueryAllUsersWithClaimName
     }
 
     // QUERY
-    public IEnumerable<EmployeeResponse> Execute(int page, int rows)
+    public async Task<IEnumerable<EmployeeResponse>> Execute(int page, int rows)
     {
         var dataBase = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")); // FAZ A CONEXÃO COM O BANCO
 
@@ -29,7 +29,7 @@ public class QueryAllUsersWithClaimName
             OFFSET (@page -1 ) * @rows ROWS FETCH NEXT @rows ROWS ONLY"; // PAGINAÇÃO
 
         // CONVERTE A QUERY EM EMPLOYEE RESPONSE (COMO NÃO TEM NAME, TEM Q UE COLOCAR APELIDO (as)
-        return dataBase.Query<EmployeeResponse>(
+        return await dataBase.QueryAsync<EmployeeResponse>(
             query,
             new { page, rows } // PASSA OS PARÂMETROS QUE IRÃO SER USADOS NA QUERY
         );

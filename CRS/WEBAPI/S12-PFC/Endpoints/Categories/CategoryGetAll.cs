@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 using S12_PFC.Infra.Data;
 
@@ -13,9 +14,9 @@ public static class CategoryGetAll // metodo de criar
     // método de listagem
 
     [Authorize(Policy = "EmployeeCode")]
-    public static IResult Action(AppDbContext context)
+    public static async Task<IResult> Action(AppDbContext context)
     {
-        var category = context.Categories.ToList();
+        var category = await context.Categories.ToListAsync();
 
         // retorna uma nova lista do tipo (category response) || para não passar a entity
         var response = category.Select(c => new CategoryResponse { Id = c.Id, Name = c.Name, Active = c.Active });
