@@ -8,7 +8,7 @@ using System.Text;
 
 namespace S12_PFC.Endpoints.Security;
 
-public static class TokenPost
+public class TokenPost
 {
     public static string Template => "/token"; // indica a rota do endpoint
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() }; // para determinar os 4 métodos
@@ -16,11 +16,15 @@ public static class TokenPost
 
     [AllowAnonymous] // permite que todos os users possam acessar.
     // método created
-    public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager)
+    public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager, ILogger<TokenPost> log)
     {
+        log.LogInformation("Getting Token");
+        log.LogWarning("Warning");
+        log.LogError("Error");
+
         // ENCONTRA O USUÁRIO POR E-MAIL
         var user = userManager.FindByEmailAsync(loginRequest.Email).Result;
-        if (user == null)
+        if (user == null) 
             Results.BadRequest();
 
         // CHECA SE A SENHA BATE
