@@ -16,7 +16,7 @@ public class TokenPost
 
     [AllowAnonymous] // permite que todos os users possam acessar.
     // método created
-    public static IResult Action(LoginRequest loginRequest, IConfiguration configuration, UserManager<IdentityUser> userManager, ILogger<TokenPost> log)
+    public static IResult Action(LoginRequest loginRequest, IWebHostEnvironment environment, IConfiguration configuration, UserManager<IdentityUser> userManager, ILogger<TokenPost> log)
     {
         log.LogInformation("Getting Token");
         log.LogWarning("Warning");
@@ -54,7 +54,10 @@ public class TokenPost
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
             Audience = configuration["JwtBearerTokenSettings:Audience"],
-            Issuer = configuration["JwtBearerTokenSettings:Issuer"]
+            Issuer = configuration["JwtBearerTokenSettings:Issuer"],
+
+            // VERIFICA O AMBIENTE, E CONFIGURA A DURAÇÃO DO TOKEN DE ACORDO.
+            Expires = environment.IsDevelopment() || environment.IsStaging() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(1),
         };
 
         // GERA O TOKEN
