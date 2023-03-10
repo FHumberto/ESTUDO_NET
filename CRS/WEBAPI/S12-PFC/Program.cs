@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -42,7 +44,6 @@ builder.Services.AddAuthorization(options =>
     // PARA O USER ACESSAR O ENDPOINT NESSA POLICE ELE DEVE TER UM EMPLOYECODE
     options.AddPolicy("EmployeePolicy", p =>
         p.RequireAuthenticatedUser().RequireClaim("EmployeeCode"));
-
 
     //// EXEMPLO DE REGRA PARA EMPLOYE 005
     //options.AddPolicy("Employe005Policy", p =>
@@ -127,8 +128,6 @@ app.UseAuthentication();
 
 app.UseHttpsRedirection();
 
-//app.MapGet("/", () => "Hello World!");
-
 //// (url, metodo, ação)
 // ROTAS DE CATEGORIA
 app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle).WithTags("Categories"); // ROTA CREATE
@@ -149,20 +148,22 @@ app.MapMethods(EmployeePost.Template, EmployeePost.Methods, EmployeePost.Handle)
 app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle).WithTags("Security");
 
 
-// FAZ O TRATAMENTO DE EXCEPTION
-//app.UseExceptionHandler("/error");
+//FAZ O TRATAMENTO DE EXCEPTION
+app.UseExceptionHandler("/error");
 
-//app.Map("/error", (HttpContext http) =>
-//{
-//    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
+app.Map("/error", (HttpContext http) =>
+{
+    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
 
-//    if (error != null)
-//    {
-//        if (error is SqlException)
-//            return Results.Problem(title: "Database out", statusCode: 500);
-//    }
+    if (error != null)
+    {
+        if (error is SqlException)
+            return Results.Problem(title: "Database out", statusCode: 500);
+        else if (error is BadHttpRequestException)
+            return Results.Problem(title: "Error to convert data to other type. See all the information sent", statusCode: 500);
+    }
 
-//    return Results.Problem(title: "An error ocurred", statusCode: 500);
-//});
+    return Results.Problem(title: "An error ocurred", statusCode: 500);
+});
 
 app.Run();
