@@ -14,7 +14,7 @@ public class ProductGetAll
     [Authorize(Policy = "EmployeePolicy")]
     public static async Task<IResult> Action(AppDbContext context)
     {
-        var products = context.Products.Include(p => p.Category).OrderBy(p => p.Name).ToList();
+        var products = await context.Products.Include(p => p.Category).OrderBy(p => p.Name).ToListAsync();
         var results = products.Select(p => new ProductResponse(p.Name, p.Category.Name, p.Description, p.HasStock, p.Active));
         return Results.Ok(results);
     }

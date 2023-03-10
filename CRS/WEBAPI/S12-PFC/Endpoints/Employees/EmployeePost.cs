@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Identity;
 
 using System.Security.Claims;
 
-using static System.Net.WebRequestMethods;
-
 namespace S12_PFC.Endpoints.Employees;
 
 public static class EmployeePost // metodo de criar

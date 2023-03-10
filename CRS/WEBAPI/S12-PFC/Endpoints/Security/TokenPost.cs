@@ -24,7 +24,7 @@ public class TokenPost
 
         // ENCONTRA O USUÁRIO POR E-MAIL
         var user = userManager.FindByEmailAsync(loginRequest.Email).Result;
-        if (user == null) 
+        if (user == null)
             Results.BadRequest();
 
         // CHECA SE A SENHA BATE

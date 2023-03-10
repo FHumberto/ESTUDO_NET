@@ -96,7 +96,7 @@ builder.Services.AddSwaggerGen(option =>
                         Id="Bearer"
                     }
                 },
-                new string[]{}
+                Array.Empty<string>()
             }
         });
 }); //Swagger Service
@@ -128,6 +128,8 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
+
+//app.MapGet("/", () => "Hello World!");
 
 //// (url, metodo, ação)
 // ROTAS DE CATEGORIA

@@ -22,7 +22,7 @@ public static class CategoryPost // metodo de criar
         //    return Results.BadRequest("Name is required");
         //}
 
-        var userId = http.User.Claims.First( c => c.Type == ClaimTypes.NameIdentifier).Value;    
+        var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
         var category = new Category(categoryRequest.Name, userId, userId);
 
