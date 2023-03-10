@@ -139,6 +139,7 @@ app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.H
 app.MapMethods(ProductPost.Template, ProductPost.Methods, ProductPost.Handle).WithTags("Products");
 app.MapMethods(ProductGetAll.Template, ProductGetAll.Methods, ProductGetAll.Handle).WithTags("Products");
 app.MapMethods(ProductGetById.Template, ProductGetById.Methods, ProductGetById.Handle).WithTags("Products");
+app.MapMethods(ProductGetShowcase.Template, ProductGetShowcase.Methods, ProductGetShowcase.Handle).WithTags("Products");
 
 // ROTAS ADM
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle).WithTags("Employees");
