@@ -34,7 +34,7 @@ public class Category : Entity
     {
         Active = active;
         Name = name;
-        EditedBy = EditedBy;
+        EditedBy = editedBy;
 
         Validate();
     }
