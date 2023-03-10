@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 
 using S12_PFC.Endpoints.Categories;
 using S12_PFC.Endpoints.Employees;
+using S12_PFC.Endpoints.Products;
 using S12_PFC.Endpoints.Security;
 using S12_PFC.Infra.Data;
 
@@ -129,14 +130,21 @@ app.UseAuthentication();
 app.UseHttpsRedirection();
 
 //// (url, metodo, ação)
+// ROTAS DE CATEGORIA
 app.MapMethods(CategoryPost.Template, CategoryPost.Methods, CategoryPost.Handle).WithTags("Categories"); // ROTA CREATE
 app.MapMethods(CategoryGetAll.Template, CategoryGetAll.Methods, CategoryGetAll.Handle).WithTags("Categories"); // ROTA LISTA
 app.MapMethods(CategoryPut.Template, CategoryPut.Methods, CategoryPut.Handle).WithTags("Categories"); // ROTA EDITAR
 app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.Handle).WithTags("Categories"); // ROTA EDITAR
 
+// ROTAS DE PRODUTO
+app.MapMethods(ProductPost.Template, ProductPost.Methods, ProductPost.Handle).WithTags("Categories");
+app.MapMethods(ProductGetAll.Template, ProductGetAll.Methods, ProductGetAll.Handle).WithTags("Categories");
+
+// ROTAS ADM
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle).WithTags("Employees");
 app.MapMethods(EmployeePost.Template, EmployeePost.Methods, EmployeePost.Handle).WithTags("Employees");
 
+// ROTAS DE SEG
 app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle).WithTags("Security");
 
 
@@ -147,7 +155,7 @@ app.Map("/error", (HttpContext http) =>
 {
     var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
 
-    if(error != null)
+    if (error != null)
     {
         if (error is SqlException)
             return Results.Problem(title: "Database out", statusCode: 500);
