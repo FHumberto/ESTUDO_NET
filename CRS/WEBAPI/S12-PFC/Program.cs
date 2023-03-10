@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -138,9 +136,10 @@ app.MapMethods(CategoryGetAll.Template, CategoryGetAll.Methods, CategoryGetAll.H
 app.MapMethods(CategoryPut.Template, CategoryPut.Methods, CategoryPut.Handle).WithTags("Categories"); // ROTA EDITAR
 app.MapMethods(CategoryDelete.Template, CategoryDelete.Methods, CategoryDelete.Handle).WithTags("Categories"); // ROTA EDITAR
 
-// ROTAS DE PRODUTO
-app.MapMethods(ProductPost.Template, ProductPost.Methods, ProductPost.Handle).WithTags("Categories");
-app.MapMethods(ProductGetAll.Template, ProductGetAll.Methods, ProductGetAll.Handle).WithTags("Categories");
+//ROTAS DE PRODUTO
+app.MapMethods(ProductPost.Template, ProductPost.Methods, ProductPost.Handle).WithTags("Products");
+app.MapMethods(ProductGetAll.Template, ProductGetAll.Methods, ProductGetAll.Handle).WithTags("Products");
+app.MapMethods(ProductGetById.Template, ProductGetById.Methods, ProductGetById.Handle).WithTags("Products");
 
 // ROTAS ADM
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle).WithTags("Employees");
@@ -151,19 +150,19 @@ app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle).WithTags
 
 
 // FAZ O TRATAMENTO DE EXCEPTION
-app.UseExceptionHandler("/error");
+//app.UseExceptionHandler("/error");
 
-app.Map("/error", (HttpContext http) =>
-{
-    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
+//app.Map("/error", (HttpContext http) =>
+//{
+//    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
 
-    if (error != null)
-    {
-        if (error is SqlException)
-            return Results.Problem(title: "Database out", statusCode: 500);
-    }
+//    if (error != null)
+//    {
+//        if (error is SqlException)
+//            return Results.Problem(title: "Database out", statusCode: 500);
+//    }
 
-    return Results.Problem(title: "An error ocurred", statusCode: 500);
-});
+//    return Results.Problem(title: "An error ocurred", statusCode: 500);
+//});
 
 app.Run();

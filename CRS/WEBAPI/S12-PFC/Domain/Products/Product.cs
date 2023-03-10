@@ -10,6 +10,8 @@ public class Product : Entity
     public bool HasStock { get; private set; }
     public bool Active { get; private set; } = true;
 
+    public Product() { }
+
     public Product(string name, Category category, string description, bool hasStock, string createdBy)
     {
         Name = name;
