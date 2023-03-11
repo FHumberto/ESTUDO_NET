@@ -50,6 +50,10 @@ builder.Services.AddAuthorization(options =>
     //// EXEMPLO DE REGRA PARA EMPLOYE 005
     //options.AddPolicy("Employe005Policy", p =>
     //p.RequireAuthenticatedUser().RequireClaim("EmployeeCode", "005"));
+
+    // REGRA DE CLIENTE
+    options.AddPolicy("CpfPolicy", p =>
+        p.RequireAuthenticatedUser().RequireClaim("Cpf"));
 });
 
 builder.Services.AddAuthentication(x =>
@@ -147,6 +151,9 @@ app.MapMethods(ProductGetShowcase.Template, ProductGetShowcase.Methods, ProductG
 // ROTAS DE CLIENTE
 app.MapMethods(ClientGet.Template, ClientGet.Methods, ClientGet.Handle).WithTags("Clients");
 app.MapMethods(ClientPost.Template, ClientPost.Methods, ClientPost.Handle).WithTags("Clients");
+
+// ROTA DE PEDIDO
+app.MapMethods(OrderPost.Template, OrderPost.Methods, OrderPost.Handle).WithTags("Orders");
 
 // ROTAS ADM
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle).WithTags("Employees");
