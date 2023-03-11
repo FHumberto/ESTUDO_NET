@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using S12_PFC.Domain.Users;
 using S12_PFC.Endpoints.Categories;
+using S12_PFC.Endpoints.Clients;
 using S12_PFC.Endpoints.Employees;
 using S12_PFC.Endpoints.Products;
 using S12_PFC.Endpoints.Security;
@@ -71,6 +73,7 @@ builder.Services.AddAuthentication(x =>
 
 // ADICIONA A CLASSE COMO SERVIÇO
 builder.Services.AddScoped<QueryAllUsersWithClaimName>();
+builder.Services.AddScoped<UserCreator>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -140,6 +143,9 @@ app.MapMethods(ProductPost.Template, ProductPost.Methods, ProductPost.Handle).Wi
 app.MapMethods(ProductGetAll.Template, ProductGetAll.Methods, ProductGetAll.Handle).WithTags("Products");
 app.MapMethods(ProductGetById.Template, ProductGetById.Methods, ProductGetById.Handle).WithTags("Products");
 app.MapMethods(ProductGetShowcase.Template, ProductGetShowcase.Methods, ProductGetShowcase.Handle).WithTags("Products");
+
+// ROTAS DE CLIENTE
+app.MapMethods(ClientPost.Template, ClientPost.Methods, ClientPost.Handle).WithTags("Clients");
 
 // ROTAS ADM
 app.MapMethods(EmployeeGetAll.Template, EmployeeGetAll.Methods, EmployeeGetAll.Handle).WithTags("Employees");

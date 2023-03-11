@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
+using S12_PFC.Domain.Users;
+
 using System.Security.Claims;
 
 namespace S12_PFC.Endpoints.Employees;
@@ -12,19 +14,10 @@ public static class EmployeePost // metodo de criar
     public static Delegate Handle => Action;
 
     [Authorize(Policy = "EmployeePolicy")]
-    public static async Task<IResult> Action(EmployeeRequest employeeRequest, HttpContext http, UserManager<IdentityUser> userManager)
+    public static async Task<IResult> Action(EmployeeRequest employeeRequest, HttpContext http, UserCreator userCreator)
     {
-
         // PEGA OS DADOS O NOME QUE ESTÁ NO TOKEN
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-        var newUser = new IdentityUser { UserName = employeeRequest.Email, Email = employeeRequest.Email };
-        var result = await userManager.CreateAsync(newUser, employeeRequest.Password);
-
-        if (!result.Succeeded)
-        {
-            return Results.BadRequest(result.Errors.ConvertToProblemDetails());
-        }
 
         // AGRUPANDO AS CLAIM EM UMA LISTA
         var userClaims = new List<Claim>
@@ -34,14 +27,12 @@ public static class EmployeePost // metodo de criar
             new Claim("CreatedBy", userId), // PEGA PELA CLAIM QUEM FOI O USUÁRIO
         };
 
-        var claimResult = await userManager.AddClaimsAsync(newUser, userClaims);
+        // RESULTADO É UMA TULPLA (DOIS RETORNO)
+        (IdentityResult identity, string userId) result = await userCreator.Create(employeeRequest.Email, employeeRequest.Password, userClaims);
 
+        if (!result.identity.Succeeded)
+            return Results.BadRequest(result.identity.Errors.ConvertToProblemDetails());
 
-        if (!claimResult.Succeeded)
-        {
-            return Results.BadRequest(claimResult.Errors.ConvertToProblemDetails());
-        }
-
-        return Results.Created($"/categories/{newUser.Id}", newUser.Id);
+        return Results.Created($"/categories/{result.userId}", result.userId);
     }
 }
