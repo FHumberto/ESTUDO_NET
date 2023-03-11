@@ -10,6 +10,7 @@ public class Product : Entity
     public bool HasStock { get; private set; }
     public bool Active { get; private set; } = true;
     public decimal Price { get; private set; }
+    public ICollection<S12_PFC.Domain.Order.Order> Orders { get; private set; }
 
     public Product() { }
 
