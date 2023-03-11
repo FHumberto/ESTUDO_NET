@@ -23,10 +23,11 @@ public static class ClientPost // metodo de criar
         };
 
         // RESULTADO É UMA TULPLA (DOIS RETORNO)
-        (IdentityResult identity, string userId) result = await userCreator.Create(clientRequest.Email, clientRequest.Password, userClaims);
+        (IdentityResult identity, string userId) result =
+            await userCreator.Create(clientRequest.Email, clientRequest.Password, userClaims);
 
         if (!result.identity.Succeeded)
-            return Results.BadRequest(result.identity.Errors.ConvertToProblemDetails());
+            return Results.ValidationProblem(result.identity.Errors.ConvertToProblemDetails());
 
         return Results.Created($"/clients/{result.userId}", result.userId);
     }
