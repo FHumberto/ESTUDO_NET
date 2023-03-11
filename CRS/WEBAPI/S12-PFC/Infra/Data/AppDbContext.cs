@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using S12_PFC.Domain.Order;
 using S12_PFC.Domain.Products;
 
 namespace S12_PFC.Infra.Data;
@@ -16,6 +17,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
 
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     // método para personalizar os modelos do banco
     protected override void OnModelCreating(ModelBuilder builder)
@@ -35,6 +37,19 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
 
         builder.Entity<Category>()
             .Property(c => c.Name).IsRequired();
+
+        builder.Entity<Order>()
+            .Property(c => c.ClientId).IsRequired();
+        builder.Entity<Order>()
+            .Property(o => o.DeliveryAddress).IsRequired();
+        builder.Entity<Order>()
+            .Ignore(o => o.Name);
+
+        //RELACIONAMENTO PEDIDO E PRODUTOS M <-> M
+        builder.Entity<Order>()
+            .HasMany(o => o.Products)
+            .WithMany(p => p.Orders)
+            .UsingEntity(x => x.ToTable("OrderProducts"));
     }
 
     // método que aplica convensões
