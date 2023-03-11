@@ -145,6 +145,7 @@ app.MapMethods(ProductGetById.Template, ProductGetById.Methods, ProductGetById.H
 app.MapMethods(ProductGetShowcase.Template, ProductGetShowcase.Methods, ProductGetShowcase.Handle).WithTags("Products");
 
 // ROTAS DE CLIENTE
+app.MapMethods(ClientGet.Template, ClientGet.Methods, ClientGet.Handle).WithTags("Clients");
 app.MapMethods(ClientPost.Template, ClientPost.Methods, ClientPost.Handle).WithTags("Clients");
 
 // ROTAS ADM

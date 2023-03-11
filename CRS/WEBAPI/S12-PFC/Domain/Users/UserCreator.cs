@@ -9,7 +9,6 @@ public class UserCreator
 {
     private readonly UserManager<IdentityUser> _userManager;
 
-    // INJEÇÃO DE DEPENDÊNCIA
     public UserCreator(UserManager<IdentityUser> userManager)
     {
         _userManager = userManager;
@@ -22,7 +21,7 @@ public class UserCreator
         var result = await _userManager.CreateAsync(newUser, password);
 
         if (!result.Succeeded)
-            return (result, string.Empty);
+            return (result, String.Empty);
 
         return (await _userManager.AddClaimsAsync(newUser, claims), newUser.Id);
     }
