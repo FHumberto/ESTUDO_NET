@@ -11,8 +11,11 @@
 @code {
     private int currentCount = 0;
 
+    [Parameter]
+    public int IncrementAmunt { get; set; }
+
     private void IncrementCount()
     {
-        currentCount++;
+        currentCount += IncrementAmunt;
     }
 }
