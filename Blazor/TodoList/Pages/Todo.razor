@@ -2,13 +2,16 @@
 
 <PageTitle>Todo</PageTitle>
 
-<h1>Todo</h1>
+<h1>Todo (@todos.Count(todo => !todo.IsDone))</h1>
 
 <!-- EXIBE A LISTA DE TAREFAS SALVA -->
 <ul>
     @foreach (var todo in todos)
     {
-        <li>@todo.Tittle</li>
+        <li>
+            <input type="checkbox" @bind="todo.IsDone" />
+            <input @bind="todo.Title" />
+        </li>
     }
 </ul>
 
@@ -25,7 +28,7 @@
     {
         if (!string.IsNullOrWhiteSpace(newTodo))
         {
-            todos.Add(new TodoItem { Tittle = newTodo });
+            todos.Add(new TodoItem { Title = newTodo });
         }
     }
 }
