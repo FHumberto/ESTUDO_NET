@@ -4,7 +4,28 @@
 
 <h1>Todo</h1>
 
+<!-- EXIBE A LISTA DE TAREFAS SALVA -->
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>@todo.Tittle</li>
+    }
+</ul>
+
+<!-- o BIND faz com quer o valor do imput seja atribuido ao bind -->
+<input placeholder="Fazer alguma coisa" @bind="newTodo" />
+<button @onclick="AddTodo">Adicionar Atividade</button>
+
 @code
 {
-    
+    private string? newTodo;
+    private List<TodoItem> todos = new();
+
+    public void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Tittle = newTodo });
+        }
+    }
 }
