@@ -29,7 +29,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false; // personaliza a validação para não precisar de alphanumericos
     options.Password.RequireDigit = false; // não precisa de um digito
     options.Password.RequireUppercase = false; // não precisa de upercase
-    options.Password.RequireLowercase = false; // não precisa de lowercase
+    options.Password.RequireLowercase = false; // não precisa de lowe rcase
     options.Password.RequiredLength = 3;
 })
 .AddEntityFrameworkStores<AppDbContext>();
