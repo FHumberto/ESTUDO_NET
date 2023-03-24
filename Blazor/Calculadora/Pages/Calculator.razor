@@ -1,47 +1,148 @@
 ﻿@page "/calculator"
+@using System.Data;
+@using System.Globalization;
 
 <PageTitle>Calculadora</PageTitle>
 
 <h1>Calculadora</h1>
 
-<div>
-    <input class="form-control" type="text" placeholder="Histórico" readonly>
-    <input class="form-control" type="text" placeholder="Valor" readonly>
 
-    <div class="btn-group-vertical" role="group" aria-label="Button group">
-        <div class="flex-column">
-            <button type="button" class="btn btn-outline-primary">AC</button>
-            <button type="button" class="btn btn-outline-primary">DEL</button>
+<div class="container">
+    <div class="row">
+        <input type="text" class="col-sm-4" placeholder="@historic" aria-label="First name" disabled>
+    </div>
+
+    <div class="row">
+        <input type="text" class="col-sm-4" placeholder="@calculation" aria-label="First name" disabled>
+    </div>
+
+    <div class="row">
+        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => Clear()">AC</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => DeleteElement()">DEL</button>
         </div>
-        <div class="flex-column">
-            <button type="button" class="btn btn-outline-primary">7</button>
-            <button type="button" class="btn btn-outline-primary">8</button>
-            <button type="button" class="btn btn-outline-primary">9</button>
-            <button type="button" class="btn btn-outline-primary">/</button>
+    </div>
+    <div class="row">
+        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('7')">7</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('8')">8</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('9')">9</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('/')">/</button>
         </div>
-        <div class="flex-column">
-            <button type="button" class="flex-fill btn btn-outline-primary">4</button>
-            <button type="button" class="flex-fill btn btn-outline-primary">5</button>
-            <button type="button" class="flex-fill flex-fill btn btn-outline-primary">6</button>
-            <button type="button" class="flex-fill btn btn-outline-primary">x</button>
+    </div>
+    <div class="row">
+        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('4')">4</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('5')">5</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('6')">6</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('*')">x</button>
         </div>
-        <div class="flex-column">
-            <button type="button" class="btn btn-outline-primary">1</button>
-            <button type="button" class="btn btn-outline-primary">2</button>
-            <button type="button" class="btn btn-outline-primary">3</button>
-            <button type="button" class="btn btn-outline-primary">-</button>
+    </div>
+    <div class="row">
+        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('1')">1</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('2')">2</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('3')">3</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('-')">-</button>
         </div>
-        <div class="flex-column">
-            <button type="button" class="btn btn-outline-primary">0</button>
-            <button type="button" class="btn btn-outline-primary">.</button>
-            <button type="button" class="btn btn-outline-primary">=</button>
-            <button type="button" class="btn btn-outline-primary">+</button>
+    </div>
+    <div class="row">
+        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('0')">0</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('.')">.</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => Calculate()">=</button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('+')">+</button>
         </div>
     </div>
 </div>
 
+@code{
+    string historic = "";
+    string calculation = "";
+    double result = 0;
 
+    void AddNumber(char number)
+    {
+        calculation += number.ToString();
+    }
 
-@code {
+    void AddOperator(char op)
+    {
+        calculation += op.ToString();
+    }
 
+    void DeleteElement()
+    {
+        calculation = calculation.Remove(calculation.Length - 1);
+    }
+
+    void Clear()
+    {
+        calculation = "";
+    }
+
+    void Calculate()
+    {
+        if (!string.IsNullOrEmpty(calculation))
+        {
+            result = eval(calculation);
+            historic = calculation;
+            calculation = result.ToString(CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            calculation = "";
+        }
+
+    }
+
+    public static double eval(string expressao)
+    {
+        // Cria um DataTable para avaliar a expressão
+        DataTable tabela = new DataTable();
+
+        // Avalia a expressão usando o método Compute do DataTable
+        object resultadoObjeto = tabela.Compute(expressao, "");
+
+        // Converte o resultado para double, se possível
+        double resultado = 0;
+        if (double.TryParse(resultadoObjeto.ToString(), out resultado))
+        {
+            return resultado;
+        }
+        else
+        {
+            throw new ArgumentException("A expressão não pôde ser avaliada como um número.");
+        }
+    }
+
+    // LIDA COM AS AÇÃO DO TECLADO
+    //private void HandleKeyDown(KeyboardEventArgs e)
+    //{
+    //    Console.WriteLine("pego");
+    //    if (e.Key == "Enter")
+    //    {
+    //        Calculate();
+    //    }
+    //    else if (e.Key == "Escape")
+    //    {
+    //        Clear();
+    //    }
+    //    else if (e.Key == "Backspace")
+    //    {
+    //         remove o último caractere da operação
+    //    }
+    //    else if (e.Key == "Delete")
+    //    {
+    //        DeleteNumber();
+    //    }
+    //    else if (Char.IsDigit(e.Key.First()))
+    //    {
+    //        AddNumber(e.Key.First());
+    //    }
+    //    else
+    //    {
+    //        AddOperator(e.Key.First());
+    //    }
+    //}
 }
