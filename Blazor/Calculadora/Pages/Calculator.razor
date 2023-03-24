@@ -7,53 +7,27 @@
 <h1>Calculadora</h1>
 
 
-<div class="container">
-    <div class="row">
-        <input type="text" class="col-sm-4" placeholder="@historic" aria-label="First name" disabled>
-    </div>
-
-    <div class="row">
-        <input type="text" class="col-sm-4" placeholder="@calculation" aria-label="First name" disabled>
-    </div>
-
-    <div class="row">
-        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => Clear()">AC</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => DeleteElement()">DEL</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('7')">7</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('8')">8</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('9')">9</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('/')">/</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('4')">4</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('5')">5</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('6')">6</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('*')">x</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('1')">1</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('2')">2</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('3')">3</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('-')">-</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="btn-group-lg" role="group" aria-label="Basic mixed styles example">
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('0')">0</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddNumber('.')">.</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => Calculate()">=</button>
-            <button type="button" class="btn btn-outline-secondary" @onclick="() => AddOperator('+')">+</button>
-        </div>
-    </div>
+<div class="parent">
+    <input type="text" class="div1" placeholder="⌚@historic" aria-label="First name" disabled>
+    <input type="text" class="div2" placeholder="@calculation" aria-label="First name" disabled>
+    <button class="div3 number" @onclick="() => Clear()">AC</button>
+    <button class="div4 number" @onclick="() => DeleteElement()">DEL</button>
+    <button type="button" class="div5 number" @onclick="() => AddNumber('7')">7</button>
+    <button type="button" class="div6 number" @onclick="() => AddNumber('8')">8</button>
+    <button type="button" class="div7 number" @onclick="() => AddNumber('9')">9</button>
+    <button type="button" class="div8 number" @onclick="() => AddOperator('/')">／</button>
+    <button type="button" class="div9 number" @onclick="() => AddNumber('4')">4</button>
+    <button type="button" class="div10 number" @onclick="() => AddNumber('5')">5</button>
+    <button type="button" class="div11 number" @onclick="() => AddNumber('6')">6</button>
+    <button type="button" class="div12 number" @onclick="() => AddOperator('*')">✷</button>
+    <button type="button" class="div13 number" @onclick="() => AddNumber('1')">1</button>
+    <button type="button" class="div14 number" @onclick="() => AddNumber('2')">2</button>
+    <button type="button" class="div15 number" @onclick="() => AddNumber('3')">3</button>
+    <button type="button" class="div16 number" @onclick="() => AddOperator('-')">－</button>
+    <button type="button" class="div17 number" @onclick="() => AddNumber('0')">0</button>
+    <button type="button" class="div18 number" @onclick="() => AddNumber('.')">●</button>
+    <button type="button" class="div19 number" @onclick="() => Calculate()">＝</button>
+    <button type="button" class="div20 number" @onclick="() => AddOperator('+')">✚</button>
 </div>
 
 @code{
