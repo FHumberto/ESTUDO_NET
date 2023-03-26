@@ -16,7 +16,7 @@ public class NewslettersController : ControllerBase
     }
 
     [HttpPost("/newsletters")]
-    public async Task<IActionResult> Post(CreateNewsletterRequest request)
+    public async Task<IActionResult> Post([FromBody] CreateNewsletterRequest request)
     {
         var newsletter = new Newsletter()
         {
@@ -60,7 +60,7 @@ public class NewslettersController : ControllerBase
         return Ok(newsletterResponse);
     }
 
-    [HttpDelete("newsletter/{id}")]
+    [HttpDelete("/newsletters/{id}")]
     public async Task<IActionResult> Delete(long id)
     {
         await _client
