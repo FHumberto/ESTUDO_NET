@@ -4,7 +4,7 @@ using Postgrest.Models;
 namespace SupabaseNews.Models;
 
 // nome da tabela no banco
-[Table("newsletter")]
+[Table("newsletters")]
 public class Newsletter : BaseModel
 {
     [PrimaryKey("id", false)]
@@ -16,7 +16,7 @@ public class Newsletter : BaseModel
     [Column("description")]
     public string Description { get; set; }
 
-    [Column("readtime")]
+    [Column("read_time")]
     public int ReadTime { get; set; }
 
     [Column("created_at")]
