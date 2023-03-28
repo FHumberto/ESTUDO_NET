@@ -24,8 +24,8 @@ public class HomeController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> GetByName(string name)
     {
-        var apiUrl = $"https://kitsu.io/api/edge/manga?filter[text]={name}";
-        var response = await _httpClient.GetAsync(apiUrl);
+        string apiUrl = $"https://kitsu.io/api/edge/manga?filter[text]={name}";
+        HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
 
         if (response == null)
         {
@@ -33,8 +33,8 @@ public class HomeController : ControllerBase
         }
         else
         {
-            var jsonString = await response.Content.ReadAsStringAsync(); // converte para json
-            Manga jsonObject = JsonConvert.DeserializeObject<Manga>(jsonString);
+            string jsonString = await response.Content.ReadAsStringAsync(); // converte para json
+            Manga? jsonObject = JsonConvert.DeserializeObject<Manga>(jsonString);
             return Ok(jsonObject);
         }
     }
