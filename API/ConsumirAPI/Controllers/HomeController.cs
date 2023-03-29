@@ -4,6 +4,10 @@ using Newtonsoft.Json;
 
 namespace ConsumirAPI.Controllers;
 
+/*
+ * Buscar mangá por nome (recebe string) retorna o Id
+ */
+
 [ApiController]
 [Route("[controller]")]
 public class HomeController : ControllerBase
@@ -21,8 +25,15 @@ public class HomeController : ControllerBase
         return Ok();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> GetByName(string name)
+    /// <summary>
+    /// Busca a comic por nome
+    /// </summary>
+    /// <param name="name">Student Model</param>
+    /// <remarks>Busca a comic por nome</remarks>
+    /// <response code="400">Bad request</response>
+    /// <response code="500">Internal Server Error</response>
+    [HttpPost, Route("/buscarpornome")]
+    public async Task<IActionResult> SearchMangaByName(string name)
     {
         string apiUrl = $"https://kitsu.io/api/edge/manga?filter[text]={name}";
         HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
