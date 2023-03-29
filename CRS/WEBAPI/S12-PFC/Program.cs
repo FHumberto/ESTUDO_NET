@@ -20,8 +20,8 @@ using Serilog.Sinks.MSSqlServer;
 
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+string? connectionStr = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionStr));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -109,7 +109,7 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Host.UseSerilog((context, configuration) =>
 {
-    configuration
+    _ = configuration
         .WriteTo.Console()
         .WriteTo.MSSqlServer(
             context.Configuration.GetConnectionString("DefaultConnection"),
@@ -120,14 +120,12 @@ builder.Host.UseSerilog((context, configuration) =>
               });
 });
 
-var app = builder.Build();
-
-
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app.UseSwagger();
+    _ = app.UseSwaggerUI();
 }
 
 app.UseAuthorization();
@@ -162,20 +160,23 @@ app.MapMethods(EmployeePost.Template, EmployeePost.Methods, EmployeePost.Handle)
 // ROTAS DE SEG
 app.MapMethods(TokenPost.Template, TokenPost.Methods, TokenPost.Handle).WithTags("Security");
 
-
 //FAZ O TRATAMENTO DE EXCEPTION
 app.UseExceptionHandler("/error");
 
 app.Map("/error", (HttpContext http) =>
 {
-    var error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
+    Exception? error = http.Features?.Get<IExceptionHandlerFeature>()?.Error; // determina o tipo de erro
 
     if (error != null)
     {
         if (error is SqlException)
+        {
             return Results.Problem(title: "Database out", statusCode: 500);
+        }
         else if (error is BadHttpRequestException)
+        {
             return Results.Problem(title: "Error to convert data to other type. See all the information sent", statusCode: 500);
+        }
     }
 
     return Results.Problem(title: "An error ocurred", statusCode: 500);

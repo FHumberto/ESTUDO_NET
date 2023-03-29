@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.OpenApi.Models;
 using TDLS.Data;
 using TDLS.EndPoints.TodoItem;
 
@@ -11,7 +11,21 @@ var connectionStr = builder.Configuration.GetConnectionString("DefaultConnection
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Todo List Simples", Version = "v1" });
+    c.SwaggerDoc("v1", new()
+    {
+        Title = "Todo List Simples",
+        Version = "v1",
+        Contact = new OpenApiContact
+        {
+            Name = "Humberto Guedes",
+            Email = "fhumberto.trab@gmail.com",
+            Url = new Uri("https://fhumberto.dev.br")
+        }
+    });
+
+    var xmlFile = "TDLS.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 builder.Services.AddDbContext<TdlsContext>(options => options.UseSqlServer(connectionStr));
 

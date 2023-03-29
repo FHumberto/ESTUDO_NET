@@ -10,12 +10,11 @@ public static class ClientGet
     public static string[] Methods => new string[] { HttpMethod.Get.ToString() };
     public static Delegate Handle => Action;
 
-
     // OBTEM OS DADOS DO USUARIO LOGADO ATRAVÉS DO TOKEN
     [AllowAnonymous]
-    public static async Task<IResult> Action(HttpContext http)
+    public static IResult Action(HttpContext http)
     {
-        var user = http.User;
+        ClaimsPrincipal user = http.User;
         var result = new
         {
             Id = user.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value,
