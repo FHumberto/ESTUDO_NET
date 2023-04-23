@@ -46,6 +46,9 @@ public class HomeController : ControllerBase
         {
             string jsonString = await response.Content.ReadAsStringAsync(); // converte para json
             Manga? jsonObject = JsonConvert.DeserializeObject<Manga>(jsonString);
+
+            //* VERIFICAR SE O OBJETO TEM O SLUG DESEJADO
+
             return Ok(jsonObject);
         }
     }
