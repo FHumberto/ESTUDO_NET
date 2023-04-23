@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Flunt.Notifications;
+using Microsoft.EntityFrameworkCore;
 using UsuariosApi.Domain.Models;
 
 namespace UsuariosApi.Data;
@@ -9,6 +10,11 @@ public class UsuariosDbContext : DbContext
 
     public UsuariosDbContext(DbContextOptions options) : base(options)
     {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Ignore<Notification>();
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
