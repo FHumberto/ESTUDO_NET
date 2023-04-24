@@ -17,7 +17,7 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var usuarios = await _dados.Usuarios.ToListAsync();
 
@@ -27,6 +27,24 @@ public class UsuarioController : ControllerBase
         }
 
         return Ok(usuarios);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int? id)
+    {
+        var usuario = await _dados.Usuarios.FindAsync(id);
+
+        if (usuario is null)
+        {
+            return NotFound();
+        }
+
+        if (!usuario.IsValid)
+        {
+            return BadRequest(usuario.Notifications);
+        }
+
+        return Ok(usuario);
     }
 
     [HttpPost]
