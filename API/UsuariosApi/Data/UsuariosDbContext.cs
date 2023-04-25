@@ -15,6 +15,8 @@ public class UsuariosDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Ignore<Notification>();
+
+        modelBuilder.Entity<Usuario>().HasIndex(u => u.Email).IsUnique();
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

@@ -32,10 +32,9 @@ public class Usuario : Notifiable<Notification>
         Validar();
     }
 
-
     private void Validar()
     {
-        var contract = new Contract<Usuario>()
+        Contract<Usuario> contract = new Contract<Usuario>()
             .IsNotNullOrEmpty(Nome, "Nome")
             .IsGreaterOrEqualsThan(Nome, 3, "Nome")
             .IsEmailOrEmpty(Email, "Email");
