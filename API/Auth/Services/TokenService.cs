@@ -25,8 +25,8 @@ public class TokenService
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
-            new Claim(ClaimTypes.Name, user.Name!), // User.Identity.Name
-            new Claim(ClaimTypes.Role, user.Role!), // User.IsInRole
+                new Claim(ClaimTypes.Name, user.Name!), // User.Identity.Name
+                new Claim(ClaimTypes.Role, user.Role!), // User.IsInRole
             }),
 
             Expires = DateTime.UtcNow.AddHours(8), // duração do token

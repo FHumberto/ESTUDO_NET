@@ -1,12 +1,8 @@
 ﻿using Auth.Data;
-using Auth.Models.Entities;
-using Auth.Models.ViewModels;
 using Auth.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace Auth.Controllers;
 [Route("api/[controller]")]
@@ -21,6 +17,13 @@ public class SecurityController : ControllerBase
     {
         _dbContext = dbContext;
         _tokenService = tokenService;
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "ADM")]
+    public async Task<IActionResult> Register()
+    {
+        return Ok("pego");
     }
 
     [HttpPost]
