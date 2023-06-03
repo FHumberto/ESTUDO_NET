@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CodingWiki_DataAcess\CodingWiki_DataAcess.csproj" />
+    <ProjectReference Include="..\CodingWiki_Model\CodingWiki_Model.csproj" />
+  </ItemGroup>
+
 </Project>
