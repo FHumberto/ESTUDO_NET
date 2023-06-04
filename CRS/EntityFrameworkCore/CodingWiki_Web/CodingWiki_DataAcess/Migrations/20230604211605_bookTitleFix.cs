@@ -5,25 +5,24 @@
 namespace CodingWiki_DataAcess.Migrations
 {
     /// <inheritdoc />
-    public partial class renameDisplayColumninGenreTable : Migration
+    public partial class bookTitleFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Display",
-                table: "Genres",
-
-                newName: "DisplayOrder");
+                name: "Tittle",
+                table: "Books",
+                newName: "Title");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "DisplayOrder",
-                table: "Genres",
-                newName: "Display");
+                name: "Title",
+                table: "Books",
+                newName: "Tittle");
         }
     }
 }
