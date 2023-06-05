@@ -14,6 +14,7 @@ internal class ApplicationDbContext : DbContext
     public DbSet<SubCategory> SubCategories { get; set; }
     public DbSet<Publisher> Publishers { get; set; }
     public DbSet<Author> Authors { get; set; }
+    public DbSet<BookDetail> BookDetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
