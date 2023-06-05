@@ -7,14 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CodingWiki_Model.Models;
-public class Book
+[Table("Publishers")]
+public class Publisher
 {
-    public int BookId { get; set; }
-    public string Title { get; set; }
-    [MaxLength(20)]
+    [Key]
+    public int Publisher_Id { get; set; }
     [Required]
-    public string ISBN { get; set; }
-    public decimal Price { get; set; }
-    [NotMapped]
-    public string PriceRange { get; set; }
+    public string Name { get; set; }
+    public string Location { get; set; }
 }
