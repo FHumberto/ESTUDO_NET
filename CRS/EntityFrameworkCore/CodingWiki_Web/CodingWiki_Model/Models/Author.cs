@@ -27,4 +27,6 @@ public class Author
             return $"{FirstName} {LastName}";
         }
     }
+
+    public List<Book> Books { get; set; }
 }
