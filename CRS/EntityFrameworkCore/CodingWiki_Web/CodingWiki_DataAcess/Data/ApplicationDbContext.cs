@@ -15,6 +15,7 @@ internal class ApplicationDbContext : DbContext
     public DbSet<Publisher> Publishers { get; set; }
     public DbSet<Author> Authors { get; set; }
     public DbSet<BookDetail> BookDetails { get; set; }
+    public DbSet<Fluent_BookDetail> BookDetail_fluent { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -24,6 +25,17 @@ internal class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Fluent_BookDetail>()
+            .ToTable("Fluent_BookDetails");
+
+        modelBuilder.Entity<Fluent_BookDetail>()
+            .Property(u => u.NumberOfCharpters)
+            .HasColumnName("NoOfCharpters")
+            .IsRequired();
+
+        modelBuilder.Entity<Fluent_BookDetail>()
+            .HasKey(u => u.BookDetail_Id);
+
         modelBuilder.Entity<Book>().Property(u => u.Price).HasPrecision(10, 5); // seta a precisão da variável
 
         modelBuilder.Entity<Book>().HasData
