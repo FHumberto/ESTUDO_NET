@@ -16,6 +16,7 @@ internal class ApplicationDbContext : DbContext
     public DbSet<Author> Authors { get; set; }
     public DbSet<BookDetail> BookDetails { get; set; }
     public DbSet<Fluent_BookDetail> BookDetail_fluent { get; set; }
+    public DbSet<Fluent_Book> Fluent_Books { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -36,6 +37,16 @@ internal class ApplicationDbContext : DbContext
         modelBuilder.Entity<Fluent_BookDetail>()
             .HasKey(u => u.BookDetail_Id);
 
+        modelBuilder.Entity<Fluent_Book>()
+            .Property(u => u.ISBN)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        modelBuilder.Entity<Fluent_Book>().HasKey(u => u.BookId);
+        modelBuilder.Entity<Fluent_Book>().Ignore(u => u.PriceRange);
+
+        // exercício, fazer o mesmo para publisher e author
+
         modelBuilder.Entity<Book>().Property(u => u.Price).HasPrecision(10, 5); // seta a precisão da variável
 
         modelBuilder.Entity<Book>().HasData
@@ -46,7 +57,7 @@ internal class ApplicationDbContext : DbContext
 
         var bookList = new Book[]
         {
-                      new Book { BookId = 3, Title = "Fake Sunday", ISBN = "77652", Price = 20.99m, Publisher_Id=2 },
+                new Book { BookId = 3, Title = "Fake Sunday", ISBN = "77652", Price = 20.99m, Publisher_Id=2 },
                 new Book { BookId = 4, Title = "Cookie Jar", ISBN = "CC12B12", Price = 25.99m , Publisher_Id=3},
                 new Book { BookId = 5, Title = "Cloudy Forest", ISBN = "90392B33", Price = 40.99m , Publisher_Id=3}
         };
