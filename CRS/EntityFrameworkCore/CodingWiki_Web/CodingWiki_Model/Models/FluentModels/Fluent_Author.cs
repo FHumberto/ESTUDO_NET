@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CodingWiki_Model.Models.FluentModels;
 
 namespace CodingWiki_Model.Models;
 
@@ -24,5 +18,5 @@ public class Fluent_Author
         }
     }
 
-    //public List<Fluent_BookAuthorMap> BookAuthorMap{ get; set; }
+    public List<Fluent_BookAuthorMap> BookAuthorMap { get; set; }
 }

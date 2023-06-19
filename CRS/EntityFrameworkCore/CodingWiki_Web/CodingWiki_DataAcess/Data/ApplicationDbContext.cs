@@ -1,10 +1,6 @@
 ﻿using CodingWiki_Model.Models;
+using CodingWiki_Model.Models.FluentModels;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CodingWiki_DataAcess.Data;
 internal class ApplicationDbContext : DbContext
@@ -21,6 +17,7 @@ internal class ApplicationDbContext : DbContext
     public DbSet<Fluent_Book> Fluent_Books { get; set; }
     public DbSet<Fluent_Publisher> Fluent_Publishers { get; set; }
     public DbSet<Fluent_Author> Fluent_Authors { get; set; }
+    public DbSet<Fluent_BookAuthorMap> Fluent_BookAuthorMaps { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -34,9 +31,17 @@ internal class ApplicationDbContext : DbContext
         modelBuilder.Entity<Fluent_BookDetail>().Property(u => u.NumberOfCharpters).HasColumnName("NoOfCharpters").IsRequired();
         modelBuilder.Entity<Fluent_BookDetail>().HasKey(u => u.BookDetail_Id);
 
+        //! relação 1 para 1 com Book
+        modelBuilder.Entity<Fluent_BookDetail>().HasOne(b => b.Book).WithOne(b => b.BookDetail)
+            .HasForeignKey<Fluent_BookDetail>(u => u.Book_Id);
+
         modelBuilder.Entity<Fluent_Book>().Property(u => u.ISBN).IsRequired().HasMaxLength(50);
         modelBuilder.Entity<Fluent_Book>().HasKey(u => u.BookId);
         modelBuilder.Entity<Fluent_Book>().Ignore(u => u.PriceRange);
+
+        //! relacão 1 para many com publisher
+        modelBuilder.Entity<Fluent_Book>().HasOne(p => p.Publisher).WithMany(b => b.Books)
+            .HasForeignKey(p => p.Publisher_Id);
 
         modelBuilder.Entity<Fluent_Publisher>().HasKey(p => p.Publisher_Id);
         modelBuilder.Entity<Fluent_Publisher>().Property(p => p.Name).IsRequired();
@@ -46,6 +51,12 @@ internal class ApplicationDbContext : DbContext
         modelBuilder.Entity<Fluent_Author>().HasKey(a => a.Author_Id);
         modelBuilder.Entity<Fluent_Author>().Ignore(a => a.FullName);
 
+        modelBuilder.Entity<Fluent_BookAuthorMap>().HasKey(u => new { u.Author_Id, u.Book_Id });
+        modelBuilder.Entity<Fluent_BookAuthorMap>().HasOne(u => u.Book).WithMany(u => u.BookAuthorMap)
+            .HasForeignKey(u => u.Book_Id);
+        modelBuilder.Entity<Fluent_BookAuthorMap>().HasOne(u => u.Author).WithMany(u => u.BookAuthorMap)
+            .HasForeignKey(u => u.Author_Id);
+
         modelBuilder.Entity<Book>().Property(u => u.Price).HasPrecision(10, 5); // seta a precisão da variável
 
         modelBuilder.Entity<Book>().HasData
@@ -54,7 +65,7 @@ internal class ApplicationDbContext : DbContext
                 new Book { BookId = 2, Title = "Fortune of time", ISBN = "12123B12", Price = 11.99m, Publisher_Id = 1 }
         );
 
-        var bookList = new Book[]
+        Book[] bookList = new Book[]
         {
                 new Book { BookId = 3, Title = "Fake Sunday", ISBN = "77652", Price = 20.99m, Publisher_Id=2 },
                 new Book { BookId = 4, Title = "Cookie Jar", ISBN = "CC12B12", Price = 25.99m , Publisher_Id=3},

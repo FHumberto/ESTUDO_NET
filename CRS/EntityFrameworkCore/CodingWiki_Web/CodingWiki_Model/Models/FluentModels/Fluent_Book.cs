@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CodingWiki_Model.Models.FluentModels;
 
 namespace CodingWiki_Model.Models;
 public class Fluent_Book
@@ -14,10 +8,9 @@ public class Fluent_Book
     public string ISBN { get; set; }
     public decimal Price { get; set; }
     public string PriceRange { get; set; }
-    //public Fluent_BookDetail BookDetail { get; set; }
-    //[ForeignKey("Publisher")]
-    //public int Publisher_Id { get; set; }
-    //public Fluent_Publisher Publisher { get; set; }
+    public Fluent_BookDetail BookDetail { get; set; }
+    public int Publisher_Id { get; set; }
+    public Fluent_Publisher Publisher { get; set; }
 
-    //public List<Fluent_BookAuthorMap> BookAuthorMap{ get; set; }
+    public List<Fluent_BookAuthorMap> BookAuthorMap { get; set; }
 }
