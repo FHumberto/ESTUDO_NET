@@ -15,8 +15,12 @@ internal class ApplicationDbContext : DbContext
     public DbSet<Publisher> Publishers { get; set; }
     public DbSet<Author> Authors { get; set; }
     public DbSet<BookDetail> BookDetails { get; set; }
+
+    // FLUENT MODELS
     public DbSet<Fluent_BookDetail> BookDetail_fluent { get; set; }
     public DbSet<Fluent_Book> Fluent_Books { get; set; }
+    public DbSet<Fluent_Publisher> Fluent_Publishers { get; set; }
+    public DbSet<Fluent_Author> Fluent_Authors { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -26,26 +30,21 @@ internal class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Fluent_BookDetail>()
-            .ToTable("Fluent_BookDetails");
+        modelBuilder.Entity<Fluent_BookDetail>().ToTable("Fluent_BookDetails");
+        modelBuilder.Entity<Fluent_BookDetail>().Property(u => u.NumberOfCharpters).HasColumnName("NoOfCharpters").IsRequired();
+        modelBuilder.Entity<Fluent_BookDetail>().HasKey(u => u.BookDetail_Id);
 
-        modelBuilder.Entity<Fluent_BookDetail>()
-            .Property(u => u.NumberOfCharpters)
-            .HasColumnName("NoOfCharpters")
-            .IsRequired();
-
-        modelBuilder.Entity<Fluent_BookDetail>()
-            .HasKey(u => u.BookDetail_Id);
-
-        modelBuilder.Entity<Fluent_Book>()
-            .Property(u => u.ISBN)
-            .IsRequired()
-            .HasMaxLength(50);
-
+        modelBuilder.Entity<Fluent_Book>().Property(u => u.ISBN).IsRequired().HasMaxLength(50);
         modelBuilder.Entity<Fluent_Book>().HasKey(u => u.BookId);
         modelBuilder.Entity<Fluent_Book>().Ignore(u => u.PriceRange);
 
-        // exercício, fazer o mesmo para publisher e author
+        modelBuilder.Entity<Fluent_Publisher>().HasKey(p => p.Publisher_Id);
+        modelBuilder.Entity<Fluent_Publisher>().Property(p => p.Name).IsRequired();
+
+        modelBuilder.Entity<Fluent_Author>().Property(a => a.FirstName).IsRequired().HasMaxLength(50);
+        modelBuilder.Entity<Fluent_Author>().Property(a => a.LastName).IsRequired();
+        modelBuilder.Entity<Fluent_Author>().HasKey(a => a.Author_Id);
+        modelBuilder.Entity<Fluent_Author>().Ignore(a => a.FullName);
 
         modelBuilder.Entity<Book>().Property(u => u.Price).HasPrecision(10, 5); // seta a precisão da variável
 
