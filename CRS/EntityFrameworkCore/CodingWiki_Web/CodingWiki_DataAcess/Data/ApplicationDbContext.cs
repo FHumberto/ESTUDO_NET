@@ -4,7 +4,7 @@ using CodingWiki_Model.Models.FluentModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CodingWiki_DataAcess.Data;
-internal class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext
 {
     public DbSet<Book> Books { get; set; }
     public DbSet<Category> Categoiries { get; set; }
@@ -22,8 +22,8 @@ internal class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CodingWiki;TrustServerCertificate=True;Trusted_Connection=True;");
-
+        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CodingWiki;TrustServerCertificate=True;Trusted_Connection=True;")
+            .LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, Microsoft.Extensions.Logging.LogLevel.Information);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

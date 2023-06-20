@@ -5,11 +5,11 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodingWiki_Web", "CodingWiki_Web\CodingWiki_Web.csproj", "{7808A65B-3D24-480C-A5A0-7B5A8AA13BF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingWiki_DataAcess", "CodingWiki_DataAcess\CodingWiki_DataAcess.csproj", "{A2228489-AB26-430C-BEBD-411778437E64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodingWiki_DataAccess", "CodingWiki_DataAcess\CodingWiki_DataAccess.csproj", "{A2228489-AB26-430C-BEBD-411778437E64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingWiki_Model", "CodingWiki_Model\CodingWiki_Model.csproj", "{D2127130-4FFB-4B39-AE70-8E639F6393CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodingWiki_Model", "CodingWiki_Model\CodingWiki_Model.csproj", "{D2127130-4FFB-4B39-AE70-8E639F6393CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodingWiki_Console", "CodingWiki_Console\CodingWiki_Console.csproj", "{B27157B5-2310-4CCE-9251-BB7C8EA26BDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodingWiki_Console", "CodingWiki_Console\CodingWiki_Console.csproj", "{B27157B5-2310-4CCE-9251-BB7C8EA26BDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

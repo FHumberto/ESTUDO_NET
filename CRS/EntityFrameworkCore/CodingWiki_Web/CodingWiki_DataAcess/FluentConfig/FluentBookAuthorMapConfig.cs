@@ -1,5 +1,4 @@
-﻿using CodingWiki_Model.Models;
-using CodingWiki_Model.Models.FluentModels;
+﻿using CodingWiki_Model.Models.FluentModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
