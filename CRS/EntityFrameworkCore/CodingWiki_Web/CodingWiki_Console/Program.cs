@@ -2,8 +2,6 @@
 using CodingWiki_DataAcess.Data;
 using CodingWiki_Model.Models;
 
-Console.WriteLine("Hello, World!");
-
 //! helper method que checa se migrações foram aplicadas e se existe banco
 //using (ApplicationDbContext context = new())
 //{
@@ -19,21 +17,13 @@ Console.WriteLine("Hello, World!");
 //GetBookById(5);
 //GetAllBooks();
 
-void DeleteBook(int id)
+async void DeleteBook()
 {
-    try
-    {
-        using ApplicationDbContext context = new();
-        var book = context.Books.Find(1);
-        context.Books.Remove(book);
-        context.SaveChanges();
-    }
-    catch (Exception e)
-    {
-
-    }
+    using var context = new ApplicationDbContext();
+    var book = await context.Books.FindAsync(1003);
+    context.Books.Remove(book);
+    await context.SaveChangesAsync();
 }
-
 
 void update()
 {
@@ -62,7 +52,7 @@ void GetBook()
             Console.WriteLine($"{book.Title} - {book.ISBN}");
         }
     }
-    catch(Exception e)
+    catch (Exception e)
     {
 
     }
@@ -70,7 +60,7 @@ void GetBook()
 
 void GetBookById(int id)
 {
-    using ApplicationDbContext context = new ();
+    using ApplicationDbContext context = new();
     var book = context.Books.Where(b => b.Publisher_Id == id).FirstOrDefault();
     Console.WriteLine($"{book.Title} - {book.ISBN}");
 }
