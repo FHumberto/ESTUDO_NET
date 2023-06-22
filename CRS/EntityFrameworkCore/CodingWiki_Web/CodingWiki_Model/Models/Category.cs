@@ -11,5 +11,5 @@ public class Category
     [Column("Name")]
     [Required]
     public string CategoryName { get; set; }
-    public int DisplayOrder { get; set; }
+    //public int DisplayOrder { get; set; }
 }
