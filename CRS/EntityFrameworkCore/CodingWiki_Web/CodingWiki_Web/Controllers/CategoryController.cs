@@ -53,4 +53,17 @@ public class CategoryController : Controller
         }
         return View(obj);
     }
+
+    public async Task<IActionResult> Delete(int? id)
+    {
+        Category obj = new();
+        obj = _db.Categoiries.First(u => u.CategoryId == id);
+        if (obj == null)
+        {
+            return NotFound();
+        }
+        _db.Categoiries.Remove(obj);
+        await _db.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
 }
