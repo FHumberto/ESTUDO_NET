@@ -27,7 +27,7 @@ public class CategoryController : Controller
             return View(obj);
         }
         //edit
-        obj = _db.Categoiries.First(u => u.CategoryId == id);
+        obj = _db.Categoiries.FirstOrDefault(u => u.CategoryId == id);
         if(obj == null)
         {
             return NotFound();
@@ -57,7 +57,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Delete(int? id)
     {
         Category obj = new();
-        obj = _db.Categoiries.First(u => u.CategoryId == id);
+        obj = _db.Categoiries.FirstOrDefault(u => u.CategoryId == id);
         if (obj == null)
         {
             return NotFound();
