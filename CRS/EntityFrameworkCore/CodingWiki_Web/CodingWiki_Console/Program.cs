@@ -2,6 +2,7 @@
 //using CodingWiki_DataAcess.Data;
 //using CodingWiki_Model.Models;
 Console.WriteLine("hello");
+
 //! helper method que checa se migrações foram aplicadas e se existe banco
 //using (ApplicationDbContext context = new())
 //{
