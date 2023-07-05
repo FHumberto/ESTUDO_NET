@@ -14,7 +14,7 @@ public class CategoryController : Controller
 
     public IActionResult Index()
     {
-        List<Category> objList = _db.Categoiries.ToList();
+        List<Category> objList = _db.Categories.ToList();
         return View(objList);
     }
 
@@ -27,7 +27,7 @@ public class CategoryController : Controller
             return View(obj);
         }
         //edit
-        obj = _db.Categoiries.FirstOrDefault(u => u.CategoryId == id);
+        obj = _db.Categories.FirstOrDefault(u => u.CategoryId == id);
         if(obj == null)
         {
             return NotFound();
@@ -42,12 +42,12 @@ public class CategoryController : Controller
         if (ModelState.IsValid)
         {
             //create
-            await _db.Categoiries.AddAsync(obj);
+            await _db.Categories.AddAsync(obj);
         }
         else
         {
             //update
-            _db.Categoiries.Update(obj);
+            _db.Categories.Update(obj);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -57,12 +57,12 @@ public class CategoryController : Controller
     public async Task<IActionResult> Delete(int? id)
     {
         Category obj = new();
-        obj = _db.Categoiries.FirstOrDefault(u => u.CategoryId == id);
+        obj = _db.Categories.FirstOrDefault(u => u.CategoryId == id);
         if (obj == null)
         {
             return NotFound();
         }
-        _db.Categoiries.Remove(obj);
+        _db.Categories.Remove(obj);
         await _db.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
