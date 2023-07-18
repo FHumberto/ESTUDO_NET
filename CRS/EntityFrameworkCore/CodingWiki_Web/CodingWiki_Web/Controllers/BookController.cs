@@ -17,12 +17,14 @@ public class BookController : Controller
 
     public IActionResult Index()
     {
-        List<Book> objList = _db.Books.ToList();
-        foreach(var obj in objList)
-        {
-            //obj.Publisher = _db.Publishers.Find(obj.Publisher_Id);
-            _db.Entry(obj).Reference(u => u.Publisher).Load(); // mais eficiente
-        }
+        // Usando o Eager Loading
+        List<Book> objList = _db.Books.Include(u => u.Publisher).ToList();
+
+        //foreach(var obj in objList)
+        //{
+        //    //obj.Publisher = _db.Publishers.Find(obj.Publisher_Id);
+        //    _db.Entry(obj).Reference(u => u.Publisher).Load(); // mais eficiente
+        //}
         return View(objList);
     }
 
@@ -70,19 +72,6 @@ public class BookController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> Delete(int? id)
-    {
-        Book? obj = new();
-        obj = _db.Books.FirstOrDefault(u => u.BookId == id);
-        if (obj == null)
-        {
-            return NotFound();
-        }
-        _db.Books.Remove(obj);
-        await _db.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
     public IActionResult Details(int? id)
     {
         if (id == null || id == 0)
@@ -92,7 +81,6 @@ public class BookController : Controller
         BookDetail obj = new();
 
         //edit
-
         obj = _db.BookDetails.Include(u => u.Book).FirstOrDefault(u => u.Book_Id == id);
         if (obj == null)
         {
@@ -116,6 +104,51 @@ public class BookController : Controller
             _db.BookDetails.Update(obj);
         }
         await _db.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Delete(int? id)
+    {
+        Book? obj = new();
+        obj = _db.Books.FirstOrDefault(u => u.BookId == id);
+        if (obj == null)
+        {
+            return NotFound();
+        }
+        _db.Books.Remove(obj);
+        await _db.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Playground()
+    {
+        IEnumerable<Book> BookList1 = _db.Books;
+        var FilteredBook1 = BookList1.Where(b => b.Price > 50).ToList();
+
+        IQueryable<Book> BookList2 = _db.Books;
+        var fileredBook2 = BookList2.Where(b => b.Price > 50).ToList();
+
+        //var bookTemp = _db.Books.FirstOrDefault();
+        //bookTemp.Price = 100;
+
+        //var bookCollection = _db.Books;
+        //decimal totalPrice = 0;
+
+        //foreach (var book in bookCollection)
+        //{
+        //    totalPrice += book.Price;
+        //}
+
+        //var bookList = _db.Books.ToList();
+        //foreach (var book in bookList)
+        //{
+        //    totalPrice += book.Price;
+        //}
+
+        //var bookCollection2 = _db.Books;
+        //var bookCount1 = bookCollection2.Count();
+
+        //var bookCount2 = _db.Books.Count();
         return RedirectToAction(nameof(Index));
     }
 }
