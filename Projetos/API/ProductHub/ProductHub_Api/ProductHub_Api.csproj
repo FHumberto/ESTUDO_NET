@@ -4,6 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +16,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ProductHub_Domain\ProductHub_Domain.csproj" />
     <ProjectReference Include="..\ProductHub_Infra\ProductHub_Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
