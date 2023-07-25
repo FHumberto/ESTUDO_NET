@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
 
@@ -19,11 +18,11 @@ builder.Services.AddSwaggerGen(c =>
         {
             Name = "Humberto Guedes",
             Email = "fhumberto.trab@gmail.com",
-            Url = new Uri(Environment.GetEnvironmentVariable("Contact") ?? "Arquivo de configuração não encontrado"),
+            Url = new Uri(builder.Configuration["Contact"]),
         },
     });
 
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
