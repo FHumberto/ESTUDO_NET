@@ -1,4 +1,5 @@
 ﻿using MagicVilla_VillaAPI.Data;
+using MagicVilla_VillaAPI.Logging;
 using MagicVilla_VillaAPI.Models.Dto;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,18 @@ namespace MagicVilla_VillaAPI.Controllers;
 [ApiController]
 public class VillaApiController : ControllerBase
 {
+    private readonly Iloging _logger;
+
+    public VillaApiController(Iloging logger)
+    {
+        _logger = logger;
+    }
+
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<IEnumerable<VillaDto>> GetVillas()
     {
+        _logger.Log("Getting all villas", "");
         return Ok(VillaStore.VillaList);
     }
 
@@ -25,10 +34,11 @@ public class VillaApiController : ControllerBase
     {
         if (id == 0)
         {
+            _logger.Log("Get villa Error with Id" + id, "error");
             return BadRequest();
         }
 
-        var villa = VillaStore.VillaList.Find(x => x.Id == id);
+        VillaDto villa = VillaStore.VillaList.Find(x => x.Id == id);
 
         if (villa is null)
         {
@@ -81,7 +91,7 @@ public class VillaApiController : ControllerBase
             return BadRequest();
         }
 
-        var villa = VillaStore.VillaList.FirstOrDefault(u => u.Id == id);
+        VillaDto villa = VillaStore.VillaList.FirstOrDefault(u => u.Id == id);
 
         if (villa == null)
         {
@@ -103,7 +113,7 @@ public class VillaApiController : ControllerBase
             return BadRequest();
         }
 
-        var villa = VillaStore.VillaList.Find(u => u.Id == id);
+        VillaDto villa = VillaStore.VillaList.Find(u => u.Id == id);
 
         // serializando
         villa.Name = villaDto.Name;
@@ -118,14 +128,14 @@ public class VillaApiController : ControllerBase
     [HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
     public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaDto> patchDto)
     {
-        if(patchDto == null || id == 0)
+        if (patchDto == null || id == 0)
         {
             return BadRequest();
         }
 
-        var villa = VillaStore.VillaList.Find(u => u.Id == id);
+        VillaDto villa = VillaStore.VillaList.Find(u => u.Id == id);
 
-        if(villa is null)
+        if (villa is null)
         {
             return NotFound();
         }

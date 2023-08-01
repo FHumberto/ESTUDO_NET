@@ -1,14 +1,15 @@
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+using MagicVilla_VillaAPI.Logging;
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(option =>
 {
     option.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlSerializerFormatters();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<Iloging, Logging>();
 
 WebApplication app = builder.Build();
 
