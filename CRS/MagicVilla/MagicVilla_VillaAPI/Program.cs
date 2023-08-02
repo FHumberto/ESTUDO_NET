@@ -1,10 +1,15 @@
+using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Logging;
+using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<ApplicationDbContext>
+    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDB")));
+
 builder.Services.AddControllers(option =>
 {
-    option.ReturnHttpNotAcceptable = true;
+    //option.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();
