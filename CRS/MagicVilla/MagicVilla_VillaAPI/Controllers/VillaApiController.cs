@@ -30,7 +30,7 @@ public class VillaApiController : ControllerBase
     {
         _logger.Log("Getting all villas", "");
         IEnumerable<Villa> villaList = await _db.Villas.ToListAsync();
-        return Ok(_mapper.Map<VillaDto>(villaList));
+        return Ok(_mapper.Map<List<VillaDto>>(villaList));
     }
 
     [HttpGet("{id:int}", Name = "GetVilla")]
