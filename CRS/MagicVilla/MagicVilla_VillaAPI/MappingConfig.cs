@@ -13,5 +13,11 @@ public class MappingConfig : Profile
 
         CreateMap<Villa, VillaCreateDto>().ReverseMap();
         CreateMap<Villa, VillaUpdateDto>().ReverseMap();
+
+        // VillaNumber
+        CreateMap<VillaNumber, VillaNumberDto>();
+
+        CreateMap<VillaNumber, VillaNumberCreateDto>().ReverseMap();
+        CreateMap<VillaNumber, VillaNumberUpdateDto>().ReverseMap();
     }
 }
