@@ -122,7 +122,7 @@ public class VillaNumberApiController : ControllerBase
         return _response;
     }
 
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpDelete("{id:int}", Name = "DeleteVillaNumber")]
@@ -157,7 +157,7 @@ public class VillaNumberApiController : ControllerBase
     }
 
     [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDto updateDto)
     {
@@ -183,37 +183,5 @@ public class VillaNumberApiController : ControllerBase
         }
 
         return _response;
-    }
-
-    [HttpPatch("{id:int}", Name = "UpdatePartialVillaNumber")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdatePartialVillaNumber(int id, JsonPatchDocument<VillaNumberUpdateDto> patchDto)
-    {
-        if (patchDto == null || id == 0)
-        {
-            return BadRequest();
-        }
-
-        VillaNumber villaNumber = await _repoVilla.GetAsync(u => u.VillaNo == id, tracked: false);
-
-        VillaNumberUpdateDto villaNumberDto = _mapper.Map<VillaNumberUpdateDto>(villaNumber);
-
-        if (villaNumber == null)
-        {
-            return BadRequest();
-        }
-
-        patchDto.ApplyTo(villaNumberDto, ModelState);
-        VillaNumber model = _mapper.Map<VillaNumber>(villaNumberDto);
-
-        await _repoVilla.UpdateAsync(model);
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        return NoContent();
     }
 }
