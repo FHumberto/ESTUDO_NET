@@ -4,6 +4,7 @@ using MagicVilla_VillaAPI.Logging;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +16,16 @@ public class VillaNumberApiController : ControllerBase
 {
     protected ApiResponse _response;
     private readonly Iloging _logger;
-    private readonly IVillaNumberRepository _repoVilla;
+    private readonly IVillaNumberRepository _repoVillaNumber;
+    private readonly IVillaRepository _repoVilla;
     private readonly IMapper _mapper;
 
-    public VillaNumberApiController(Iloging logger, IVillaNumberRepository repoVilla, IMapper mapper)
+    public VillaNumberApiController(Iloging logger, IVillaRepository repoVilla, IVillaNumberRepository repoVillaNumber, IMapper mapper)
     {
         _logger = logger;
-        _repoVilla = repoVilla;
+        _repoVillaNumber = repoVillaNumber;
         _mapper = mapper;
+        _repoVilla = repoVilla;
         this._response = new();
     }
 
@@ -32,7 +35,7 @@ public class VillaNumberApiController : ControllerBase
     {
         try
         {
-            IEnumerable<VillaNumber> villaNumberList = await _repoVilla.GetAllAsync();
+            IEnumerable<VillaNumber> villaNumberList = await _repoVillaNumber.GetAllAsync();
             _response.Result = _mapper.Map<List<VillaNumberDto>>(villaNumberList);
             _response.StatusCode = HttpStatusCode.OK;
             _logger.Log("Getting all villas numbers", "");
@@ -63,7 +66,7 @@ public class VillaNumberApiController : ControllerBase
                 return BadRequest(_response);
             }
 
-            VillaNumber villaNumber = await _repoVilla.GetAsync(u => u.VillaNo == id);
+            VillaNumber villaNumber = await _repoVillaNumber.GetAsync(u => u.VillaNo == id);
 
             if (villaNumber == null)
             {
@@ -94,9 +97,15 @@ public class VillaNumberApiController : ControllerBase
         try
         {
 
-            if (await _repoVilla.GetAsync(u => u.SpecialDetails.ToLower() == createDto.SpecialDetails.ToLower()) != null)
+            if (await _repoVillaNumber.GetAsync(u => u.SpecialDetails.ToLower() == createDto.SpecialDetails.ToLower()) != null)
             {
                 ModelState.AddModelError("CustomError", "VillaNummber SpecialDetails already Exists!");
+                return BadRequest(ModelState);
+            }
+
+            if (await _repoVilla.GetAsync(u => u.Id == createDto.VillaID) == null)
+            {
+                ModelState.AddModelError("CustomError", "Villa ID is Invalid!");
                 return BadRequest(ModelState);
             }
 
@@ -107,7 +116,7 @@ public class VillaNumberApiController : ControllerBase
 
             VillaNumber villaNumber = _mapper.Map<VillaNumber>(createDto);
 
-            await _repoVilla.CreateAsync(villaNumber);
+            await _repoVillaNumber.CreateAsync(villaNumber);
             _response.Result = _mapper.Map<VillaNumberDto>(villaNumber);
             _response.StatusCode = HttpStatusCode.Created;
             return CreatedAtRoute("GetVillaNumber", new { id = villaNumber.VillaNo }, _response);
@@ -135,13 +144,13 @@ public class VillaNumberApiController : ControllerBase
                 return BadRequest();
             }
 
-            VillaNumber villaNumber = await _repoVilla.GetAsync(u => u.VillaNo == id);
+            VillaNumber villaNumber = await _repoVillaNumber.GetAsync(u => u.VillaNo == id);
             if (villaNumber == null)
             {
                 return NotFound();
             }
 
-            await _repoVilla.RemoveAsync(villaNumber);
+            await _repoVillaNumber.RemoveAsync(villaNumber);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
             return Ok(_response);
@@ -168,9 +177,15 @@ public class VillaNumberApiController : ControllerBase
                 return BadRequest();
             }
 
+            if (await _repoVilla.GetAsync(u => u.Id == updateDto.VillaID) == null)
+            {
+                ModelState.AddModelError("CustomError", "Villa ID is Invalid!");
+                return BadRequest(ModelState);
+            }
+
             VillaNumber model = _mapper.Map<VillaNumber>(updateDto);
 
-            await _repoVilla.UpdateAsync(model);
+            await _repoVillaNumber.UpdateAsync(model);
             _response.StatusCode = HttpStatusCode.NoContent;
             _response.IsSuccess = true;
             return Ok(_response);
