@@ -108,7 +108,7 @@ public class VillaNumberApiController : ControllerBase
             VillaNumber villaNumber = _mapper.Map<VillaNumber>(createDto);
 
             await _repoVilla.CreateAsync(villaNumber);
-            _response.Result = _mapper.Map<VillaDto>(villaNumber);
+            _response.Result = _mapper.Map<VillaNumberDto>(villaNumber);
             _response.StatusCode = HttpStatusCode.Created;
             return CreatedAtRoute("GetVillaNumber", new { id = villaNumber.VillaNo }, _response);
         }
