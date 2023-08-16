@@ -13,7 +13,7 @@ public class VillaService : BaseService, IVillaService
     public VillaService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
     {
         _clientFactory = clientFactory;
-        _villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
+        _villaUrl = configuration.GetValue<string>("ServiceUrl:VillaAPI");
     }
 
     Task<T> IVillaService.CreateAsync<T>(VillaCreateDto dto)
