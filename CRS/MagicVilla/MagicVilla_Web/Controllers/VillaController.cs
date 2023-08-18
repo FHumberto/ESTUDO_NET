@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using AutoMapper;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
@@ -56,13 +57,62 @@ public class VillaController : Controller
         return View(model); // retorna o modelo com os erro
     }
 
-    public async Task<IActionResult> UpdateVilla()
+    // antes de dá update mostrar na tela o que o usuário vai atualizar
+    public async Task<IActionResult> UpdateVilla(int villaId)
     {
-        return View();
+        var response = await _villaService.GetAsync<APIResponse>(villaId);
+
+        if (response != null && response.IsSuccess)
+        {
+            VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.Result));
+            return View(_mapper.Map<VillaUpdateDto>(model));
+        }
+
+        return NotFound();
     }
 
-    public async Task<IActionResult> DeleteVilla()
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateVilla(VillaUpdateDto model)
     {
-        return View();
+        // validação presentes no data anotation
+        if (ModelState.IsValid)
+        {
+            var response = await _villaService.UpdateAsync<APIResponse>(model);
+
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(IndexVilla));
+            }
+        }
+
+        return View(model); // retorna o modelo com os erro
+    }
+
+    public async Task<IActionResult> DeleteVilla(int villaId)
+    {
+        var response = await _villaService.GetAsync<APIResponse>(villaId);
+
+        if (response != null && response.IsSuccess)
+        {
+            VillaDto model = JsonConvert.DeserializeObject<VillaDto>(Convert.ToString(response.Result));
+            return View(_mapper.Map<VillaDto>(model));
+        }
+
+        return NotFound();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteVilla(VillaDto model)
+    {
+        var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
+
+        if (response != null && response.IsSuccess)
+        {
+            return RedirectToAction(nameof(IndexVilla));
+        }
+
+        return View(model);
     }
 }
