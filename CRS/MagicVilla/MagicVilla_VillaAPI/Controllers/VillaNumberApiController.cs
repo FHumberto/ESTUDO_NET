@@ -33,7 +33,7 @@ public class VillaNumberApiController : ControllerBase
     {
         try
         {
-            IEnumerable<VillaNumber> villaNumberList = await _repoVillaNumber.GetAllAsync();
+            IEnumerable<VillaNumber> villaNumberList = await _repoVillaNumber.GetAllAsync(includeProperties: "Villa");
             _response.Result = _mapper.Map<List<VillaNumberDto>>(villaNumberList);
             _response.StatusCode = HttpStatusCode.OK;
             _logger.Log("Getting all villas numbers", "");
