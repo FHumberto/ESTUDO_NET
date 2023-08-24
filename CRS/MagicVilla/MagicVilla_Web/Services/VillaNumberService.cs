@@ -1,7 +1,7 @@
-﻿using MagicVilla_Web.Models;
-using MagicVilla_Web.Services.IServices;
+﻿using MagicVilla_Utility;
+using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
-using MagicVilla_Utility;
+using MagicVilla_Web.Services.IServices;
 
 namespace MagicVilla_Web.Services
 {

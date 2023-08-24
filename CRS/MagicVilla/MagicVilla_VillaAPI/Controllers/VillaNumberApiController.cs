@@ -97,13 +97,13 @@ public class VillaNumberApiController : ControllerBase
 
             if (await _repoVillaNumber.GetAsync(u => u.SpecialDetails.ToLower() == createDto.SpecialDetails.ToLower()) != null)
             {
-                ModelState.AddModelError("CustomError", "VillaNummber SpecialDetails already Exists!");
+                ModelState.AddModelError("ErrorMessages", "VillaNummber SpecialDetails already Exists!");
                 return BadRequest(ModelState);
             }
 
             if (await _repoVilla.GetAsync(u => u.Id == createDto.VillaID) == null)
             {
-                ModelState.AddModelError("CustomError", "Villa ID is Invalid!");
+                ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
                 return BadRequest(ModelState);
             }
 
@@ -177,7 +177,7 @@ public class VillaNumberApiController : ControllerBase
 
             if (await _repoVilla.GetAsync(u => u.Id == updateDto.VillaID) == null)
             {
-                ModelState.AddModelError("CustomError", "Villa ID is Invalid!");
+                ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
                 return BadRequest(ModelState);
             }
 
