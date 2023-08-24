@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
@@ -26,7 +24,7 @@ public class VillaController : Controller
 
         var response = await _villaService.GetAllAsync<APIResponse>();
 
-        if(response != null && response.IsSuccess)
+        if (response != null && response.IsSuccess)
         {
             list = JsonConvert.DeserializeObject<List<VillaDto>>(Convert.ToString(response.Result));
         }
@@ -44,7 +42,7 @@ public class VillaController : Controller
     public async Task<IActionResult> CreateVilla(VillaCreateDto model)
     {
         // validação presentes no data anotation
-        if(ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             var response = await _villaService.CreateAsync<APIResponse>(model);
 

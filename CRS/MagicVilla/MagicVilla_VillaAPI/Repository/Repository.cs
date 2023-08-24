@@ -37,9 +37,9 @@ public class Repository<T> : IRepository<T> where T : class
         }
 
         // bloco para popular automaticamente o dado com o dado referenciado
-        if(includeProperties != null)
+        if (includeProperties != null)
         {
-            foreach(var includeProp in includeProperties.Split(new char[] { ','}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 query = query.Include(includeProp);
             }
