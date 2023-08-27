@@ -48,9 +48,13 @@ public class VillaController : Controller
 
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Villa created successfully"; // tag de toast.
+
                 return RedirectToAction(nameof(IndexVilla));
             }
         }
+
+        TempData["error"] = "Error encountered."; // tag de toast.
 
         return View(model); // retorna o modelo com os erro
     }
@@ -80,9 +84,13 @@ public class VillaController : Controller
 
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Villa updated successfully"; // tag de toast.
+
                 return RedirectToAction(nameof(IndexVilla));
             }
         }
+
+        TempData["error"] = "Error encountered."; // tag de toast.
 
         return View(model); // retorna o modelo com os erro
     }
@@ -108,8 +116,11 @@ public class VillaController : Controller
 
         if (response != null && response.IsSuccess)
         {
+            TempData["success"] = "Villa deleted successfully"; // tag de toast.
+
             return RedirectToAction(nameof(IndexVilla));
         }
+        TempData["error"] = "Error encountered."; // tag de toast.
 
         return View(model);
     }
