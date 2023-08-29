@@ -17,7 +17,7 @@ public class UserRepository : IUserRepository
     public UserRepository(ApplicationDbContext db, IConfiguration configuration)
     {
         _db = db;
-        _secretKey = configuration.GetValue<string>("ApiSettrings:Secret");
+        _secretKey = configuration.GetValue<string>("ApiSettings:Secret");
     }
 
     public bool IsUniqueUser(string username)
