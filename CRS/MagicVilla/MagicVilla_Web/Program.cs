@@ -11,6 +11,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IVillaService, VillaService>();
 builder.Services.AddScoped<IVillaService, VillaService>();
 builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
+builder.Services.AddSingleton<IHttpContextAccessor, IHttpContextAccessor>();
 
 builder.Services.AddSession(options =>
 {
