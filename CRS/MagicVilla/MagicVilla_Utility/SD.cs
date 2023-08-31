@@ -9,4 +9,7 @@ public static class SD
         PUT,
         DELETE
     }
+
+    //! MÉTODO ESTÁTICO INCLUIDO, PARA ADICIONAR A TODAS AS CHAMADAS
+    public static string SessionToken = "JWTToken";
 }
