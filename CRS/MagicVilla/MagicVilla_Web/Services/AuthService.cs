@@ -13,7 +13,7 @@ public class AuthService : BaseService, IAuthService
     public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration) : base(clientFactory)
     {
         _clientFactory = clientFactory;
-        villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
+        villaUrl = configuration.GetValue<string>("ServiceUrl:VillaAPI");
 
     }
 
