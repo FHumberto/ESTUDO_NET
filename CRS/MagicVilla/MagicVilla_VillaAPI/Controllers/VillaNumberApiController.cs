@@ -86,6 +86,7 @@ public class VillaNumberApiController : ControllerBase
         return _response;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -129,6 +130,7 @@ public class VillaNumberApiController : ControllerBase
         return _response;
     }
 
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -163,6 +165,7 @@ public class VillaNumberApiController : ControllerBase
         return _response;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

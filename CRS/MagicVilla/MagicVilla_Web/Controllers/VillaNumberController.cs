@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MagicVilla_Utility;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Models.VM;
@@ -27,7 +28,7 @@ public class VillaNumberController : Controller
     {
         List<VillaNumberDto> list = new();
 
-        var response = await _villaNumberService.GetAllAsync<APIResponse>();
+        var response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 
         if (response != null && response.IsSuccess)
         {
@@ -42,7 +43,7 @@ public class VillaNumberController : Controller
     {
         // get all villa number e dela pegar todos os nomes de villa e mandar para a view.
         VillaNumberCreateVM villaNumberVM = new();
-        var response = await _villaService.GetAllAsync<APIResponse>();
+        var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
         if (response != null && response.IsSuccess)
         {
             // alimenta a lista de nomes no view model.
@@ -64,7 +65,7 @@ public class VillaNumberController : Controller
         if (ModelState.IsValid)
         {
 
-            var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber);
+            var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Villa Number created successfully"; // tag de toast.
@@ -81,7 +82,7 @@ public class VillaNumberController : Controller
         }
 
         // popula novamente o model
-        var resp = await _villaService.GetAllAsync<APIResponse>();
+        var resp = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 
         if (resp != null && resp.IsSuccess)
         {
@@ -104,7 +105,7 @@ public class VillaNumberController : Controller
     {
         VillaNumberUpdateVM villaNumberVM = new();
 
-        var response = await _villaNumberService.GetAsync<APIResponse>(villaNo);
+        var response = await _villaNumberService.GetAsync<APIResponse>(villaNo, HttpContext.Session.GetString(SD.SessionToken));
 
         if (response != null && response.IsSuccess)
         {
@@ -112,7 +113,7 @@ public class VillaNumberController : Controller
             villaNumberVM.VillaNumber = _mapper.Map<VillaNumberUpdateDto>(model);
         }
 
-        response = await _villaService.GetAllAsync<APIResponse>();
+        response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
 
         if (response != null && response.IsSuccess)
         {
@@ -136,7 +137,7 @@ public class VillaNumberController : Controller
         if (ModelState.IsValid)
         {
 
-            var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber);
+            var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Villa Number updated successfully"; // tag de toast.
@@ -152,7 +153,7 @@ public class VillaNumberController : Controller
             }
         }
 
-        var resp = await _villaService.GetAllAsync<APIResponse>();
+        var resp = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
         if (resp != null && resp.IsSuccess)
         {
             model.VillaList = JsonConvert.DeserializeObject<List<VillaDto>>
@@ -173,7 +174,7 @@ public class VillaNumberController : Controller
     {
         VillaNumberDeleteVM villaNumberVM = new();
 
-        var response = await _villaNumberService.GetAsync<APIResponse>(villaNo);
+        var response = await _villaNumberService.GetAsync<APIResponse>(villaNo, HttpContext.Session.GetString(SD.SessionToken));
 
         if (response != null && response.IsSuccess)
         {
@@ -181,7 +182,7 @@ public class VillaNumberController : Controller
             villaNumberVM.VillaNumber = model; // não precisa do mapper
         }
 
-        response = await _villaService.GetAllAsync<APIResponse>();
+        response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
         if (response != null && response.IsSuccess)
         {
             villaNumberVM.VillaList = JsonConvert.DeserializeObject<List<VillaDto>>
@@ -202,7 +203,7 @@ public class VillaNumberController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
     {
-        var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo);
+        var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo, HttpContext.Session.GetString(SD.SessionToken));
 
         if (response != null && response.IsSuccess)
         {
