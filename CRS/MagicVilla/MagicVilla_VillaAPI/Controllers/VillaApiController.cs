@@ -29,7 +29,6 @@ public class VillaApiController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -53,7 +52,6 @@ public class VillaApiController : ControllerBase
         return _response;
     }
 
-    [Authorize(Roles = "admin")]
     [HttpGet("{id:int}", Name = "GetVilla")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -92,6 +90,7 @@ public class VillaApiController : ControllerBase
         return _response;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -129,7 +128,7 @@ public class VillaApiController : ControllerBase
         return _response;
     }
 
-    [Authorize(Roles = "CUSTOM")]
+    [Authorize(Roles = "admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
