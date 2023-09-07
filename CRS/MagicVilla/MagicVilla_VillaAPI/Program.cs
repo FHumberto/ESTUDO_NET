@@ -18,8 +18,18 @@ builder.Services.AddDbContext<ApplicationDbContext>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVillaRepository, VillaRepository>();
 builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
-
 builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.ReportApiVersions = true; // retorna as versões suportadas pelo método.
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+});
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 
