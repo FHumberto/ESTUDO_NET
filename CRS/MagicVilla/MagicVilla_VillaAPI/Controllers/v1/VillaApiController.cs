@@ -30,17 +30,35 @@ public class VillaApiController : ControllerBase
     }
 
     [HttpGet]
+    [ResponseCache(CacheProfileName = "Default30")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<ApiResponse>> GetVillas()
+    public async Task<ActionResult<ApiResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? occupancy, [FromQuery] string? search)
     {
         try
         {
-            IEnumerable<Villa> villaList = await _repoVilla.GetAllAsync();
+            IEnumerable<Villa> villaList;
+
+            if (occupancy > 0)
+            {
+                villaList = await _repoVilla.GetAllAsync(u => u.Occupancy == occupancy);
+            }
+            else
+            {
+                villaList = await _repoVilla.GetAllAsync();
+            }
+
+            // filtra os dados antes de devolver para a resposta
+            if (!string.IsNullOrEmpty(search))
+            {
+                villaList = villaList.Where(u => u.Name.ToLower().Contains(search));
+            }
+
             _response.Result = _mapper.Map<List<VillaDto>>(villaList);
             _response.StatusCode = HttpStatusCode.OK;
             _logger.Log("Getting all villas", "");
+
             return Ok(_response);
 
         }
