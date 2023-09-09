@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace MagicVilla_VillaAPI.Controllers.v1;
 
@@ -30,11 +31,12 @@ public class VillaApiController : ControllerBase
     }
 
     [HttpGet]
-    [ResponseCache(CacheProfileName = "Default30")]
+    //[ResponseCache(CacheProfileName = "Default30")]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<ApiResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? occupancy, [FromQuery] string? search)
+    public async Task<ActionResult<ApiResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? occupancy,
+            [FromQuery] string? search, int pageSize = 0, int pageNumber = 1)
     {
         try
         {
@@ -42,11 +44,13 @@ public class VillaApiController : ControllerBase
 
             if (occupancy > 0)
             {
-                villaList = await _repoVilla.GetAllAsync(u => u.Occupancy == occupancy);
+                villaList = await _repoVilla.GetAllAsync(u => u.Occupancy == occupancy, pageSize:pageSize,
+                        pageNumber:pageNumber);
             }
             else
             {
-                villaList = await _repoVilla.GetAllAsync();
+                villaList = await _repoVilla.GetAllAsync(pageSize:pageSize,
+                        pageNumber:pageNumber);
             }
 
             // filtra os dados antes de devolver para a resposta
@@ -54,6 +58,11 @@ public class VillaApiController : ControllerBase
             {
                 villaList = villaList.Where(u => u.Name.ToLower().Contains(search));
             }
+
+            Pagination pagination = new() { PageNumber = pageNumber, PageSize = pageSize };
+
+            // adiciona a paginação ao cabeçalho
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
 
             _response.Result = _mapper.Map<List<VillaDto>>(villaList);
             _response.StatusCode = HttpStatusCode.OK;

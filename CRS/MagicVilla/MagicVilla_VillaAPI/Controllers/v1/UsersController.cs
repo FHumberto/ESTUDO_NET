@@ -28,6 +28,7 @@ public class UsersController : ControllerBase
 
         if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
         {
+            // aplicar o mesmo tratamento aos outros controladores
             _response.StatusCode = HttpStatusCode.BadRequest;
             _response.IsSuccess = false;
             _response.ErrorMessages.Add("Username or password is incorrect");
