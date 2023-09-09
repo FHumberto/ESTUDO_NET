@@ -19,5 +19,8 @@ public class MappingConfig : Profile
 
         CreateMap<VillaNumber, VillaNumberCreateDto>().ReverseMap();
         CreateMap<VillaNumber, VillaNumberUpdateDto>().ReverseMap();
+
+        //identity map
+        CreateMap<ApplicationUser, UserDto>().ReverseMap();
     }
 }

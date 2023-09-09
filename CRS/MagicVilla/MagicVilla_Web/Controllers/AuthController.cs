@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace MagicVilla_Web.Controllers;
@@ -34,10 +35,15 @@ public class AuthController : Controller
         {
             LoginResponseDto model = JsonConvert.DeserializeObject<LoginResponseDto>(Convert.ToString(response.Result));
 
+            // extrair os dados do token
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(model.Token);
+
             // seguranca
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(ClaimTypes.Name, model.User.Name));
-            identity.AddClaim(new Claim(ClaimTypes.Role, model.User.Role)); // caso mais roles, lembrar de passar array
+
+            identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "unique_name").Value));
+            identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value)); // caso mais roles, lembrar de passar array
 
             var principal = new ClaimsPrincipal(identity); // instância o claims, contendo os dados.
 
