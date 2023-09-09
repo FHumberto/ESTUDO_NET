@@ -4,6 +4,7 @@ using MagicVilla_VillaAPI.Logging;
 using MagicVilla_VillaAPI.Repository;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -53,6 +54,12 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddControllers(option =>
 {
+    // referente a duração global do cacheamento da API
+    option.CacheProfiles.Add("Default30",
+    new CacheProfile()
+    {
+        Duration = 30
+    });
     //option.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlSerializerFormatters();
 
@@ -91,35 +98,13 @@ builder.Services.AddSwaggerGen(options => {
     {
         Version = "v1.0",
         Title = "Magic Villa V1",
-        Description = "API to manage Villa",
-        TermsOfService = new Uri("https://example.com/terms"),
-        Contact = new OpenApiContact
-        {
-            Name = "Dotnetmastery",
-            Url = new Uri("https://dotnetmastery.com")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "Example License",
-            Url = new Uri("https://example.com/license")
-        }
+        Description = "API de gerenciamento de Villa",
     });
     options.SwaggerDoc("v2", new OpenApiInfo
     {
         Version = "v2.0",
         Title = "Magic Villa V2",
-        Description = "API to manage Villa",
-        TermsOfService = new Uri("https://example.com/terms"),
-        Contact = new OpenApiContact
-        {
-            Name = "Dotnetmastery",
-            Url = new Uri("https://dotnetmastery.com")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "Example License",
-            Url = new Uri("https://example.com/license")
-        }
+        Description = "API de gerenciamento de Villa",
     });
 });
 
