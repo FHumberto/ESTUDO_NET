@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC-GPT-C_Web", "MVC-GPT-C_Web\MVC-GPT-C_Web.csproj", "{2ABF7B3E-14CA-4E1E-A87A-2D8D919D4FEC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2ABF7B3E-14CA-4E1E-A87A-2D8D919D4FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABF7B3E-14CA-4E1E-A87A-2D8D919D4FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABF7B3E-14CA-4E1E-A87A-2D8D919D4FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABF7B3E-14CA-4E1E-A87A-2D8D919D4FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C57FE540-FEF4-4C40-BFA8-D87164BD9DBE}
+	EndGlobalSection
+EndGlobal
