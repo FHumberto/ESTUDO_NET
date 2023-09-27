@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  consultacep.webui:
+    image: ${DOCKER_REGISTRY-}consultacepwebui
+    build:
+      context: .
+      dockerfile: src/ConsultaCep.WebUI/Dockerfile
