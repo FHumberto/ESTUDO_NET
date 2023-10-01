@@ -1,8 +1,8 @@
-﻿using ConsultaCep.WebUI.Models;
+﻿using System.Diagnostics;
+using ConsultaCEP.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
-namespace ConsultaCep.WebUI.Controllers;
+namespace ConsultaCEP.WebUI.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
