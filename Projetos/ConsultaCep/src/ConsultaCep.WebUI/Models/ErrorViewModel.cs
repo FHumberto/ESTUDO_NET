@@ -1,4 +1,4 @@
-namespace ConsultaCep.WebUI.Models;
+namespace ConsultaCEP.WebUI.Models;
 
 public class ErrorViewModel
 {
