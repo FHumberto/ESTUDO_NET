@@ -117,6 +117,7 @@ partial class FrmSetores
         Controls.Add(DataGridSetores);
         Controls.Add(toolStrip1);
         Name = "FrmSetores";
+        StartPosition = FormStartPosition.CenterScreen;
         Text = "FrmSetores";
         toolStrip1.ResumeLayout(false);
         toolStrip1.PerformLayout();
