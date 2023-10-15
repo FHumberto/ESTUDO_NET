@@ -100,6 +100,8 @@ partial class FrmProdutos
         // 
         // DataGridProdutos
         // 
+        DataGridProdutos.AllowUserToAddRows = false;
+        DataGridProdutos.AllowUserToDeleteRows = false;
         DataGridProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         DataGridProdutos.Dock = DockStyle.Fill;
         DataGridProdutos.Location = new Point(0, 25);

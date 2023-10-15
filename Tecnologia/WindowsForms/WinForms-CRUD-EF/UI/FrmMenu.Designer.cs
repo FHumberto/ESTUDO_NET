@@ -30,16 +30,16 @@ partial class FrmMenu
     {
         BtnSetores = new Button();
         BtnProdutos = new Button();
-        button2 = new Button();
-        button3 = new Button();
+        LblTitulo = new Label();
+        label1 = new Label();
         SuspendLayout();
         // 
         // BtnSetores
         // 
         BtnSetores.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-        BtnSetores.Location = new Point(200, 100);
+        BtnSetores.Location = new Point(86, 95);
         BtnSetores.Name = "BtnSetores";
-        BtnSetores.Size = new Size(80, 40);
+        BtnSetores.Size = new Size(187, 40);
         BtnSetores.TabIndex = 0;
         BtnSetores.Text = "Setores";
         BtnSetores.UseVisualStyleBackColor = true;
@@ -48,52 +48,54 @@ partial class FrmMenu
         // BtnProdutos
         // 
         BtnProdutos.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-        BtnProdutos.Location = new Point(200, 146);
+        BtnProdutos.Location = new Point(86, 141);
         BtnProdutos.Name = "BtnProdutos";
-        BtnProdutos.Size = new Size(80, 40);
+        BtnProdutos.Size = new Size(187, 40);
         BtnProdutos.TabIndex = 1;
         BtnProdutos.Text = "Produtos";
         BtnProdutos.UseVisualStyleBackColor = true;
         BtnProdutos.Click += BtnProdutos_Click;
         // 
-        // button2
+        // LblTitulo
         // 
-        button2.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-        button2.Location = new Point(200, 192);
-        button2.Name = "button2";
-        button2.Size = new Size(80, 40);
-        button2.TabIndex = 2;
-        button2.Text = "Setores";
-        button2.UseVisualStyleBackColor = true;
+        LblTitulo.AutoSize = true;
+        LblTitulo.Font = new Font("Segoe UI", 15F, FontStyle.Regular, GraphicsUnit.Point);
+        LblTitulo.Location = new Point(74, 26);
+        LblTitulo.Name = "LblTitulo";
+        LblTitulo.Size = new Size(225, 28);
+        LblTitulo.TabIndex = 2;
+        LblTitulo.Text = "Projeto de Estudo CRUD";
         // 
-        // button3
+        // label1
         // 
-        button3.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-        button3.Location = new Point(200, 238);
-        button3.Name = "button3";
-        button3.Size = new Size(80, 40);
-        button3.TabIndex = 3;
-        button3.Text = "Setores";
-        button3.UseVisualStyleBackColor = true;
+        label1.AutoSize = true;
+        label1.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
+        label1.Location = new Point(81, 54);
+        label1.Name = "label1";
+        label1.Size = new Size(208, 25);
+        label1.TabIndex = 3;
+        label1.Text = "com EntityFramework 8";
         // 
         // FrmMenu
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(800, 450);
-        Controls.Add(button3);
-        Controls.Add(button2);
+        ClientSize = new Size(364, 261);
+        Controls.Add(label1);
+        Controls.Add(LblTitulo);
         Controls.Add(BtnProdutos);
         Controls.Add(BtnSetores);
         Name = "FrmMenu";
+        StartPosition = FormStartPosition.CenterScreen;
         Text = "Menu";
         ResumeLayout(false);
+        PerformLayout();
     }
 
     #endregion
 
     private Button BtnSetores;
     private Button BtnProdutos;
-    private Button button2;
-    private Button button3;
+    private Label LblTitulo;
+    private Label label1;
 }
