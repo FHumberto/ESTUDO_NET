@@ -21,7 +21,7 @@ public class GetLeaveTypesQueryHandler : IRequestHandler<GetLeaveTypesQuery, Lis
     public async Task<List<LeaveTypeDto>> Handle(GetLeaveTypesQuery request, CancellationToken cancellationToken)
     {
         //? query para o database
-        List<Domain.LeaveType> leaveTypes = await _leaveTypeRepository.GetAsync();
+        var leaveTypes = await _leaveTypeRepository.GetAsync();
 
         //? converte para dto
         List<LeaveTypeDto> data = _mapper.Map<List<LeaveTypeDto>>(leaveTypes);
