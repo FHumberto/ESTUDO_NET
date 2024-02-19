@@ -45,7 +45,6 @@ public class LeaveAllocationRepository : GenericRepository<LeaveAllocation>, ILe
         return leaveAllocations;
     }
 
-
     public async Task<LeaveAllocation> GetAllLeaveAllocationWithDetails(int id)
     {
         LeaveAllocation? leaveAllocation = await _context.LeaveAllocations
