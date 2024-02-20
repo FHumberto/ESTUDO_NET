@@ -19,6 +19,6 @@ public class LeaveTypeRepository : GenericRepository<LeaveType>, ILeaveTypeRepos
     public async Task<bool> IsLeaveTypeUnique(string name)
     {
         //? o context vem do método protected herdado pela injeção
-        return await _context.LeaveTypes.AnyAsync(q => q.Name == name);
+        return await _context.LeaveTypes.AnyAsync(q => q.Name == name) == false;
     }
 }
