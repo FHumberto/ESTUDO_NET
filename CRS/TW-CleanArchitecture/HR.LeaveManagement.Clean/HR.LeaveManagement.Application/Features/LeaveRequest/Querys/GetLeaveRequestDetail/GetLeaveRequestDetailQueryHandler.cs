@@ -32,3 +32,4 @@ public class GetLeaveRequestDetailQueryHandler : IRequestHandler<GetLeaveRequest
 
         return leaveRequest;
     }
+}

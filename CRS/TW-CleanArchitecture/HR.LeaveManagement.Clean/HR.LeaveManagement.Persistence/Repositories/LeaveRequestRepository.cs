@@ -11,7 +11,7 @@ public class LeaveRequestRepository : GenericRepository<LeaveRequest>, ILeaveReq
     {
     }
 
-    public async Task<List<LeaveRequest>> GetAllLeaveRequestsWithDetails()
+    public async Task<List<LeaveRequest>> GetLeaveRequestsWithDetails()
     {
         List<LeaveRequest> leaveRequests = await _context.LeaveRequests
             .Include(q => q.LeaveType)
@@ -20,7 +20,7 @@ public class LeaveRequestRepository : GenericRepository<LeaveRequest>, ILeaveReq
         return leaveRequests;
     }
 
-    public async Task<List<LeaveRequest>> GetLeaveRequestsWithDetials(string userId)
+    public async Task<List<LeaveRequest>> GetLeaveRequestsWithDetails(string userId)
     {
         List<LeaveRequest> leaveRequests = await _context.LeaveRequests
             .Where(q => q.RequestingEmployeeId == userId)
@@ -37,5 +37,10 @@ public class LeaveRequestRepository : GenericRepository<LeaveRequest>, ILeaveReq
             .FirstOrDefaultAsync(q => q.Id == id);
 
         return leaveRequest;
+    }
+
+    public Task<LeaveRequest> GetLeaveRequestWithDetails(int id)
+    {
+        throw new NotImplementedException();
     }
 }
