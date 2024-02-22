@@ -19,7 +19,7 @@ public class DeleteLeaveTypeCommandHandler : IRequestHandler<DeleteLeaveTypeComm
     public async Task<Unit> Handle(DeleteLeaveTypeCommand request, CancellationToken cancellationToken)
     {
         //? recuperar a entidade no banco
-        LeaveRequest leaveTypeToDelete = await _leaveRequestRepository.GetByIdAsync(request.Id);
+        Domain.LeaveRequest leaveTypeToDelete = await _leaveRequestRepository.GetByIdAsync(request.Id);
 
         //? validação
         if (leaveTypeToDelete is null)
