@@ -19,7 +19,7 @@ public class CreateLeaveAllocationCommandValidator : AbstractValidator<CreateLea
         RuleFor(p => p.LeaveTypeId)
             .GreaterThan(0)
             .MustAsync(LeaveTypeMustExist)
-            .WithMessage("{PorpertyName} does not exist.");
+            .WithMessage("{PropertyName} does not exist.");
     }
 
     private async Task<bool> LeaveTypeMustExist(int id, CancellationToken arg2)

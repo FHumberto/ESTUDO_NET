@@ -27,11 +27,12 @@ public class CreateLeaveAllocationCommandHandler : IRequestHandler<CreateLeaveAl
     public async Task<Unit> Handle(CreateLeaveAllocationCommand request, CancellationToken cancellationToken)
     {
         //? validação
-        CreateLeaveAllocationCommandValidator validator = new CreateLeaveAllocationCommandValidator(_leaveTypeRepository);
-        ValidationResult validationResult = await validator.ValidateAsync(request);
+        var validator = new CreateLeaveAllocationCommandValidator(_leaveTypeRepository);
+        var validationResult = await validator.ValidateAsync(request);
 
         if (validationResult.Errors.Any())
-            throw new BadRequestException("Invalid Leave Allocation Request");
+            //! lista de erros de validação
+            throw new BadRequestException("Invalid Leave Allocation Request", validationResult); 
 
         //? query
         var leaveType = await _leaveAllocationRepository.GetByIdAsync(request.LeaveTypeId);
