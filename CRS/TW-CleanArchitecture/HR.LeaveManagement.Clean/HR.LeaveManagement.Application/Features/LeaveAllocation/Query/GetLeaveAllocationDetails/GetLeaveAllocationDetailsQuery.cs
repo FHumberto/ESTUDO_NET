@@ -9,5 +9,5 @@ namespace HR.LeaveManagement.Application.Features.LeaveAllocation.Query.GetLeave
 
 public class GetLeaveAllocationDetailsQuery : IRequest<LeaveAllocationDetailsDto>
 {
-    public int Id { get; internal set; }
+    public int Id { get; set; }
 }
