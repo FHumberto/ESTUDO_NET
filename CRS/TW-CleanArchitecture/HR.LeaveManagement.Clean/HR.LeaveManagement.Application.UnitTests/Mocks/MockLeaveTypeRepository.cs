@@ -31,7 +31,7 @@ public class MockLeaveTypeRepository
         mockRepo.Setup(r => r.CreateAsync(It.IsAny<LeaveType>()))
             .Returns((LeaveType leaveType) =>
             {
-                leaveTypes.Add(leaveType); // adiciona a lista do leavetypes 4
+                leaveTypes.Add(leaveType); // adiciona a lista do leavetypes 4 (banco de teste)
                 return Task.CompletedTask;
             });
 
