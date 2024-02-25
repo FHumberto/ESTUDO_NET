@@ -39,6 +39,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//? usa a politica definida acima
+app.UseCors("all");
+
 app.UseAuthorization();
 
 app.MapControllers();
