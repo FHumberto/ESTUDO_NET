@@ -44,6 +44,7 @@ app.UseHttpsRedirection();
 //? usa a politica definida acima
 app.UseCors("all");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
