@@ -51,14 +51,13 @@ public class AuthService : IAuthService
 
         JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
 
-        var response = new AuthResponse
+        AuthResponse? response = new()
         {
-            Id = int.Parse(user.Id),
+            Id = user.Id,
             Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
             Email = user.Email,
             UserName = user.UserName
         };
-
 
         return response;
     }
