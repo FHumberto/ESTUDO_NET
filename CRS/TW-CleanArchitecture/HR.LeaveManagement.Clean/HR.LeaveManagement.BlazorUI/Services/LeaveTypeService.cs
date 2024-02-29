@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Blazored.LocalStorage;
 using HR.LeaveManagement.BlazorUI.Contracts;
 using HR.LeaveManagement.BlazorUI.Models.LeaveTypes;
 using HR.LeaveManagement.BlazorUI.Services.Base;
@@ -9,7 +10,7 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
 {
     private readonly IMapper _mapper;
 
-    public LeaveTypeService(IClient client, IMapper mapper) : base(client)
+    public LeaveTypeService(IClient client, IMapper mapper, ILocalStorageService localStorageService) : base(client, localStorageService)
     {
         _mapper = mapper;
     }
@@ -18,6 +19,8 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
     {
         try
         {
+            await AddBearerToken();
+
             CreateLeaveTypeCommand leaveTypeCommand = _mapper.Map<CreateLeaveTypeCommand>(leaveType);
             await _client.LeaveTypesPOSTAsync(leaveTypeCommand);
 
@@ -34,6 +37,8 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
     {
         try
         {
+            await AddBearerToken();
+            
             await _client.LeaveTypesDELETEAsync(id);
 
             //? necessário adicionar porque a resposta é void
@@ -47,12 +52,16 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
 
     public async Task<LeaveTypeVM> GetLeaveType(int id)
     {
+        await AddBearerToken();
+        
         LeaveTypeDetailsDto leaveTypeDetail = await _client.LeaveTypesGETAsync(id);
         return _mapper.Map<LeaveTypeVM>(leaveTypeDetail);
     } 
 
     public async Task<List<LeaveTypeVM>> GetLeaveTypes()
     {
+        await AddBearerToken();
+
         ICollection<LeaveTypeDto> leaveTypes = await _client.LeaveTypesAllAsync();
         return _mapper.Map<List<LeaveTypeVM>>(leaveTypes);
     }
@@ -61,6 +70,8 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
     {
         try
         {
+            await AddBearerToken();
+
             UpdateLeaveTypeCommand leaveTypeCommand = _mapper.Map<UpdateLeaveTypeCommand>(leaveType);
             await _client.LeaveTypesPUTAsync(id.ToString(), leaveTypeCommand);
 
