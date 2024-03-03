@@ -34,7 +34,7 @@ public class CancelLeaveRequestCommandHandler : IRequestHandler<CancelLeaveReque
         leaveRequest.Cancelled = true;
 
         //? execução
-        var email = new EmailMessage
+        EmailMessage email = new()
         {
             To = string.Empty, /* Get email from employee record */
             Body = $"Your leave request for {leaveRequest.StartDate:D} to {leaveRequest.EndDate:D} " +

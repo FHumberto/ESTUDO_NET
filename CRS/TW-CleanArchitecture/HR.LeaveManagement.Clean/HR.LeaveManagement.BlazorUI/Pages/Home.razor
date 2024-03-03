@@ -5,3 +5,16 @@
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<!--TAGS DE EXIBIÇÃO CASO O USUARIO ESTEJA AUTORIZADO E NÃO AUTORIZADO-->
+<AuthorizeView>
+    <Authorized>
+        <button class="btn btn-danger" @onclick="Logout">Logout</button>
+    </Authorized>
+    <NotAuthorized>
+        <button class="btn btn-success" @onclick="GoToLogin">Login</button>
+        ||
+        <button class="btn btn-primary" @onclick="GoToRegister">Register</button>
+    </NotAuthorized>
+</AuthorizeView>
+
