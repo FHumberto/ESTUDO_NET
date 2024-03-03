@@ -1,5 +1,5 @@
 ﻿@page "/leavetypes/"
-
+@attribute [Authorize(Roles = "Administrator")]
 <h3>Leave Types</h3>
 
 <div class="m-2 d-flex justify-content-end">
@@ -35,13 +35,20 @@ else
                     <td>@leaveType.Id </td>
                     <td>@leaveType.Name </td>
                     <td>@leaveType.DefaultDays </td>
+
+
                     <td>
-                        <!--() => quer dizer que a ação foi DELEGADA para a função corresondente-->
-                        <button @onclick="@(() => AllocateLeaveType(leaveType.Id))" class="btn btn-primary">AllocateLeave</button>
-                        <button @onclick="@(() => EditLeaveType(leaveType.Id))" class="btn btn-warning">Edit</button>
+                        <AuthorizeView Roles="Administrator">
+                            <!--() => quer dizer que a ação foi DELEGADA para a função corresondente-->
+                            <button @onclick="@(() => AllocateLeaveType(leaveType.Id))" class="btn btn-primary">AllocateLeave</button>
+                            <button @onclick="@(() => EditLeaveType(leaveType.Id))" class="btn btn-warning">Edit</button>
+                            <button @onclick="@(() => DeleteLeaveType(leaveType.Id))" class="btn btn-danger">Delete</button>
+                        </AuthorizeView>
                         <button @onclick="@(() => DetailsLeaveType(leaveType.Id))" class="btn btn-info">Details</button>
-                        <button @onclick="@(() => DeleteLeaveType(leaveType.Id))" class="btn btn-danger">Delete</button>
                     </td>
+
+
+
                 </tr>
             }
         </tbody>
