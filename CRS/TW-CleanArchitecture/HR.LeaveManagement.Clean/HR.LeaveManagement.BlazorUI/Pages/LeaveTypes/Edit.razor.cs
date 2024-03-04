@@ -16,7 +16,7 @@ public partial class Edit
     public int id { get; set; }
     public string Message { get; private set; }
 
-    LeaveTypeVM leaveType = new LeaveTypeVM();
+    LeaveTypeVM leaveType = new();
 
     protected async override Task OnParametersSetAsync()
     {
@@ -25,11 +25,12 @@ public partial class Edit
 
     async Task EditLeaveType()
     {
-        var response = await _client.UpdateLeaveType(id, leaveType);
+        Services.Base.Response<Guid> response = await _client.UpdateLeaveType(id, leaveType);
         if (response.Success)
         {
             _navManager.NavigateTo("/leavetypes/");
         }
+
         Message = response.Message;
     }
 }

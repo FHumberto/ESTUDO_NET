@@ -1,10 +1,5 @@
 ﻿using FluentValidation;
 using HR.LeaveManagement.Application.Contracts.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HR.LeaveManagement.Application.Features.LeaveAllocation.Commands.CreateLeaveAllocation;
 
@@ -24,7 +19,7 @@ public class CreateLeaveAllocationCommandValidator : AbstractValidator<CreateLea
 
     private async Task<bool> LeaveTypeMustExist(int id, CancellationToken arg2)
     {
-        var leaveType = await _leaveTypeRepository.GetByIdAsync(id);
+        Domain.LeaveType leaveType = await _leaveTypeRepository.GetByIdAsync(id);
         return leaveType != null;
     }
 }

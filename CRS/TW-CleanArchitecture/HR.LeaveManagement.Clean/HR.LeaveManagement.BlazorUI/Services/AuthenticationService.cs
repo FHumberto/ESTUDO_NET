@@ -13,9 +13,9 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
     public AuthenticationService
-        (IClient client, 
-        ILocalStorageService localStorage, 
-        AuthenticationStateProvider authenticationStateProvider) 
+        (IClient client,
+        ILocalStorageService localStorage,
+        AuthenticationStateProvider authenticationStateProvider)
     : base(client, localStorage)
     {
         _client = client;
@@ -27,7 +27,7 @@ public class AuthenticationService : BaseHttpService, IAuthenticationService
     {
         try
         {
-            AuthRequest authenticateRequest = new AuthRequest { Email = email, Password = password };
+            AuthRequest authenticateRequest = new() { Email = email, Password = password };
 
             AuthResponse authenticationResponse = await _client.LoginAsync(authenticateRequest);
 

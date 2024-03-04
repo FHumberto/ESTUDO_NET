@@ -38,7 +38,7 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
         try
         {
             await AddBearerToken();
-            
+
             await _client.LeaveTypesDELETEAsync(id);
 
             //? necessário adicionar porque a resposta é void
@@ -53,10 +53,10 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
     public async Task<LeaveTypeVM> GetLeaveType(int id)
     {
         await AddBearerToken();
-        
+
         LeaveTypeDetailsDto leaveTypeDetail = await _client.LeaveTypesGETAsync(id);
         return _mapper.Map<LeaveTypeVM>(leaveTypeDetail);
-    } 
+    }
 
     public async Task<List<LeaveTypeVM>> GetLeaveTypes()
     {
@@ -76,7 +76,7 @@ public class LeaveTypeService : BaseHttpService, ILeaveTypeService
             await _client.LeaveTypesPUTAsync(id.ToString(), leaveTypeCommand);
 
             //? necessário adicionar porque a resposta é void
-            return new Response<Guid>(){ Success = true };
+            return new Response<Guid>() { Success = true };
         }
         catch (ApiException ex)
         {

@@ -11,7 +11,7 @@ public partial class Details
     [Parameter]
     public int id { get; set; }
 
-    LeaveTypeVM leaveType = new LeaveTypeVM();
+    LeaveTypeVM leaveType = new();
 
     protected async override Task OnParametersSetAsync()
     {
