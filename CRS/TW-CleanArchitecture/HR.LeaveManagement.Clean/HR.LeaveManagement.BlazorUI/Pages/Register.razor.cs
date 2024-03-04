@@ -22,7 +22,7 @@ public partial class Register
 
     protected async Task HandleRegister()
     {
-        var result = await AuthenticationService.RegisterAsync(Model.FirstName, Model.LastName, Model.UserName, Model.Email, Model.Password);
+        bool result = await AuthenticationService.RegisterAsync(Model.FirstName, Model.LastName, Model.UserName, Model.Email, Model.Password);
 
         if (result)
         {

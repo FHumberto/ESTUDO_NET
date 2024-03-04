@@ -1,5 +1,5 @@
 ﻿@page "/leavetypes/"
-@attribute [Authorize(Roles = "Administrator")]
+
 <h3>Leave Types</h3>
 
 <div class="m-2 d-flex justify-content-end">
@@ -13,6 +13,7 @@
     </div>
 }
 
+<div clas></div>
 @if (LeaveTypes == null)
 {
     <p>Loading Data...</p>
@@ -22,9 +23,15 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Default Days</th>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Default Days
+                </th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -35,8 +42,6 @@ else
                     <td>@leaveType.Id </td>
                     <td>@leaveType.Name </td>
                     <td>@leaveType.DefaultDays </td>
-
-
                     <td>
                         <AuthorizeView Roles="Administrator">
                             <!--() => quer dizer que a ação foi DELEGADA para a função corresondente-->
@@ -46,9 +51,6 @@ else
                         </AuthorizeView>
                         <button @onclick="@(() => DetailsLeaveType(leaveType.Id))" class="btn btn-info">Details</button>
                     </td>
-
-
-
                 </tr>
             }
         </tbody>

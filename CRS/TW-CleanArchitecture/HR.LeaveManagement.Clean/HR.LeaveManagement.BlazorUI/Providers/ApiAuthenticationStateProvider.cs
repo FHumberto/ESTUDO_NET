@@ -30,7 +30,7 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
         string? savedToken = await _localStorage.GetItemAsync<string>("token");
         JwtSecurityToken tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
 
-        if(tokenContent.ValidTo < DateTime.Now)
+        if (tokenContent.ValidTo < DateTime.Now)
         {
             await _localStorage.RemoveItemAsync("token");
             return new AuthenticationState(user);
@@ -59,7 +59,7 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
         await _localStorage.RemoveItemAsync("token");
         ClaimsPrincipal nobody = new(new ClaimsIdentity());
         Task<AuthenticationState> authState = Task.FromResult(new AuthenticationState(nobody));
-        
+
         //? func do blazor que notifica para all que o state mudou
         NotifyAuthenticationStateChanged(authState);
     }
@@ -70,7 +70,7 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider
         JwtSecurityToken tokenContent = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
         List<Claim> claims = tokenContent.Claims.ToList();
         claims.Add(new Claim(ClaimTypes.Name, tokenContent.Subject));
-        
+
         return claims;
     }
 }
