@@ -12,9 +12,11 @@ public class JwtAuthorizationMessageHandler : DelegatingHandler
         _localStorageService = localStorageService;
     }
 
+    //? intercepta o request e adiciona o header ao request
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         string? token = await _localStorageService.GetItemAsync<string>("token");
+
         if (!string.IsNullOrEmpty(token))
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

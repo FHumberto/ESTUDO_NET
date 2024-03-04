@@ -68,6 +68,7 @@ public class LeaveRequestService : BaseHttpService, ILeaveRequestService
             RejectedRequests = leaveRequests.Count(q => q.Approved == false),
             LeaveRequests = _mapper.Map<List<LeaveRequestVM>>(leaveRequests)
         };
+
         return model;
     }
 
