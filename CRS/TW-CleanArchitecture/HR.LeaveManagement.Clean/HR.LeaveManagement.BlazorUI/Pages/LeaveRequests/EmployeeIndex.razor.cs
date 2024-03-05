@@ -20,10 +20,13 @@ public partial class EmployeeIndex
 
     async Task CancelRequestAsync(int id)
     {
-        var confirm = await js.InvokeAsync<bool>("confirm", "Do you want to cancel this request?");
+        //? esse prompt funciona como um alert (modal)
+        bool confirm = await js.InvokeAsync<bool>("confirm", "Do you want to cancel this request?");
+
         if (confirm)
         {
             var response = await leaveRequestService.CancelLeaveRequest(id);
+
             if (response.Success)
             {
                 StateHasChanged();

@@ -16,30 +16,44 @@ public class LeaveRequestService : BaseHttpService, ILeaveRequestService
         _mapper = mapper;
     }
 
-    public async Task ApproveLeaveRequest(int id, bool approved)
+    public async Task<Response<Guid>> ApproveLeaveRequest(int id, bool approved)
     {
         try
         {
+            Response<Guid> response = new();
             ChangeLeaveRequestApprovalCommand request = new() { Approved = approved, Id = id };
             await _client.UpdateApprovalAsync(request);
+            return response;
         }
-        catch (Exception)
+        catch (ApiException ex)
         {
-
-            throw;
+            return ConvertApiExceptions<Guid>(ex);
         }
     }
 
-    public Task<Response<Guid>> CancelLeaveRequest(int id)
+    public async Task<Response<Guid>> CancelLeaveRequest(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var response = new Response<Guid>();
+            var request = new CancelLeaveRequestCommand { Id = id };
+
+            await _client.CancelRequestAsync(request);
+
+            return response;
+        }
+        catch (ApiException ex)
+        {
+            return ConvertApiExceptions<Guid>(ex);
+        }
+
     }
 
     public async Task<Response<Guid>> CreateLeaveRequest(LeaveRequestVM leaveRequest)
     {
         try
         {
-            Response<Guid> response = new();
+            var response = new Response<Guid>();
             CreateLeaveRequestCommand createLeaveRequest = _mapper.Map<CreateLeaveRequestCommand>(leaveRequest);
 
             await _client.LeaveRequestsPOSTAsync(createLeaveRequest);
@@ -58,9 +72,9 @@ public class LeaveRequestService : BaseHttpService, ILeaveRequestService
 
     public async Task<AdminLeaveRequestViewVM> GetAdminLeaveRequestList()
     {
-        ICollection<LeaveRequestListDto> leaveRequests = await _client.LeaveRequestsAllAsync(isLoggedInUser: false);
+        var leaveRequests = await _client.LeaveRequestsAllAsync(isLoggedInUser: false);
 
-        AdminLeaveRequestViewVM model = new()
+        var model = new AdminLeaveRequestViewVM
         {
             TotalRequests = leaveRequests.Count,
             ApprovedRequests = leaveRequests.Count(q => q.Approved == true),
@@ -68,33 +82,26 @@ public class LeaveRequestService : BaseHttpService, ILeaveRequestService
             RejectedRequests = leaveRequests.Count(q => q.Approved == false),
             LeaveRequests = _mapper.Map<List<LeaveRequestVM>>(leaveRequests)
         };
-
         return model;
     }
 
     public async Task<LeaveRequestVM> GetLeaveRequest(int id)
     {
-        await AddBearerToken();
-        LeaveRequestDetailsDto leaveRequest = await _client.LeaveRequestsGETAsync(id);
+        var leaveRequest = await _client.LeaveRequestsGETAsync(id);
         return _mapper.Map<LeaveRequestVM>(leaveRequest);
     }
 
     public async Task<EmployeeLeaveRequestViewVM> GetUserLeaveRequests()
     {
-        await AddBearerToken();
-        ICollection<LeaveRequestListDto> leaveRequests = await _client.LeaveRequestsAllAsync(isLoggedInUser: true);
-        ICollection<LeaveAllocationsDto> allocations = await _client.LeaveAllocationsAllAsync(isLoggedInUser: true);
-        EmployeeLeaveRequestViewVM model = new()
+        var leaveRequests = await _client.LeaveRequestsAllAsync(isLoggedInUser: true);
+        var allocations = await _client.LeaveAllocationsAllAsync(isLoggedInUser: true);
+
+        var model = new EmployeeLeaveRequestViewVM
         {
             LeaveAllocations = _mapper.Map<List<LeaveAllocationVM>>(allocations),
             LeaveRequests = _mapper.Map<List<LeaveRequestVM>>(leaveRequests)
         };
 
         return model;
-    }
-
-    Task<Response<Guid>> ILeaveRequestService.ApproveLeaveRequest(int id, bool approved)
-    {
-        throw new NotImplementedException();
     }
 }
