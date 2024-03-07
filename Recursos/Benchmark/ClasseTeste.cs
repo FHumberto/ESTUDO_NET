@@ -5,11 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Mathematics;
 
 namespace Benchmark;
 
-[BaselineColumn]
+/*
+ * também é possível rodar o mesmo benchmark para diferentes versões do dotnet
+ * você deve possuir os dotnet especificados em seu ambiente
+ * [SimpleJob(RuntimeMoniker.Net70)]
+ * [SimpleJob(RuntimeMoniker.Net80)]
+ */
 [RankColumn(NumeralSystem.Roman)] //? adiciona uma coluna rankeando o melhor método
 public class ClasseTeste
 {
