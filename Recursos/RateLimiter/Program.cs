@@ -30,7 +30,7 @@ builder.Services.AddRateLimiter(options =>
     //? personaliza a resposta de rejeição
     options.OnRejected = async (context, cancellationToken) =>
     {
-        context.HttpContext.Response.StatusCode = 429; //! [Too Many Requests e.e]
+        context.HttpContext.Response.StatusCode = 429;
         await context.HttpContext.Response.WriteAsJsonAsync(
             new { message = "Você excedeu o limite de requisições. Tente novamente mais tarde." },
             cancellationToken: cancellationToken);
