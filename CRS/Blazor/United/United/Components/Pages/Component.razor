@@ -1,0 +1,43 @@
+﻿@* INJETA JAVASCRIPT NO BLAZOR *@
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+@page "/component"
+
+<h3>Component</h3>
+
+<div class="row">
+    <div class="col-md-3">
+        @* utlizando eventos em componentes *@
+        <BootstrapCard EventClick="@((e) => EventClickCard1(e))"
+                       title="Bootstrap Card"
+                       Description="Este é um cartão"
+                       ButtonText="Comprar" />
+    </div>
+    <div class="col-md-3">
+        <BootstrapCard EventClick="EventClickCard2"
+                       title="Bootstrap Card"
+                       Description="Este é um cartão"
+                       ButtonText="Comprar" />
+    </div>
+    <div class="col-md-3">
+        @* uso de fragment component (passar outros componentes ou HTML)  *@
+        <BootstrapCard>
+            <b>Eu sou o Child Content</b>
+            <b>Olá Mundo</b>
+            <button @onclick="EventClickCard2">Clique</button>
+        </BootstrapCard>
+    </div>
+</div>
+
+
+@code {
+    public void EventClickCard1(MouseEventArgs a)
+    {
+        JS.InvokeVoidAsync("alert", "Card 1" + a.ScreenY);
+    }
+
+    public void EventClickCard2()
+    {
+        JS.InvokeVoidAsync("alert", "Card 2");
+    }
+}
