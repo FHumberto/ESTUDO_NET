@@ -1,0 +1,56 @@
+﻿@page "/bind"
+@rendermode InteractiveServer
+
+@*
+RENDER MODE:
+    @InteractiveServer (Server)
+    @InteractiveWebAssembly (WASM)
+    @InteractiveAuto (Server > WASM)
+*@
+
+<div>
+    <p>
+        @Variavel @* bind One-Way (Unidirecional) : { GET } *@
+    </p>
+</div>
+
+@*
+TIPOS DE EVENTO:
+    oninput : o tempo todo
+    onchange : só é acionado quando aperta enter ou sai do campo
+*@
+
+<div>
+    <label class="form-label fw-bold">Evento: On Change:</label>
+    <input @bind="Variavel" class="form-control" />
+</div>
+
+<div class="mt-3">
+    <label class="form-label fw-bold">Evento: On Input:</label>
+    <input @bind="Variavel" @bind:event="oninput" class="form-control" />
+</div>
+
+<div class="mt-3">
+    <input @bind-value="Variavel" @bind-value:event="oninput" class="form-control" />
+</div>
+
+@*
+    Quando quer pegar uma INFO vai no @bind:get, quando quer alterar vai no @bind:set
+*@
+
+<div class="mt-3">
+    <input @bind:get="Variavel" @bind:set="(value) => {Variavel = value; }"
+           @bind:event="oninput" class="form-control" />
+</div>
+
+@*
+    BIND - TWO-WAY VIRTUAL (NÃO RECOMENDADO)
+*@
+
+<div class="mt-3">
+    <input value="@Variavel" @oninput="((e) => Variavel = e.Value!.ToString())" class="form-control" />
+</div>
+
+@code {
+    private string? Variavel { get; set; } = "Eu sou um Texto!";
+}
