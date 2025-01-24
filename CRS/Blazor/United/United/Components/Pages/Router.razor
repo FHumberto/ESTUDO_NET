@@ -1,0 +1,56 @@
+﻿@page "/router"
+@page "/router/{group}/{id:int?}"
+@page "/router/{*all}"
+@attribute [Route(RoutersConstants.RouterHub)]
+
+@inject NavigationManager Navigation @* PARA NAVEGAR ENTRE PAGINAS *@
+
+@rendermode InteractiveServer
+
+@*
+    adicionando ?, torna o parametro opcional
+    @attribute [Route(RoutersConstants.RouterHub)]
+*@
+
+<h3>Router</h3>
+<div>
+    TODOS: @All
+    <br />
+    GRUPO: @Group
+    <br />
+    Id: @Id
+    <br />
+    QueryString: @Nome - @Nome2
+    <br />
+    <input class="form-control" @bind="Roouter" />
+    <br />
+    <button class="bg-primary" @onclick="OnClick">Navegar</button>
+</div>
+
+@code {
+    public string? Router { get; set; }
+
+    //O ALL {*all} pega todos os parametros e atribui a variavel
+    [Parameter]
+    public string? All { get; set; }
+
+    [Parameter]
+    public string? Group { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    //ATRIBUI O PARAMETRO A VARIAVEL PASSADA PELA QUERY exemlo url?nome=tal
+    [SupplyParameterFromQuery]
+    public string? Nome { get; set; }
+
+    //MESMA COISA MAS FILTRADO
+    [SupplyParameterFromQuery(Name = "dono")]
+    public string? Nome2 { get; set; }
+
+    //REDIRECIONA PARA A PAGINA ESPECIFICADA
+    public void OnClick()
+    {
+        Navigation.NavigateTo(Route);
+    }
+}
