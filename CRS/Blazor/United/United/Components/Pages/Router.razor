@@ -3,7 +3,8 @@
 @page "/router/{*all}"
 @attribute [Route(RoutersConstants.RouterHub)]
 
-@inject NavigationManager Navigation @* PARA NAVEGAR ENTRE PAGINAS *@
+@* PARA NAVEGAR ENTRE PAGINAS *@
+@inject NavigationManager Navigation 
 
 @rendermode InteractiveServer
 
@@ -22,13 +23,14 @@
     <br />
     QueryString: @Nome - @Nome2
     <br />
-    <input class="form-control" @bind="Roouter" />
+    <input class="form-control" @bind="RouterInput" />
     <br />
     <button class="bg-primary" @onclick="OnClick">Navegar</button>
 </div>
 
 @code {
-    public string? Router { get; set; }
+
+    public string? RouterInput { get; set; }
 
     //O ALL {*all} pega todos os parametros e atribui a variavel
     [Parameter]
@@ -51,6 +53,6 @@
     //REDIRECIONA PARA A PAGINA ESPECIFICADA
     public void OnClick()
     {
-        Navigation.NavigateTo(Route);
+        Navigation.NavigateTo(RouterInput);
     }
 }
