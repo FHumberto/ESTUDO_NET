@@ -1,0 +1,11 @@
+﻿<input @attributes="Atributes" placeholder="@Placeholder"/>
+
+@code {
+    //! pega todas as propriedades de um elemento e as atribuem a um dicionario
+    //! ex: maxlenght, placeholder e etc.
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> Atributes { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+}

@@ -27,6 +27,32 @@
             <button @onclick="EventClickCard2">Clique</button>
         </BootstrapCard>
     </div>
+    <div class="col-md-3">
+        <CascadingValue Name="CardHeaderButtonText" Value="@("Editar")">
+            <BootstrapCard>
+                <CardHeader>
+                    Cabeçalho
+                </CardHeader>
+                <CardText>
+                    Conteúdo
+                </CardText>
+                <CardFooter>
+                    Rodapé
+                </CardFooter>
+            </BootstrapCard>
+        </CascadingValue>
+    </div>
+</div>
+
+@* declaração de propriedades sem necessidade de criar parâmetros *@
+<div class="row">
+    <div class="col-md-3">
+        <InputString
+            class="form-control"
+            Placeholder="Digite seu texto"
+            maxlength="5"
+            autocomplete="off" />
+    </div>
 </div>
 
 
