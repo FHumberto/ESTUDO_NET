@@ -1,0 +1,6 @@
+@T_Tier.API_HostAddress = http://localhost:5242
+
+GET {{T_Tier.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
