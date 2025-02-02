@@ -1,10 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using T_Tier.DAL.Context;
+
 var builder = WebApplication.CreateBuilder(args);
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Add services to the container.
+builder.Services
+    .AddControllers();
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services
+    .AddOpenApi();
+
+builder.Services
+    .AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
