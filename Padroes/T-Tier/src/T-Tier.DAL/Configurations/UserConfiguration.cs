@@ -10,7 +10,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.HasKey(u => u.Id);
 
-        //? entity framework pega a PK automáticamente
         builder.Property(u => u.FirstName)
             .IsRequired()
             .HasMaxLength(50);
