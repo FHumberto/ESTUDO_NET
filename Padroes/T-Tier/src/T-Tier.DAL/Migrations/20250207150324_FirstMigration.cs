@@ -50,7 +50,7 @@ namespace T_Tier.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     Tittle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Body = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -64,7 +64,7 @@ namespace T_Tier.DAL.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,7 +73,7 @@ namespace T_Tier.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -93,7 +93,7 @@ namespace T_Tier.DAL.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
