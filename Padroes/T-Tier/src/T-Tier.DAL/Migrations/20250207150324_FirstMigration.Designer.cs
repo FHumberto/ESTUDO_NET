@@ -12,7 +12,7 @@ using T_Tier.DAL.Context;
 namespace T_Tier.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250202215348_FirstMigration")]
+    [Migration("20250207150324_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -62,7 +62,7 @@ namespace T_Tier.DAL.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -98,7 +98,7 @@ namespace T_Tier.DAL.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -198,8 +198,7 @@ namespace T_Tier.DAL.Migrations
                     b.HasOne("T_Tier.DAL.Entities.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Post");
 
@@ -211,8 +210,7 @@ namespace T_Tier.DAL.Migrations
                     b.HasOne("T_Tier.DAL.Entities.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
