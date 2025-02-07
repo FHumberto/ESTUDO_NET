@@ -2,7 +2,7 @@
 
 public class Post : BaseEntity
 {
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
     public required string Tittle { get; set; }
     public required string Body { get; set; }
 
