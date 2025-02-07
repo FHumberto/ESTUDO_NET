@@ -25,8 +25,8 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
             .WithMany(p => p.Tags)
             .UsingEntity<Dictionary<string, object>>
                 ("PostTag",
-                j => j.HasOne<Post>().WithMany().HasForeignKey("PostId"),
-                j => j.HasOne<Tag>().WithMany().HasForeignKey("TagId")
+                j => j.HasOne<Post>().WithMany().HasForeignKey("PostId").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Tag>().WithMany().HasForeignKey("TagId").OnDelete(DeleteBehavior.Cascade)
                 );
 
         #endregion

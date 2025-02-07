@@ -19,12 +19,14 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         //* um comentário está associado a um usuário, mas um usuário pode fazer muitos comentários
         builder.HasOne(c => c.User)
             .WithMany(u => u.Comments)
-            .HasForeignKey(c => c.UserId);
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         //* um comentário tem um post associado, mas um post pode ter muitos comentários
         builder.HasOne(c => c.Post)
             .WithMany(p => p.Comments)
-            .HasForeignKey(c => c.PostId);
+            .HasForeignKey(c => c.PostId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         #endregion
     }
