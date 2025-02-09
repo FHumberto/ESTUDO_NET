@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using T_Tier.DAL.Entities;
 using T_Tier.DAL.Seed;
 
@@ -21,5 +22,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         modelBuilder.Seed();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        DateTime localNow = DateTime.Now;
+        
+        ChangeTracker
+            .Entries<BaseEntity>()
+            .Where(entry => entry.State is EntityState.Added or EntityState.Modified)
+            .ToList()
+            .ForEach(entry =>
+            {
+                //TODO: lembrar de adicionar a propriedade de [CreatedBy] e [UpdatedBy] nas entidades e adicionar aqui.
+                switch (entry)
+                {
+                    //? se for uma entidade nova, seta a data de criação
+                    case { State: EntityState.Added }:
+                        entry.Entity.Created = localNow;
+                        break;
+                    //? se for uma entidade modificada, seta a data de atualização
+                    case { State: EntityState.Modified }:
+                        entry.Entity.Updated = localNow;
+                        break;
+                }
+            });
+        
+        return base.SaveChangesAsync(cancellationToken);
     }
 }
