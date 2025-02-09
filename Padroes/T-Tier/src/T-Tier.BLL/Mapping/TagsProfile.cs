@@ -10,6 +10,6 @@ public class TagsProfile : Profile
     {
         //? converte de [A ==> B]
         CreateMap<Tag, QueryTagDto>();
-        CreateMap<CreateTagDto, Tag>();
+        CreateMap<CommandTagDto, Tag>();
     }
 }
