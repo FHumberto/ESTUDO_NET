@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
-using T_Tier.API.Wrappers;
 using T_Tier.BLL.DTOs.Tags;
 using T_Tier.BLL.Validators;
+using T_Tier.BLL.Wrappers;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
-using static T_Tier.API.Wrappers.ResponseTypeEnum;
+using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
 
 namespace T_Tier.BLL.Services;
 
