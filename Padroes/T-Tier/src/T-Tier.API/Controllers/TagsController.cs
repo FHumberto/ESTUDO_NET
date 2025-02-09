@@ -8,6 +8,23 @@ namespace T_Tier.API.Controllers;
 [ApiController]
 public class TagsController(TagService tagService) : ControllerBase
 {
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAllTags()
+    {
+        var query = await tagService.GetAllAsync();
+        
+        return query.Type switch
+        {
+            ResponseTypeEnum.Success => Ok(query.Result),
+            ResponseTypeEnum.NotFound => NotFound(),
+            _ => BadRequest()
+        };
+    }
+    
+    
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
