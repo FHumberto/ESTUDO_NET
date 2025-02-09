@@ -1,4 +1,4 @@
-﻿namespace T_Tier.API.Wrappers;
+﻿namespace T_Tier.BLL.Wrappers;
 
 public enum ResponseTypeEnum
 {
