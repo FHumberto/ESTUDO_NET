@@ -1,16 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using T_Tier.DAL.Context;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
 
 namespace T_Tier.DAL.Repositories;
 
-public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T>(AppDbContext context) : IRepository<T> where T : BaseEntity
 {
     protected readonly AppDbContext _context = context;
 
@@ -28,10 +23,11 @@ public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T> 
                              .FirstOrDefaultAsync(q => q.Id == id);
     }
 
-    public async Task CreateAsync(T entity)
+    public async Task<int> CreateAsync(T entity)
     {
         await _context.Set<T>().AddAsync(entity);
         await _context.SaveChangesAsync();
+        return entity.Id;
     }
 
     public async Task DeleteAsync(T entity)
