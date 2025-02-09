@@ -3,5 +3,6 @@
 public enum ResponseTypeEnum
 {
     Success,
-    NotFound
+    NotFound,
+    InvalidInput,
 }

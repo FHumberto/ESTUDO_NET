@@ -1,16 +1,26 @@
 ﻿using FluentValidation;
+using T_Tier.BLL.DTOs.Tags;
+using T_Tier.DAL.Contracts;
 
 namespace T_Tier.BLL.Validators;
 
-public class TagValidator : AbstractValidator<DAL.Entities.Tag>
+public class TagValidator : AbstractValidator<CommandTagDto>
 {
-    public TagValidator()
-    {
-        RuleFor(t => t.Name)
-            .NotNull().WithMessage("O campo de {propertyname} é obrigatório")
-            .NotEmpty().WithMessage("O campo de {propertyname} precisa ser fornecido")
-            .Length(1, 50).WithMessage("O campo de {propertyname} deve ter entre 1 e 50 caracteres");
+    private readonly ITagRepository _tagRepository;
 
-        // TODO: adicionar busca pra garantir que é úncio
+    public TagValidator(ITagRepository tagRepository)
+    {
+        _tagRepository = tagRepository;
+
+        RuleFor(t => t.Name)
+            .NotNull().WithMessage("O campo de {PropertyName} é obrigatório")
+            .NotEmpty().WithMessage("O campo de {PropertyName} precisa ser fornecido")
+            .Length(1, 50).WithMessage("O campo de {PropertyName} deve ter entre 1 e 50 caracteres")
+            .Must(IsUnique).WithMessage("O campo de {PropertyName} precisa ser único");
+    }
+
+    private bool IsUnique(string name)
+    {
+        return _tagRepository.GetByNameAsync(name).Result == null;
     }
 }
