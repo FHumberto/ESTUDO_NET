@@ -12,7 +12,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<IPostRepository, PostsRepository>();
 
 var app = builder.Build();
 
