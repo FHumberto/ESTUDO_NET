@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using T_Tier.API.Middlewares;
 using T_Tier.BLL.Services;
 using T_Tier.DAL.Context;
 using T_Tier.DAL.Contracts;
@@ -7,6 +8,8 @@ using T_Tier.DAL.Repositories;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddExceptionHandler<GlobalExceptionMiddleware>();
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -32,7 +35,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
