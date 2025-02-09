@@ -1,17 +1,9 @@
 ﻿namespace T_Tier.API.Wrappers;
 
-public class Response<T>
+public class Response<T>(T result, ResponseTypeEnum type = ResponseTypeEnum.Success)
 {
-    public Response() { }
+    public T? Result { get; set; } = result;
 
-    public Response(T result, ResponseTypeEnum type)
-    {
-        Result = result;
-        Type = type;
-    }
-
-    public T Result { get; set; }
-
-    public ResponseTypeEnum Type { get; set; }
+    public ResponseTypeEnum Type { get; set; } = type;
 }
 
