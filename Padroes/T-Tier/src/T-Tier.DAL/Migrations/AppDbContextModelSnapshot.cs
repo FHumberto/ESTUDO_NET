@@ -82,13 +82,13 @@ namespace T_Tier.DAL.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UserId")
@@ -107,27 +107,27 @@ namespace T_Tier.DAL.Migrations
                         {
                             Id = 1,
                             Body = "Este é o primeiro comentário.",
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 1,
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
                             Body = "Este é o segundo comentário.",
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 2,
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
                             Body = "Este é o terceiro comentário.",
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             PostId = 3,
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3
                         });
                 });
@@ -145,15 +145,15 @@ namespace T_Tier.DAL.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Tittle")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UserId")
@@ -170,27 +170,27 @@ namespace T_Tier.DAL.Migrations
                         {
                             Id = 1,
                             Body = "Este é o corpo do primeiro post.",
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Tittle = "Primeiro Post",
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Primeiro Post",
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
                             Body = "Este é o corpo do segundo post.",
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Tittle = "Segundo Post",
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Segundo Post",
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 2
                         },
                         new
                         {
                             Id = 3,
                             Body = "Este é o corpo do terceiro post.",
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Tittle = "Terceiro Post",
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Terceiro Post",
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             UserId = 3
                         });
                 });
@@ -203,7 +203,7 @@ namespace T_Tier.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -211,7 +211,7 @@ namespace T_Tier.DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -225,23 +225,23 @@ namespace T_Tier.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Tecnologia",
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Educação",
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Saúde",
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -253,7 +253,7 @@ namespace T_Tier.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -274,7 +274,7 @@ namespace T_Tier.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -285,32 +285,32 @@ namespace T_Tier.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "joao.silva@example.com",
                             FirstName = "João",
                             LastName = "Silva",
                             PasswordHash = new byte[] { 32, 33 },
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "maria.oliveira@example.com",
                             FirstName = "Maria",
                             LastName = "Oliveira",
                             PasswordHash = new byte[] { 32, 33 },
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
-                            Created = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "carlos.santos@example.com",
                             FirstName = "Carlos",
                             LastName = "Santos",
                             PasswordHash = new byte[] { 32, 33 },
-                            Updated = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                            UpdatedAt = new DateTime(2025, 2, 7, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

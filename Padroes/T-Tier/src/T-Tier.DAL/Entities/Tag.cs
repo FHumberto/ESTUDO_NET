@@ -2,9 +2,9 @@
 
 public class Tag : BaseEntity
 {
-    public required string Name { get; set; }
+    public required string Name { get; init; }
 
     //! o entity framework cria automaticamente a tabela PostTags
     //? prop de navegação para os posts associados a tag
-    public ICollection<Post>? Posts { get; set; }
+    public ICollection<Post>? Posts { get; init; }
 }
