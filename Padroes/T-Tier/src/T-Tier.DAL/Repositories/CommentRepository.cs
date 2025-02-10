@@ -6,5 +6,4 @@ namespace T_Tier.DAL.Repositories;
 
 public class CommentRepository(AppDbContext context) : GenericRepository<Comment>(context), ICommentRepository
 {
-    
 }
