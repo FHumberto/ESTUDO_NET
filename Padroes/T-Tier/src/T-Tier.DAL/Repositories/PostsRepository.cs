@@ -7,10 +7,11 @@ namespace T_Tier.DAL.Repositories;
 
 public class PostsRepository(AppDbContext context) : GenericRepository<Post>(context), IPostRepository
 {
-    public override async Task<Post?> GetByIdAsync(int id)
+    public async Task<Post?> GetPostByIdWithTagAsync(int id)
     {
-        return await _context.Posts
+        return await Context.Posts
             .Include(p => p.Tags)
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 }
