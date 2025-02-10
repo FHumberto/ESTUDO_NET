@@ -1,6 +1,6 @@
 ﻿namespace T_Tier.BLL.Wrappers;
 
-public class Response<T>(T result, ResponseTypeEnum type = ResponseTypeEnum.Success, List<string> errors = null)
+public class Response<T>(T result, ResponseTypeEnum type = ResponseTypeEnum.Operation, List<string> errors = null)
 {
     public T? Result { get; set; } = result;
     public ResponseTypeEnum Type { get; set; } = type;
