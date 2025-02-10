@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using T_Tier.DAL.Entities;
 using T_Tier.DAL.Seed;
 
@@ -7,7 +6,6 @@ namespace T_Tier.DAL.Context;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-
     #region ================================[ENTIDADES]================================
 
     public DbSet<User> Users { get; set; }
@@ -27,7 +25,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         DateTime localNow = DateTime.Now;
-        
+
         ChangeTracker
             .Entries<BaseEntity>()
             .Where(entry => entry.State is EntityState.Added or EntityState.Modified)
@@ -39,15 +37,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 {
                     //? se for uma entidade nova, seta a data de criação
                     case { State: EntityState.Added }:
-                        entry.Entity.Created = localNow;
+                        entry.Entity.CreatedAt = localNow;
                         break;
                     //? se for uma entidade modificada, seta a data de atualização
                     case { State: EntityState.Modified }:
-                        entry.Entity.Updated = localNow;
+                        entry.Entity.UpdatedAt = localNow;
                         break;
                 }
             });
-        
+
         return base.SaveChangesAsync(cancellationToken);
     }
 }
