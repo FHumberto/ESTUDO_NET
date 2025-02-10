@@ -7,38 +7,38 @@ namespace T_Tier.DAL.Repositories;
 
 public class GenericRepository<T>(AppDbContext context) : IRepository<T> where T : BaseEntity
 {
-    protected readonly AppDbContext _context = context;
+    protected readonly AppDbContext Context = context;
 
-    public virtual async Task<IReadOnlyList<T>> GetAllAsync()
+    public async Task<IReadOnlyList<T>> GetAllAsync()
     {
-        return await _context.Set<T>()
-                             .AsNoTracking()
-                             .ToListAsync();
+        return await Context.Set<T>()
+            .AsNoTracking()
+            .ToListAsync();
     }
 
-    public virtual async Task<T?> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(int id)
     {
-        return await _context.Set<T>()
-                             .AsNoTracking()
-                             .FirstOrDefaultAsync(q => q.Id == id);
+        return await Context.Set<T>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<int> CreateAsync(T entity)
     {
-        await _context.Set<T>().AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await Context.Set<T>().AddAsync(entity);
+        await Context.SaveChangesAsync();
         return entity.Id;
     }
 
     public async Task DeleteAsync(T entity)
     {
-        _context.Remove(entity);
-        await _context.SaveChangesAsync();
+        Context.Remove(entity);
+        await Context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(T entity)
     {
-        _context.Entry(entity).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        Context.Entry(entity).State = EntityState.Modified;
+        await Context.SaveChangesAsync();
     }
 }
