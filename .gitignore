@@ -362,3 +362,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Padroes/T-Tier/.cr/personal
+/Padroes/T-Tier/.idea/.idea.T-Tier/.idea
+/CRS/TW-CleanArchitecture/HR.LeaveManagement.Clean/.cr/personal/FavoritesList
