@@ -5,13 +5,12 @@ using T_Tier.DAL.Entities;
 
 namespace T_Tier.DAL.Repositories;
 
-public class TagRepository : GenericRepository<Tag>, ITagRepository
+public class TagRepository(AppDbContext context) : GenericRepository<Tag>(context), ITagRepository
 {
-    public TagRepository(AppDbContext context) : base(context) { }
-
     public async Task<Tag?> GetByNameAsync(string name)
     {
-        var result = await _context.Tags
+        Tag? result = await Context.Tags
+            .AsNoTracking()
             .FirstOrDefaultAsync(q => q.Name == name);
         return result;
     }
