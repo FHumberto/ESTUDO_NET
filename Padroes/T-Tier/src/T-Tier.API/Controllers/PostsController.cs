@@ -1,12 +1,8 @@
-﻿#region
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using T_Tier.BLL.DTOs.Posts;
 using T_Tier.BLL.Services;
 using T_Tier.BLL.Wrappers;
-
-#endregion
 
 namespace T_Tier.API.Controllers;
 

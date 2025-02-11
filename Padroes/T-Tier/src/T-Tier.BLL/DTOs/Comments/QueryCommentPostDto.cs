@@ -1,6 +1,4 @@
-﻿using T_Tier.DAL.Entities;
-
-namespace T_Tier.BLL.DTOs.Comments;
+﻿namespace T_Tier.BLL.DTOs.Comments;
 
 public class QueryCommentPostDto
 {
