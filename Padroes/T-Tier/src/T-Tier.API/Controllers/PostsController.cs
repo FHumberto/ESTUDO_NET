@@ -14,8 +14,8 @@ public class PostsController(PostService postService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Obter todas as Postagens",
-        Description = "Retorna uma lista de Postagens.")]
+    [SwaggerOperation(Summary = "Obtém todas as Postagens",
+        Description = "Retorna uma lista com todas as postagens cadastradas.")]
     public async Task<IActionResult> GetAllPosts()
     {
         Response<IReadOnlyList<QueryPostDto>> query = await postService.GetAllPostAsync();
@@ -32,8 +32,8 @@ public class PostsController(PostService postService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Obter uma Postagens pelo Id",
-        Description = "Retorna os detalhes de uma Postagem pelo Id.")]
+    [SwaggerOperation(Summary = "Obtém uma postagem pelo ID",
+        Description = "Retorna os detalhes de uma postagem pelo ID.")]
     public async Task<IActionResult> GetPostById(int id)
     {
         Response<QueryPostDto?> query = await postService.GetPostByIdAsync(id);
@@ -50,11 +50,29 @@ public class PostsController(PostService postService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Obter uma Postagem pelo Id e inclui suas tags.",
-        Description = "Retorna os detalhes de uma Postagem, incluindo uma lista de Tags associadas a ele pelo Id.")]
+    [SwaggerOperation(Summary = "Obtém uma postagem pelo ID e inclui suas tags.",
+        Description = "Retorna os detalhes de uma postagem, incluindo uma lista de tags associadas a ela pelo ID.")]
     public async Task<IActionResult> GetPostWithTag(int id)
     {
         Response<QueryPostTagDto?> query = await postService.GetPostByIdWithTagAsync(id);
+
+        return query.Type switch
+        {
+            ResponseTypeEnum.Success => Ok(query.Result),
+            ResponseTypeEnum.NotFound => NotFound(),
+            _ => BadRequest()
+        };
+    }
+    
+    [HttpGet("{id:int}/comments")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Obtém uma postagem pelo ID e inclui seus comentários.",
+        Description = "Retorna os detalhes de uma postagem, incluindo uma lista de comentários associados a ela pelo ID.")]
+    public async Task<IActionResult> GetPostWithComments(int id)
+    {
+        Response<QueryPostCommentsDto?> query = await postService.GetPostByIdWithCommentsAsync(id);
 
         return query.Type switch
         {
@@ -68,8 +86,8 @@ public class PostsController(PostService postService) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Cadastrar uma Postagem",
-        Description = "Cadastra uma Postagem com base nos dados fornecidos associado ao usuario atual.")]
+    [SwaggerOperation(Summary = "Cadastra uma postagem",  
+        Description = "Cadastra uma postagem com base nos dados fornecidos, associada ao usuário atual.")]
     public async Task<IActionResult> CreatePost([FromBody] CommandPostDto request)
     {
         Response<int> command = await postService.CreatePostAsync(request);
@@ -86,8 +104,8 @@ public class PostsController(PostService postService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Atualizar uma Postagem",
-        Description = "Atualiza uma Postagem com base nos dados fornecidos.")]
+    [SwaggerOperation(Summary = "Atualiza uma postagem",  
+        Description = "Atualiza uma postagem com base nos dados fornecidos.")]
     public async Task<IActionResult> UpdatePost([FromBody] CommandPostDto request, int id)
     {
         Response<bool> command = await postService.UpdatePostAsync(request, id);
@@ -104,7 +122,8 @@ public class PostsController(PostService postService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Remover uma Postagem", Description = "Remove um Postagem com base no ID.")]
+    [SwaggerOperation(Summary = "Remove uma postagem",  
+        Description = "Remove uma postagem com base no ID.")]
     public async Task<IActionResult> DeletePost(int id)
     {
         Response<bool> deleteTask = await postService.DeleteAsync(id);

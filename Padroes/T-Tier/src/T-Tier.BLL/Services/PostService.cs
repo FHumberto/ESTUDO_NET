@@ -35,19 +35,24 @@ public class PostService(IPostRepository postRepository, IMapper mapper)
             : new Response<QueryPostDto?>(response, Success);
     }
 
-    /// <summary>
-    ///     Retorna um post com suas tags
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     public async Task<Response<QueryPostTagDto?>> GetPostByIdWithTagAsync(int id)
     {
-        Post? post = await postRepository.GetPostByIdWithTagAsync(id);
+        Post? post = await postRepository.GetPostByIdWithTagsAsync(id);
         QueryPostTagDto? response = mapper.Map<QueryPostTagDto>(post);
 
         return response == null
             ? new Response<QueryPostTagDto?>(null, NotFound)
             : new Response<QueryPostTagDto?>(response, Success);
+    }
+    
+    public async Task<Response<QueryPostCommentsDto?>> GetPostByIdWithCommentsAsync(int id)
+    {
+        Post? post = await postRepository.GetPostByidWithCommentsAsync(id);
+        QueryPostCommentsDto? response = mapper.Map<QueryPostCommentsDto>(post);
+
+        return response == null
+            ? new Response<QueryPostCommentsDto?>(null, NotFound)
+            : new Response<QueryPostCommentsDto?>(response, Success);
     }
 
     public async Task<Response<int>> CreatePostAsync(CommandPostDto request)
