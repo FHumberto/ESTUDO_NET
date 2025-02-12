@@ -12,7 +12,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("AspNetUsers", "Identity");
 
         builder.Property(u => u.FirstName)
-            .IsRequired()
             .HasMaxLength(50);
 
         builder.Property(u => u.LastName)
