@@ -8,6 +8,9 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
 {
     public void Configure(EntityTypeBuilder<Tag> builder)
     {
+        // Define [blog] como o schema da tabela Tags
+        builder.ToTable("Tags", "blog");
+
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.Name)
