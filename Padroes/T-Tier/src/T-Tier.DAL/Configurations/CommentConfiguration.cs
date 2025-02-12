@@ -14,19 +14,24 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.Property(c => c.IsDeleted)
+            .HasDefaultValue(false);
+
         #region ================================[RELACIONAMENTOS]================================
 
         //* um comentário está associado a um usuário, mas um usuário pode fazer muitos comentários
         builder.HasOne(c => c.User)
             .WithMany(u => u.Comments)
             .HasForeignKey(c => c.UserId)
-            .OnDelete(DeleteBehavior.SetNull);
+            //? impede a exclusão do usuário se houver comentários vinculados
+            .OnDelete(DeleteBehavior.Restrict);
 
         //* um comentário tem um post associado, mas um post pode ter muitos comentários
         builder.HasOne(c => c.Post)
             .WithMany(p => p.Comments)
             .HasForeignKey(c => c.PostId)
-            .OnDelete(DeleteBehavior.Cascade);
+            //* restrict impede a exclusão do post se houver comentários vinculados
+            .OnDelete(DeleteBehavior.Restrict);
 
         #endregion
     }

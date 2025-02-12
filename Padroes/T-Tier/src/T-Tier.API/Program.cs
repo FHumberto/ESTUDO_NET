@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using T_Tier.API.Middlewares;
 using T_Tier.BLL.Services;
 using T_Tier.DAL.Context;
 using T_Tier.DAL.Contracts;
+using T_Tier.DAL.Entities;
 using T_Tier.DAL.Repositories;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -16,8 +19,15 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
 });
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+builder.Services.AddIdentityCore<User>();
+builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<AppDbContext>().AddApiEndpoints();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<AppDbContext>
+    (options => options.UseSqlServer(connectionString)
+        .ConfigureWarnings(warnings => warnings
+            .Ignore(RelationalEventId.PendingModelChangesWarning)));
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CommentService>();
@@ -41,5 +51,6 @@ app.UseExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapIdentityApi<User>();
 
 app.Run();
