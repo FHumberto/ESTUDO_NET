@@ -1,15 +1,27 @@
-﻿namespace T_Tier.DAL.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using T_Tier.DAL.Contracts;
 
-public class User : BaseEntity
+namespace T_Tier.DAL.Entities;
+
+public class User : IdentityUser, ISoftDeleteEntity
 {
-    public required string FirstName { get; init; }
+    public string? FirstName { get; init; }
     public string? LastName { get; init; }
-    public required string Email { get; init; }
-    public required byte[] PasswordHash { get; init; }
-
-    //? prop de navegacao para posts criados pelo usuario
+    public bool IsDeleted { get; private set; } = false;
+    
+    //? Navegação para posts criados pelo usuário
     public ICollection<Post>? Posts { get; init; }
 
-    //? prop de navegacao para comentarios feitos pelo usuario
+    //? Navegação para comentários feitos pelo usuário
     public ICollection<Comment>? Comments { get; init; }
+    
+    public void SoftDelete()
+    {
+        IsDeleted = true;
+    }
+
+    public void Restore()
+    {
+        IsDeleted = false;
+    }
 }

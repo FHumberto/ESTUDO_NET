@@ -1,10 +1,13 @@
-﻿namespace T_Tier.DAL.Entities;
+﻿using T_Tier.DAL.Contracts;
 
-public class Post : BaseEntity
+namespace T_Tier.DAL.Entities;
+
+public class Post : BaseEntity, ISoftDeleteEntity
 {
-    public int? UserId { get; init; }
+    public string? UserId { get; init; }
     public required string Title { get; init; }
     public required string Body { get; init; }
+    public bool IsDeleted { get; private set; } = false;
 
     //? prop navegação para o usuário que criou o post
     public User? User { get; init; }
@@ -14,4 +17,14 @@ public class Post : BaseEntity
 
     //? prop de navegação para as tags associadas ao post
     public ICollection<Tag>? Tags { get; init; }
+    
+    public void SoftDelete()
+    {
+        IsDeleted = true;
+    }
+    
+    public void Restore()
+    {
+        IsDeleted = false;
+    }
 }

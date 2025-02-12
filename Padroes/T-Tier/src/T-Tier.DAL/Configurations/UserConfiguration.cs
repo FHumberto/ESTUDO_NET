@@ -8,7 +8,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.HasKey(u => u.Id);
+        //? definie [identity] como o SCHEMA do users
+        builder.ToTable("AspNetUsers");
 
         builder.Property(u => u.FirstName)
             .IsRequired()
@@ -17,11 +18,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.LastName)
             .HasMaxLength(50);
 
-        builder.Property(u => u.Email)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(u => u.PasswordHash)
-            .IsRequired();
+        builder.HasIndex(u => u.Email)
+            .IsUnique();
     }
 }

@@ -18,13 +18,17 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.Property(p => p.IsDeleted)
+            .HasDefaultValue(false);
+        
         #region ================================[RELACIONAMENTOS]================================
 
         //* um post pertence a um usuário, mas um usuário pode criar muitos posts
         builder.HasOne(p => p.User)
             .WithMany(u => u.Posts)
             .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.SetNull);
+            //? impede a exclusão do usuário se houver posts associados
+            .OnDelete(DeleteBehavior.Restrict);
 
         #endregion
     }
