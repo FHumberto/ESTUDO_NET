@@ -8,6 +8,9 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
 {
     public void Configure(EntityTypeBuilder<Post> builder)
     {
+        // Define [blog] como o schema do Posts
+        builder.ToTable("Posts", "blog");
+
         builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Title)
@@ -20,7 +23,7 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
 
         builder.Property(p => p.IsDeleted)
             .HasDefaultValue(false);
-        
+
         #region ================================[RELACIONAMENTOS]================================
 
         //* um post pertence a um usuário, mas um usuário pode criar muitos posts

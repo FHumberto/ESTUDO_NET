@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System.Linq.Expressions;
 using System.Reflection;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
@@ -29,6 +29,13 @@ public class AppDbContext : IdentityDbContext<User>
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
+        builder.Entity<IdentityRole>().ToTable("AspNetRoles", "Identity");
+        builder.Entity<IdentityUserRole<string>>().ToTable("AspNetUserRoles", "Identity");
+        builder.Entity<IdentityUserClaim<string>>().ToTable("AspNetUserClaims", "Identity");
+        builder.Entity<IdentityUserLogin<string>>().ToTable("AspNetUserLogins", "Identity");
+        builder.Entity<IdentityUserToken<string>>().ToTable("AspNetUserTokens", "Identity");
+        builder.Entity<IdentityRoleClaim<string>>().ToTable("AspNetRoleClaims", "Identity");
+
         //! aplica o filtro global para todas as entidades que implementam ISoftDeleteEntity
         foreach (IMutableEntityType entityType in builder.Model.GetEntityTypes())
         {
@@ -41,9 +48,10 @@ public class AppDbContext : IdentityDbContext<User>
                 method.Invoke(null, new object[] { builder });
             }
         }
+
         builder.Seed();
     }
-    
+
     //! método genérico para criar o filtro de exclusão lógica
     private static void ApplySoftDeleteFilter<T>(ModelBuilder builder) where T : class, ISoftDeleteEntity
     {

@@ -9,7 +9,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         //? definie [identity] como o SCHEMA do users
-        builder.ToTable("AspNetUsers");
+        builder.ToTable("AspNetUsers", "Identity");
 
         builder.Property(u => u.FirstName)
             .IsRequired()

@@ -8,6 +8,9 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
 {
     public void Configure(EntityTypeBuilder<Comment> builder)
     {
+        // Define [blog] como o schema do Comments
+        builder.ToTable("Comments", "blog");
+
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Body)
