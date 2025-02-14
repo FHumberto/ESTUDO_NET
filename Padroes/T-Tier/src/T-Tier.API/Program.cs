@@ -1,4 +1,5 @@
 using System.Text;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using T_Tier.API.Middlewares;
+using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Services;
 using T_Tier.BLL.Settings;
 using T_Tier.DAL.Context;
@@ -25,7 +27,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionMiddleware>();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-// 🔹 Configuração do Swagger com JWT
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
@@ -59,6 +61,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString)
@@ -75,7 +78,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
             ValidateIssuer = true,
@@ -91,7 +94,7 @@ builder.Services.AddAuthentication(options =>
 
 
 builder.Services.AddScoped<SignInManager<User>>();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<PostService>();
 builder.Services.AddScoped<CommentService>();
@@ -99,11 +102,11 @@ builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IPostRepository, PostsRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); // Modifique esta linha
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json",

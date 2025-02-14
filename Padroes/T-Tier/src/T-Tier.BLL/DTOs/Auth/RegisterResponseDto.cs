@@ -1,4 +1,4 @@
-﻿namespace T_Tier.BLL.DTOs.Users;
+﻿namespace T_Tier.BLL.DTOs.Auth;
 
 public class RegisterResponseDto
 {

@@ -3,19 +3,57 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using T_Tier.BLL.DTOs.Users;
+using T_Tier.BLL.DTOs.Auth;
+using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Settings;
+using T_Tier.BLL.Utils;
 using T_Tier.BLL.Wrappers;
 using T_Tier.DAL.Entities;
 using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
 
 namespace T_Tier.BLL.Services;
 
-public class AuthService(UserManager<User> userManager, SignInManager<User> signInManager, JwtSettings jwtSettings)
+public class AuthService(
+    UserManager<User> userManager,
+    SignInManager<User> signInManager,
+    JwtSettings jwtSettings,
+    IServiceProvider serviceProvider) : IAuthService
 {
-    public async Task<Response<RegisterResponseDto?>> RegisterAsync(RegisterRequestDto request)
+    public async Task<Response<LoginResponseDto>> Login(LoginRequestDto request)
     {
-        User user = new()
+        var validationErrors = await serviceProvider.ValidateAsync(request);
+        if (validationErrors.Count != 0) return new Response<LoginResponseDto>(null!, InvalidInput, validationErrors);
+
+        var user = await userManager.FindByEmailAsync(request.Email);
+        if (user is null) return new Response<LoginResponseDto>(null!, NotFound);
+
+        var passwordCheck = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+        if (!passwordCheck.Succeeded) return new Response<LoginResponseDto>(null!, Unauthorized, "Credenciais inválidas.");
+
+        var jwtSecurityToken = await GenerateToken(user);
+
+        return new Response<LoginResponseDto>(new LoginResponseDto
+        {
+            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            Email = user.Email ?? string.Empty,
+            UserName = user.UserName ?? string.Empty
+        }, Success);
+    }
+
+
+    public async Task<Response<RegisterResponseDto>> Register(RegisterRequestDto request)
+    {
+        var validationErrors = await serviceProvider.ValidateAsync(request);
+        if (validationErrors.Count > 0)
+            return new Response<RegisterResponseDto>(null!, InvalidInput, validationErrors);
+
+        var userExists = await userManager.FindByEmailAsync(request.Email);
+
+        if(userExists is not null)
+            return new Response<RegisterResponseDto>
+                (null!, Conflict, "Já exite um usuário com o e-mail informado.");
+
+        var user = new User
         {
             Email = request.Email,
             FirstName = request.FirstName,
@@ -26,79 +64,43 @@ public class AuthService(UserManager<User> userManager, SignInManager<User> sign
 
         var result = await userManager.CreateAsync(user, request.Password);
 
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(user, "Employee");
-            return new Response<RegisterResponseDto?>(new RegisterResponseDto() { UserId = user.Id });
-        }
-        else
-        {
-            StringBuilder str = new();
-
-            foreach (IdentityError err in result.Errors)
-            {
-                str.AppendFormat("•{0}\n", err.Description);
-            }
-
-            return new Response<RegisterResponseDto?>(null, InvalidInput, [result.Errors.ToString()!]);
-        }
-    }
-
-    public async Task<Response<AuthResponseDto?>> LoginAsync(AuthRequestDto request)
-    {
-        var user = await userManager.FindByEmailAsync(request.Email);
-
-        if (user == null)
-        {
-            return new Response<AuthResponseDto?>(null, NotFound);
-        }
-
-        var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
         if (!result.Succeeded)
         {
-            return new Response<AuthResponseDto?>(null, InvalidInput);
+            var errors = result.Errors.Select(e => e.Description).ToList();
+            return new Response<RegisterResponseDto>(null!, InvalidInput, errors);
         }
 
-        var jwtSecurityToken = await GenerateToken(user);
+        await userManager.AddToRoleAsync(user, "Default");
 
-        AuthResponseDto response = new()
-        {
-            Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-            Email = user.Email ?? string.Empty,
-            UserName = user.UserName ?? string.Empty
-        };
-
-        return new Response<AuthResponseDto?>(response, Success);
+        return new Response<RegisterResponseDto>(new RegisterResponseDto { UserId = user.Id }, Success);
     }
 
     private async Task<JwtSecurityToken> GenerateToken(User user)
     {
         var userClaims = await userManager.GetClaimsAsync(user);
         var roles = await userManager.GetRolesAsync(user);
-
         var roleClaims = roles.Select(q => new Claim(ClaimTypes.Role, q)).ToList();
 
         var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim("uid", user.Id)
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email!), new Claim("uid", user.Id)
+        }
+        .Union(userClaims)
+        .Union(roleClaims);
 
         SymmetricSecurityKey symmetricSecurityKey = new(Encoding.UTF8.GetBytes(jwtSettings.Key));
-
         SigningCredentials signingCredentials = new(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
-        JwtSecurityToken jwtSecurityToken = new(
+        JwtSecurityToken jwtSecurityToken = new
+        (
             issuer: jwtSettings.Issuer,
             audience: jwtSettings.Audience,
             claims: claims,
             expires: DateTime.Now.AddMinutes(jwtSettings.DurationInMinutes),
-            signingCredentials: signingCredentials);
+            signingCredentials: signingCredentials
+        );
 
         return jwtSecurityToken;
     }

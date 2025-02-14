@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Auth\" />
+    <Folder Include="DTOs\Users\" />
   </ItemGroup>
 
 </Project>
