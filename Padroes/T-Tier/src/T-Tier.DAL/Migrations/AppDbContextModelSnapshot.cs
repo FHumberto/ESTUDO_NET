@@ -47,6 +47,20 @@ namespace T_Tier.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", "Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Default",
+                            NormalizedName = "DEFAULT"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -134,6 +148,23 @@ namespace T_Tier.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", "Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64",
+                            RoleId = "2"
+                        },
+                        new
+                        {
+                            UserId = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5",
+                            RoleId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -478,7 +509,7 @@ namespace T_Tier.DAL.Migrations
                         {
                             Id = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4ce8e01c-23ef-4590-ba6d-a89ea71b5eef",
+                            ConcurrencyStamp = "456c8374-f1fd-4c50-847a-f53164c90dd1",
                             Email = "joao.silva@example.com",
                             EmailConfirmed = false,
                             FirstName = "João",
@@ -487,9 +518,9 @@ namespace T_Tier.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "JOAO.SILVA@EXAMPLE.COM",
                             NormalizedUserName = "JOAO.SILVA",
-                            PasswordHash = "AQAAAAIAAYagAAAAELYaM1CjkXyRyCP1JrrxOkyZPRxytb97isJG/vzivHagO3EtMZEGSySUVCFooyxFDA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPQUluQb4q+fxuuFSGlMfZEitwtzfGh5lPE1iEE+lD9iFrZeVax6KZcCypY47z4JVg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "90cf7ae6-469c-4029-8e76-b73b71adc923",
+                            SecurityStamp = "37d0bf1a-62e1-4819-b524-25ad0dec7ccd",
                             TwoFactorEnabled = false,
                             UserName = "joao.silva"
                         },
@@ -497,7 +528,7 @@ namespace T_Tier.DAL.Migrations
                         {
                             Id = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b825d8de-5a45-4751-92be-cc0bed1f1195",
+                            ConcurrencyStamp = "b8d057df-8c19-4a31-ae22-d7e53f49b701",
                             Email = "maria.oliveira@example.com",
                             EmailConfirmed = false,
                             FirstName = "Maria",
@@ -506,9 +537,9 @@ namespace T_Tier.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MARIA.OLIVEIRA@EXAMPLE.COM",
                             NormalizedUserName = "MARIA.OLIVEIRA",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDNJ5LjZwO7/vsFxTCKInBZVwiKFuVf/fAoFy7Ap5CzJXlm1k0aQUr8pK8iMspyT5Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIeVFwJi0cMmkw5L+QX9HfNlzwI5Lzx/YXy6Ab3E6kMAVqgs5il7dquu/CMMOwpXZw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bf6dc393-a0c8-44df-99b5-08965fd42742",
+                            SecurityStamp = "7ad99721-76e2-44a4-b9ae-97211b27e487",
                             TwoFactorEnabled = false,
                             UserName = "maria.oliveira"
                         },
@@ -516,7 +547,7 @@ namespace T_Tier.DAL.Migrations
                         {
                             Id = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2eeb4f98-2ae0-4991-a21b-425852ef4ba6",
+                            ConcurrencyStamp = "b5f8d05f-0757-4938-89b9-cd13501dd7db",
                             Email = "carlos.santos@example.com",
                             EmailConfirmed = false,
                             FirstName = "Carlos",
@@ -525,9 +556,9 @@ namespace T_Tier.DAL.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "CARLOS.SANTOS@EXAMPLE.COM",
                             NormalizedUserName = "CARLOS.SANTOS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMVo5HP1Ie5sSddwkvEuRfiui+BopJiaCMU6TnuTkfP840etJv9w+UxsU8dPJeHSrQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMyOLbQyPBGVp4W6JWAXddxUKdFILkPHy31Gc7f1ap0fmN1jeBRFRqh+HZQUVAi+GQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e8a86cbe-30aa-4462-a176-9ab03551b86c",
+                            SecurityStamp = "b65f20f0-78a0-4c3a-a81a-e88d09de1b27",
                             TwoFactorEnabled = false,
                             UserName = "carlos.santos"
                         });

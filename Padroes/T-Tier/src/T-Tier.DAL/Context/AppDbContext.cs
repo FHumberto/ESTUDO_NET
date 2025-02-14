@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using System.Reflection;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
 using T_Tier.DAL.Seed;
 
 namespace T_Tier.DAL.Context;
 
-public class AppDbContext : IdentityDbContext<User>
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User>(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
-
     #region ================================[ENTIDADES]================================
 
     public DbSet<Post> Posts { get; set; }
@@ -42,10 +38,10 @@ public class AppDbContext : IdentityDbContext<User>
             if (typeof(ISoftDeleteEntity).IsAssignableFrom(entityType.ClrType))
             {
                 MethodInfo method = typeof(AppDbContext)
-                    .GetMethod(nameof(ApplySoftDeleteFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+                    .GetMethod(nameof(ApplySoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)!
                     .MakeGenericMethod(entityType.ClrType);
 
-                method.Invoke(null, new object[] { builder });
+                method.Invoke(null, [builder]);
             }
         }
 
