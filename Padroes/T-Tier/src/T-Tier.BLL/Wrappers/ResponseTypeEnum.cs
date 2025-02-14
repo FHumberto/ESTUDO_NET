@@ -3,7 +3,9 @@
 public enum ResponseTypeEnum
 {
     Operation,
-    Success,
+    Unauthorized,
+    InvalidInput,
+    Conflict,
     NotFound,
-    InvalidInput
+    Success
 }

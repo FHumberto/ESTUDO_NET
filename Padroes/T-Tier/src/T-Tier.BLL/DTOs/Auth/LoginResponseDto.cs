@@ -1,6 +1,6 @@
-﻿namespace T_Tier.BLL.DTOs.Users;
+﻿namespace T_Tier.BLL.DTOs.Auth;
 
-public class AuthResponseDto
+public class LoginResponseDto
 {
     public required string UserName { get; set; }
     public required string Email { get; set; }
