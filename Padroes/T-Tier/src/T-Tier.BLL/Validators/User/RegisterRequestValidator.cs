@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using T_Tier.BLL.DTOs.Auth;
+using T_Tier.BLL.DTOs.Users;
 
-namespace T_Tier.BLL.Validators.Auth;
+namespace T_Tier.BLL.Validators.User;
 
 public class RegisterRequestValidator : AbstractValidator<RegisterRequestDto>
 {

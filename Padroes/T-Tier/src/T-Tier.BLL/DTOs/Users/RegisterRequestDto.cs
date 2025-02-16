@@ -1,4 +1,4 @@
-﻿namespace T_Tier.BLL.DTOs.Auth;
+﻿namespace T_Tier.BLL.DTOs.Users;
 
 public class RegisterRequestDto(string firstName, string lastName, string email, string userName, string password)
 {
