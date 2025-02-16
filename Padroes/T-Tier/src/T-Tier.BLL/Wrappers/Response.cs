@@ -4,7 +4,7 @@ namespace T_Tier.BLL.Wrappers;
 
 public class Response<T>(
     T result,
-    ResponseTypeEnum type = ResponseTypeEnum.Operation,
+    ResponseTypeEnum type = ResponseTypeEnum.Success,
     object? errors = null) // Pode ser List<string> ou Dictionary<string, List<string>>
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

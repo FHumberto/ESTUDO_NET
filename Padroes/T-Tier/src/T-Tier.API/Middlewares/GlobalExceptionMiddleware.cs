@@ -1,24 +1,42 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using T_Tier.BLL.Wrappers;
 
-namespace T_Tier.API.Middlewares;
-
-public class GlobalExceptionMiddleware : IExceptionHandler
+public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger) : IExceptionHandler
 {
-    public async ValueTask<bool> TryHandleAsync
-        (HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        ProblemDetails problemDetails = new()
+        int statusCode = StatusCodes.Status500InternalServerError;
+        var responseType = ResponseTypeEnum.Error;
+        string errorMessage = "Erro interno inesperado de servidor";
+
+        logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+
+        switch (exception)
         {
-            Status = StatusCodes.Status500InternalServerError,
-            Title = "Internal Server Error",
-            Detail = exception.Message
-        };
+            case KeyNotFoundException:
+                statusCode = StatusCodes.Status404NotFound;
+                responseType = ResponseTypeEnum.NotFound;
+                errorMessage = "O recuso requisitado não foi encontrado.";
+                break;
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
-        httpContext.Response.ContentType = "application/problem+json";
+            case UnauthorizedAccessException:
+                statusCode = StatusCodes.Status403Forbidden;
+                responseType = ResponseTypeEnum.Forbidden;
+                errorMessage = "Você não possui permissão para performar essa ação.";
+                break;
 
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
+            case ArgumentException or ArgumentNullException:
+                statusCode = StatusCodes.Status400BadRequest;
+                responseType = ResponseTypeEnum.InvalidInput;
+                errorMessage = "Entrada Inválida.";
+                break;
+        }
+
+        var response = new Response<bool>(false, responseType, new List<string> { errorMessage });
+
+        httpContext.Response.StatusCode = statusCode;
+        httpContext.Response.ContentType = "application/json";
+        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
 
         return true;
     }

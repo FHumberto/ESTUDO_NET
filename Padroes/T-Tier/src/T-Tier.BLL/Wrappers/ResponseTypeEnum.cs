@@ -2,10 +2,12 @@
 
 public enum ResponseTypeEnum
 {
-    Operation,
-    Unauthorized,
-    InvalidInput,
-    Conflict,
-    NotFound,
-    Success
+    Success = 200,
+    Created = 201,
+    InvalidInput = 400,
+    Unauthorized = 401,
+    Forbidden = 403,
+    NotFound = 404,
+    Conflict = 409,
+    Error = 500
 }
