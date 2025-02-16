@@ -12,5 +12,4 @@ public class UserRepository(AppDbContext context) : IUserRepository
         await context.SaveChangesAsync();
         return true;
     }
-
 }

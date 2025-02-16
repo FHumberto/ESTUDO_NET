@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,12 +22,16 @@ public class UserService(
         RoleManager<IdentityRole> roleManager,
         SignInManager<User> signInManager,
         JwtSettings jwtSettings,
+        IHttpContextAccessor httpContextAccessor,
         IServiceProvider serviceProvider,
         IUserRepository userRepository,
         IPostRepository postRepository,
         ICommentRepository commentRepository,
         IMapper mapper) : IUserService
 {
+
+    public string? UserId { get => httpContextAccessor.HttpContext?.User?.FindFirstValue("uid"); }
+
     public async Task<Response<LoginResponseDto>> Login(LoginRequestDto request)
     {
         var validationErrors = await serviceProvider.ValidateAsync(request);
@@ -90,7 +95,7 @@ public class UserService(
 
         if (user is null)
         {
-            return new Response<QueryUserResponseDto>(null!, NotFound);
+            return new Response<QueryUserResponseDto>(null!, NotFound, "Usuário não encontrado.");
         }
 
         var roles = await userManager.GetRolesAsync(user);

@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using FluentValidation.Results;
 using T_Tier.BLL.DTOs.Comments;
 using T_Tier.BLL.Interfaces;
-using T_Tier.BLL.Validators.Comment;
+using T_Tier.BLL.Utils;
 using T_Tier.BLL.Wrappers;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
@@ -10,7 +9,8 @@ using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
 
 namespace T_Tier.BLL.Services;
 
-public class CommentService(ICommentRepository commentRepository, IMapper mapper) : ICommentService
+public class CommentService
+    (ICommentRepository commentRepository, IUserService userService, IServiceProvider serviceProvider, IMapper mapper) : ICommentService
 {
     public async Task<Response<IReadOnlyList<QueryCommentResponseDto>>> GetAllComment()
     {
@@ -34,63 +34,142 @@ public class CommentService(ICommentRepository commentRepository, IMapper mapper
 
     public async Task<Response<int>> CreateComment(CreateCommentDto request)
     {
-        //TODO: Recuperar pelo Token o ID do usuário que está cadastrando o token.
-        CommentValidator validationRules = new(commentRepository);
-        ValidationResult? validationResult = await validationRules.ValidateAsync(request);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
 
-        if (!validationResult.IsValid)
+        var validationResult = await serviceProvider.ValidateAsync(request);
+
+        if (validationResult.Count > 0)
         {
-            return new Response<int>(0, InvalidInput, validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            return new Response<int>(0, InvalidInput, validationResult);
         }
 
-        Comment commentToCreate = mapper.Map<Comment>(request);
-        int createdCommentId = await commentRepository.CreateAsync(commentToCreate);
+        #endregion
 
-        return new Response<int>(createdCommentId, Success);
+        #region ====[2.REGRA]===========================================================================================
+
+        var userId = userService.UserId;
+
+        if (string.IsNullOrEmpty(userId))
+            throw new UnauthorizedAccessException();
+
+        #endregion
+
+        #region ====[3.MAPEAMENTO]======================================================================================
+
+        var commentToCreate = mapper.Map<Comment>(request);
+
+        commentToCreate.UserId = userId;
+        commentToCreate.CreatedBy = userId;
+
+        #endregion
+
+        #region ====[4.ACÃO]============================================================================================
+
+        var createdCommentId = await commentRepository.CreateAsync(commentToCreate);
+
+        return new Response<int>(createdCommentId);
+
+        #endregion
     }
 
     public async Task<Response<bool>> UpdateComment(UpdateCommentDto request, int id)
     {
-        Comment? commentToUpdate = await commentRepository.GetByIdAsync(id);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
 
-        if (commentToUpdate == null)
+        var commentToUpdate = await commentRepository.GetByIdAsync(id);
+
+        if (commentToUpdate is null)
         {
-            return new Response<bool>(false, NotFound);
+            return new Response<bool>(false, NotFound, "Comentário não encontrado.");
         }
 
-        //TODO: Implementar regra para validar se o usuário for diferente do usuário que cadastrou
-        //TODO: Recuperar pelo Token o ID do usuário que está atualizando o token.
-        CommentUpdateValidator validationRules = new();
-        ValidationResult? validationResult = await validationRules.ValidateAsync(request);
+        var validationResult = await serviceProvider.ValidateAsync(request);
 
-        if (!validationResult.IsValid)
+        if (validationResult.Count > 0)
         {
-            return new Response<bool>(false, InvalidInput, validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            return new Response<bool>(false, InvalidInput, validationResult);
         }
+
+        #endregion
+
+        #region ====[2.REGRA]===========================================================================================
+
+        if (userService.UserId != commentToUpdate.UserId)
+        {
+            throw new InvalidOperationException("Operação Inválida.");
+        }
+
+        #endregion
+
+        #region ====[3.MAPEAMENTO]======================================================================================
 
         mapper.Map(request, commentToUpdate);
 
+        commentToUpdate.UpdatedBy = userService.UserId;
+
+        #endregion
+
+        #region ====[4.ACÃO]============================================================================================
+
         await commentRepository.UpdateAsync(commentToUpdate);
 
-        return new Response<bool>(true, Success);
+        return new Response<bool>(true, Success, "Comentário atualizado.");
+
+        #endregion
     }
 
-    public async Task<Response<bool>> DeleteComment(int id)
+    public async Task<Response<bool>> DeleteCommentById(int id)
     {
-        Comment? comment = await commentRepository.GetByIdAsync(id);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        var comment = await commentRepository.GetByIdAsync(id);
 
         if (comment == null)
         {
-            return new Response<bool>(false, NotFound);
+            return new Response<bool>(false, NotFound, "Comentário não encontrado.");
         }
+
+        #endregion
+
+        #region ====[2.ACÃO]============================================================================================
 
         await commentRepository.DeleteAsync(comment);
 
         return new Response<bool>(true, Success);
+
+        #endregion
     }
 
-    public Task<Response<bool>> SoftDeleteComment(int id)
+    public async Task<Response<bool>> SoftDeleteCommentById(int id)
     {
-        throw new NotImplementedException();
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        Comment? commentToDelete = await commentRepository.GetByIdAsync(id);
+
+        if (commentToDelete is null)
+        {
+            return new Response<bool>(false, NotFound, "Comentário não encontrado.");
+        }
+
+        #endregion
+
+        #region ====[2.REGRA]===========================================================================================
+
+        if (commentToDelete.UserId != userService.UserId)
+        {
+            throw new InvalidOperationException("Operação Inválida.");
+        }
+
+        #endregion
+
+        #region ====[4.ACÃO]============================================================================================
+
+        var operation = commentRepository.SoftDeleteAsync(commentToDelete);
+
+        return operation.Result
+            ? new Response<bool>(true, Success)
+            : new Response<bool>(true, Error, "Erro durante a operação de deletar o comentário.");
+
+        #endregion
     }
 }

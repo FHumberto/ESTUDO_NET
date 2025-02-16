@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using T_Tier.BLL.DTOs.Comments;
 using T_Tier.BLL.Interfaces;
@@ -8,12 +9,11 @@ namespace T_Tier.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class CommentsController(ICommentService commentService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Obtém todos os comentários",
     Description = "Retorna uma lista com todos os comentários cadastrados.")]
@@ -24,7 +24,6 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         {
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
-            ResponseTypeEnum.Forbidden => Forbid(),
             _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
@@ -49,16 +48,18 @@ public class CommentsController(ICommentService commentService) : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [SwaggerOperation(Summary = "Cadastra um comentário",
         Description = "Cadastra um comentário com base nos dados fornecidos.")]
     public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto request)
     {
-        var command = await commentService.CreateComment(request);
-        return command.Type switch
+        var response = await commentService.CreateComment(request);
+
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => CreatedAtAction(nameof(CreateComment), new { id = command.Result },
-                new { id = command.Result }),
-            _ => BadRequest(command.Errors)
+            ResponseTypeEnum.Success => CreatedAtAction(nameof(CreateComment), new { id = response.Result }),
+            ResponseTypeEnum.Conflict => Conflict(response),
+            _ => BadRequest(response)
         };
     }
 
@@ -70,28 +71,45 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         Description = "Atualiza um comentário com base nos dados fornecidos.")]
     public async Task<IActionResult> UpdateComment([FromBody] UpdateCommentDto request, int id)
     {
-        var command = await commentService.UpdateComment(request, id);
+        var resposta = await commentService.UpdateComment(request, id);
 
-        return command.Type switch
+        return resposta.Type switch
         {
-            ResponseTypeEnum.Success => Ok(),
+            ResponseTypeEnum.Success => Ok(resposta),
             ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest(command.Errors)
+            _ => BadRequest(resposta.Errors)
         };
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Remove um comentário", Description = "Remove um comentário com base no ID.")]
     public async Task<IActionResult> DeleteComment(int id)
     {
-        var deleteTask = await commentService.DeleteComment(id);
-        return deleteTask.Type switch
+        var response = await commentService.DeleteCommentById(id);
+        return response.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
-            ResponseTypeEnum.NotFound => NotFound(),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => BadRequest()
+        };
+    }
+
+    [HttpDelete("{id:int}/soft-delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Remove um comentário", Description = "Remove um comentário com base no ID.")]
+    public async Task<IActionResult> SoftDeleteComment(int id)
+    {
+        var response = await commentService.SoftDeleteCommentById(id);
+        return response.Type switch
+        {
+            ResponseTypeEnum.Success => NoContent(),
+            ResponseTypeEnum.NotFound => NotFound(response),
             _ => BadRequest()
         };
     }
