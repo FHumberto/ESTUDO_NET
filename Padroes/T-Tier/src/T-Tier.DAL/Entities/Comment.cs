@@ -15,7 +15,7 @@ public class Comment : BaseEntity, ISoftDeleteEntity
 
     //? prop de navegação para o post associado ao comentário
     public Post? Post { get; init; }
-    
+
     public void SoftDelete()
     {
         IsDeleted = true;

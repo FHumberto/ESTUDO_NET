@@ -1,29 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using T_Tier.BLL.DTOs.Comments;
-using T_Tier.BLL.Services;
+using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Wrappers;
 
 namespace T_Tier.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CommentsController(CommentService commentService) : ControllerBase
+//[Authorize]
+public class CommentsController(ICommentService commentService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Obtém todos os comentários",
     Description = "Retorna uma lista com todos os comentários cadastrados.")]
     public async Task<IActionResult> GetAllComments()
     {
-        Response<IReadOnlyList<QueryCommentDto>> query = await commentService.GetAllCommentAsync();
-        return query.Type switch
+        var response = await commentService.GetAllComment();
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(query.Result),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.Forbidden => Forbid(),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -35,12 +37,12 @@ public class CommentsController(CommentService commentService) : ControllerBase
         Description = "Retorna os detalhes de um comentário pelo ID, incluindo a postagem e o usuário.")]
     public async Task<IActionResult> GetCommentById(int id)
     {
-        Response<QueryCommentDto?> query = await commentService.GetCommentByIdAsync(id);
-        return query.Type switch
+        var response = await commentService.GetCommentById(id);
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(query.Result),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => BadRequest(response)
         };
     }
 
@@ -51,7 +53,7 @@ public class CommentsController(CommentService commentService) : ControllerBase
         Description = "Cadastra um comentário com base nos dados fornecidos.")]
     public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto request)
     {
-        Response<int> command = await commentService.CreateCommentAsync(request);
+        var command = await commentService.CreateComment(request);
         return command.Type switch
         {
             ResponseTypeEnum.Success => CreatedAtAction(nameof(CreateComment), new { id = command.Result },
@@ -68,7 +70,7 @@ public class CommentsController(CommentService commentService) : ControllerBase
         Description = "Atualiza um comentário com base nos dados fornecidos.")]
     public async Task<IActionResult> UpdateComment([FromBody] UpdateCommentDto request, int id)
     {
-        Response<bool> command = await commentService.UpdateCommentAsync(request, id);
+        var command = await commentService.UpdateComment(request, id);
 
         return command.Type switch
         {
@@ -85,7 +87,7 @@ public class CommentsController(CommentService commentService) : ControllerBase
     [SwaggerOperation(Summary = "Remove um comentário", Description = "Remove um comentário com base no ID.")]
     public async Task<IActionResult> DeleteComment(int id)
     {
-        Response<bool> deleteTask = await commentService.DeleteAsync(id);
+        var deleteTask = await commentService.DeleteComment(id);
         return deleteTask.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
