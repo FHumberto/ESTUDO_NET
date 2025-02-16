@@ -1,10 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using T_Tier.BLL.DTOs.Users;
 using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Settings;
@@ -35,11 +35,11 @@ public class UserService(
 
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)
-            return new Response<LoginResponseDto>(null!, NotFound);
+            return new Response<LoginResponseDto>(null!, NotFound, "Usuário não encontrado.");
 
         var passwordCheck = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
         if (!passwordCheck.Succeeded)
-            return new Response<LoginResponseDto>(null!, Unauthorized, "Credenciais inválidas.");
+            return new Response<LoginResponseDto>(null!, InvalidInput, "Credenciais inválidas.");
 
         var jwtSecurityToken = await GenerateToken(user);
 
@@ -75,8 +75,8 @@ public class UserService(
 
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(e => e.Description).ToList();
-            return new Response<RegisterResponseDto>(null!, InvalidInput, errors);
+            return new Response<RegisterResponseDto>
+                (null!, InvalidInput, result.Errors.Select(e => e.Description).ToList());
         }
 
         await userManager.AddToRoleAsync(user, "Default");
@@ -97,10 +97,10 @@ public class UserService(
 
         var response = mapper.Map<QueryUserResponseDto>(user);
 
-        response.UserRole = roles.Any() ? string.Join(", ", roles) : "No Role Associated";
+        response.UserRole = roles.Any() ? string.Join(", ", roles) : "Sem Perfil Associado.";
 
         return response == null
-            ? new Response<QueryUserResponseDto>(null!, NotFound)
+            ? new Response<QueryUserResponseDto>(null!, NotFound, "Usuário não encontrado.")
             : new Response<QueryUserResponseDto>(response, Success);
     }
 
@@ -124,13 +124,13 @@ public class UserService(
         var user = await userManager.FindByIdAsync(userId);
 
         if (user is null)
-            return new Response<IReadOnlyList<QueryUserCommentsResponseDto>>(null!, NotFound);
+            return new Response<IReadOnlyList<QueryUserCommentsResponseDto>>(null!, NotFound, "Usuário não encontrado.");
 
         var comments = await commentRepository.GetCommentsWithUser(userId);
         var response = mapper.Map<IReadOnlyList<QueryUserCommentsResponseDto>>(comments);
 
         return response == null || response.Count == 0
-            ? new Response<IReadOnlyList<QueryUserCommentsResponseDto>>([], NotFound)
+            ? new Response<IReadOnlyList<QueryUserCommentsResponseDto>>([], NotFound, "Não foram encontradas postagens.")
             : new Response<IReadOnlyList<QueryUserCommentsResponseDto>>(response, Success);
     }
 
@@ -141,32 +141,41 @@ public class UserService(
         var response = mapper.Map<IReadOnlyList<QueryUserRoleResponseDto>>(roles);
 
         return response == null
-            ? new Response<IReadOnlyList<QueryUserRoleResponseDto>>(null!, NotFound)
+            ? new Response<IReadOnlyList<QueryUserRoleResponseDto>>(null!, NotFound, "Não foram encontrados perfis de usuário")
             : new Response<IReadOnlyList<QueryUserRoleResponseDto>>(response, Success);
     }
 
     public async Task<Response<bool>> DeleteUser(string userId)
     {
+        if (string.IsNullOrWhiteSpace(userId))
+            return new Response<bool>(false, InvalidInput, "O ID de usuário é obrigatório.");
+
         var user = await userManager.FindByIdAsync(userId);
-
         if (user is null)
-            return new Response<bool>(false, NotFound);
+            return new Response<bool>(false, NotFound, "Usuário não encontrado");
 
-        await userManager.DeleteAsync(user);
+        var result = await userManager.DeleteAsync(user);
 
-        return new Response<bool>(true, Success);
+        return result.Succeeded
+            ? new Response<bool>(true, Success)
+            : new Response<bool>(true, Error, "Erro durante a operação de deletar o usuário.");
     }
 
     public async Task<Response<bool>> SoftDeleteUser(string userId)
     {
+        if (string.IsNullOrWhiteSpace(userId))
+            return new Response<bool>(false, InvalidInput, "O ID de usuário é obrigatório.");
+
         var user = await userManager.FindByIdAsync(userId);
 
         if (user is null)
             return new Response<bool>(false, NotFound);
 
-        await userRepository.SoftDeleteAsync(user);
+        var result = await userRepository.SoftDeleteAsync(user);
 
-        return new Response<bool>(true, Success);
+        return result
+            ? new Response<bool>(true, Success)
+            : new Response<bool>(true, Error, "Erro durante a operação de deletar o usuário.");
     }
 
     private async Task<JwtSecurityToken> GenerateToken(User user)

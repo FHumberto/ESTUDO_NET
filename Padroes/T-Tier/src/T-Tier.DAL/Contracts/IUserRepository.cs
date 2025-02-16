@@ -3,5 +3,5 @@ using T_Tier.DAL.Entities;
 
 public interface IUserRepository
 {
-    Task<IdentityResult> SoftDeleteAsync(User user);
+    Task<bool> SoftDeleteAsync(User user);
 }
