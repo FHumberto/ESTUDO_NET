@@ -29,7 +29,6 @@ public class AccountController(IUserService userService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(response),
-            ResponseTypeEnum.Unauthorized => Unauthorized(response),
             ResponseTypeEnum.NotFound => NotFound(response),
             _ => BadRequest(response)
         };
@@ -38,9 +37,8 @@ public class AccountController(IUserService userService) : ControllerBase
     [Authorize]
     [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [SwaggerOperation(
         Tags = ["Auth"],
         Summary = "Registra um usuário",
@@ -53,7 +51,6 @@ public class AccountController(IUserService userService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(response),
-            ResponseTypeEnum.NotFound => NotFound(response),
             ResponseTypeEnum.Conflict => Conflict(response),
             _ => BadRequest(response)
         };
@@ -63,7 +60,6 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpGet("{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(
         Tags = new[] { "Account" },
@@ -76,7 +72,6 @@ public class AccountController(IUserService userService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(response),
-            ResponseTypeEnum.Unauthorized => Unauthorized(response),
             ResponseTypeEnum.NotFound => NotFound(response),
             _ => BadRequest(response)
         };
@@ -86,7 +81,6 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpGet("{userId}/posts")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(
         Tags = new[] { "Account" },
@@ -100,7 +94,6 @@ public class AccountController(IUserService userService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(response),
-            ResponseTypeEnum.Unauthorized => Unauthorized(response),
             ResponseTypeEnum.NotFound => NotFound(response),
             _ => BadRequest(response)
         };
@@ -110,7 +103,6 @@ public class AccountController(IUserService userService) : ControllerBase
     [HttpGet("{userId}/comments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(
         Tags = new[] { "Account" },
@@ -124,45 +116,66 @@ public class AccountController(IUserService userService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(response),
-            ResponseTypeEnum.Unauthorized => Unauthorized(response),
             ResponseTypeEnum.NotFound => NotFound(response),
             _ => BadRequest(response)
         };
     }
 
+    [Authorize("Admin")]
     [HttpGet("Roles")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Obtém todos os perfis de usuário cadastrados no sistema",
         Description = "Retorna uma lista com todos os perfils de usuário cadastrados no sistema.")]
-    public async Task<IActionResult> GetAllComments()
+    public async Task<IActionResult> GetAllRoles()
     {
         var response = await userService.GetAllRoles();
+
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(response),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.Forbidden => Forbid(),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
-    [HttpDelete]
     [Authorize(Roles = "Admin")]
+    [HttpDelete("{userId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Remove um um usuário", Description = "Remove um usuário com base no ID.")]
-    public async Task<IActionResult> DeleteUser([FromRoute] string id)
+    [SwaggerOperation(Summary = "Remove um usuário", Description = "Remove um usuário com base no ID.")]
+    public async Task<IActionResult> DeleteUser([FromRoute] string userId)
     {
-        var response = await userService.DeleteUser(id);
+        var response = await userService.DeleteUser(userId);
+
         return response.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
             ResponseTypeEnum.NotFound => NotFound(response),
-            ResponseTypeEnum.Unauthorized => Unauthorized(response),
-            _ => BadRequest(response)
+            ResponseTypeEnum.InvalidInput => BadRequest(response),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
+        };
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("{userId}/soft-delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Remove um usuário", Description = "Marca um usuário como deletado com base no ID.")]
+    public async Task<IActionResult> SoftDeleteUser([FromRoute] string userId)
+    {
+        var response = await userService.SoftDeleteUser(userId);
+
+        return response.Type switch
+        {
+            ResponseTypeEnum.Success => NoContent(),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.InvalidInput => BadRequest(response),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 }
