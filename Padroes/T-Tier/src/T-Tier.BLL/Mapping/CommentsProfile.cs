@@ -8,8 +8,7 @@ public class CommentsProfile : Profile
 {
     public CommentsProfile()
     {
-        //? converte de [A ==> B]
-        CreateMap<Comment, QueryCommentDto>();
+        CreateMap<Comment, QueryCommentResponseDto>();
         CreateMap<Comment, QueryCommentPostDto>();
         CreateMap<CreateCommentDto, Comment>();
         CreateMap<UpdateCommentDto, Comment>();
