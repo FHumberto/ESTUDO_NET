@@ -1,4 +1,4 @@
-﻿namespace T_Tier.BLL.DTOs.Auth;
+﻿namespace T_Tier.BLL.DTOs.Users;
 
 public class LoginResponseDto
 {
