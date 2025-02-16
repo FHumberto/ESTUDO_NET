@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
-using T_Tier.BLL.Wrappers;
+using System.Text.Json;
 
 public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
         int statusCode = StatusCodes.Status500InternalServerError;
-        var responseType = ResponseTypeEnum.Error;
         string errorMessage = "Erro interno inesperado de servidor";
 
         logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
@@ -15,28 +14,34 @@ public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger
         {
             case KeyNotFoundException:
                 statusCode = StatusCodes.Status404NotFound;
-                responseType = ResponseTypeEnum.NotFound;
-                errorMessage = "O recuso requisitado não foi encontrado.";
+                errorMessage = "O recurso requisitado não foi encontrado.";
                 break;
 
             case UnauthorizedAccessException:
                 statusCode = StatusCodes.Status403Forbidden;
-                responseType = ResponseTypeEnum.Forbidden;
-                errorMessage = "Você não possui permissão para performar essa ação.";
+                errorMessage = "Você não possui permissão para executar essa ação.";
                 break;
 
             case ArgumentException or ArgumentNullException:
                 statusCode = StatusCodes.Status400BadRequest;
-                responseType = ResponseTypeEnum.InvalidInput;
-                errorMessage = "Entrada Inválida.";
+                errorMessage = "Entrada inválida.";
+                break;
+
+            case InvalidOperationException:
+                statusCode = StatusCodes.Status500InternalServerError;
+                errorMessage = "Operação inválida.";
                 break;
         }
 
-        var response = new Response<bool>(false, responseType, new List<string> { errorMessage });
+        var response = new
+        {
+            status = statusCode,
+            message = errorMessage
+        };
 
         httpContext.Response.StatusCode = statusCode;
         httpContext.Response.ContentType = "application/json";
-        await httpContext.Response.WriteAsJsonAsync(response, cancellationToken);
+        await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response), cancellationToken);
 
         return true;
     }
