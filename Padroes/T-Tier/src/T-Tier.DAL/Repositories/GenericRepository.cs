@@ -41,4 +41,20 @@ public class GenericRepository<T>(AppDbContext context) : IRepository<T> where T
         Context.Entry(entity).State = EntityState.Modified;
         await Context.SaveChangesAsync();
     }
+
+    public async Task<bool> SoftDeleteAsync(T entity)
+    {
+        if (entity is not ISoftDeleteEntity softDeletableEntity)
+        {
+            throw new InvalidOperationException($"500: A entidade {typeof(T).Name} não implementa ISoftDelete.");
+        }
+
+        softDeletableEntity.SoftDelete();
+
+        Context.Set<T>().Update(entity);
+        await Context.SaveChangesAsync();
+
+        return true;
+    }
+
 }

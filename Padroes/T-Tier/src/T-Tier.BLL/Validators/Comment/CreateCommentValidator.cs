@@ -4,11 +4,11 @@ using T_Tier.DAL.Contracts;
 
 namespace T_Tier.BLL.Validators.Comment;
 
-public class CommentValidator : AbstractValidator<CreateCommentDto>
+public class CreateCommentValidator : AbstractValidator<CreateCommentDto>
 {
     private readonly ICommentRepository _commentRepository;
 
-    public CommentValidator(ICommentRepository commentRepository)
+    public CreateCommentValidator(ICommentRepository commentRepository)
     {
         _commentRepository = commentRepository;
 

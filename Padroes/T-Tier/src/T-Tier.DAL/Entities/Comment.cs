@@ -5,7 +5,7 @@ namespace T_Tier.DAL.Entities;
 public class Comment : BaseEntity, ISoftDeleteEntity
 {
     // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
-    public string? UserId { get; init; }
+    public string? UserId { get; set; }
     public int PostId { get; init; }
     public required string Body { get; init; }
     public bool IsDeleted { get; private set; } = false;

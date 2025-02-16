@@ -5,6 +5,7 @@ namespace T_Tier.BLL.Interfaces;
 
 public interface IUserService
 {
+    public string UserId { get; }
     Task<Response<LoginResponseDto>> Login(LoginRequestDto requestDto);
     Task<Response<RegisterResponseDto>> Register(RegisterRequestDto requestDto);
     Task<Response<QueryUserResponseDto>> FindUserById(string userId);
