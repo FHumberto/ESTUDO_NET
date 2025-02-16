@@ -26,6 +26,16 @@ builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddCors
+    (options => options.AddPolicy("Any",
+              any =>
+              {
+                  any.AllowAnyOrigin();
+                  any.AllowAnyHeader();
+                  any.AllowAnyMethod();
+              })
+    );
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
@@ -89,9 +99,9 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddScoped<SignInManager<User>>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
@@ -99,6 +109,8 @@ builder.Services.AddScoped<IPostRepository, PostsRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 var app = builder.Build();
+
+app.UseCors("Any");
 
 if (app.Environment.IsDevelopment())
 {
