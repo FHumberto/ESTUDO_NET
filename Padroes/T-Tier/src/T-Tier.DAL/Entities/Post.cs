@@ -4,7 +4,7 @@ namespace T_Tier.DAL.Entities;
 
 public class Post : BaseEntity, ISoftDeleteEntity
 {
-    public string? UserId { get; init; }
+    public string? UserId { get; set; }
     public required string Title { get; init; }
     public required string Body { get; init; }
     public bool IsDeleted { get; private set; } = false;
@@ -17,12 +17,12 @@ public class Post : BaseEntity, ISoftDeleteEntity
 
     //? prop de navegação para as tags associadas ao post
     public ICollection<Tag>? Tags { get; init; }
-    
+
     public void SoftDelete()
     {
         IsDeleted = true;
     }
-    
+
     public void Restore()
     {
         IsDeleted = false;

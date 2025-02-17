@@ -18,7 +18,7 @@ public class CommentService
         var response = mapper.Map<IReadOnlyList<QueryCommentResponseDto>>(comments);
 
         return response == null || response.Count == 0
-            ? new Response<IReadOnlyList<QueryCommentResponseDto>>([], NotFound, "Comentários não encontrados.")
+            ? new Response<IReadOnlyList<QueryCommentResponseDto>>([], NotFound)
             : new Response<IReadOnlyList<QueryCommentResponseDto>>(response, Success);
     }
 

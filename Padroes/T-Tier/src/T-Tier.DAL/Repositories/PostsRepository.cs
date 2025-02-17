@@ -7,6 +7,13 @@ namespace T_Tier.DAL.Repositories;
 
 public class PostsRepository(AppDbContext context) : GenericRepository<Post>(context), IPostRepository
 {
+    public async Task<IReadOnlyList<Post?>> GetPostsWithUser(string userId)
+    {
+        return await Context.Posts
+            .Where(p => p.UserId == userId)
+            .ToListAsync();
+    }
+
     public async Task<Post?> GetPostByIdWithTagsAsync(int id)
     {
         return await Context.Posts
@@ -14,7 +21,7 @@ public class PostsRepository(AppDbContext context) : GenericRepository<Post>(con
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
-    
+
     public async Task<Post?> GetPostByidWithCommentsAsync(int id)
     {
         return await Context.Posts
