@@ -9,7 +9,7 @@ public class TagsProfile : Profile
     public TagsProfile()
     {
         //? converte de [A ==> B]
-        CreateMap<Tag, QueryTagDto>();
+        CreateMap<Tag, QueryTagResponseDto>();
         CreateMap<CommandTagDto, Tag>();
     }
 }
