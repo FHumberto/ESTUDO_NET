@@ -21,6 +21,10 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
         builder.HasIndex(t => t.Name)
             .IsUnique();
 
+        //? remoção das auditoria via regra de negocio para essa entidade
+        builder.Ignore(t => t.CreatedBy);
+        builder.Ignore(t => t.UpdatedBy);
+
         #region ================================[RELACIONAMENTOS]================================
 
         //* uma tag pode estar associada a muitos posts, e um post pode ter muitas tags

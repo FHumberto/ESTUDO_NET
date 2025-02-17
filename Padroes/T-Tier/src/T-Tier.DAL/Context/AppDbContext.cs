@@ -48,13 +48,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         builder.Seed();
     }
 
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        SaveAuditFields();
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
     //! método genérico para criar o filtro de exclusão lógica
     private static void ApplySoftDeleteFilter<T>(ModelBuilder builder) where T : class, ISoftDeleteEntity
     {
         builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    private void SaveAuditFields()
     {
         DateTime localNow = DateTime.Now;
 
@@ -76,7 +83,5 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                         break;
                 }
             });
-
-        return base.SaveChangesAsync(cancellationToken);
     }
 }
