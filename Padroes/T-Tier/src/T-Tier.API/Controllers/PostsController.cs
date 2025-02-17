@@ -1,30 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using T_Tier.BLL.DTOs.Posts;
-using T_Tier.BLL.Services;
+using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Wrappers;
 
 namespace T_Tier.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PostsController(PostService postService) : ControllerBase
+[Authorize]
+public class PostsController(IPostService postService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Obtém todas as Postagens",
         Description = "Retorna uma lista com todas as postagens cadastradas.")]
     public async Task<IActionResult> GetAllPosts()
     {
-        Response<IReadOnlyList<QueryPostDto>> query = await postService.GetAllPostAsync();
+        var response = await postService.GetAllPost();
 
-        return query.Type switch
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(query.Result),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -36,13 +37,13 @@ public class PostsController(PostService postService) : ControllerBase
         Description = "Retorna os detalhes de uma postagem pelo ID.")]
     public async Task<IActionResult> GetPostById(int id)
     {
-        Response<QueryPostDto?> query = await postService.GetPostByIdAsync(id);
+        var response = await postService.GetPostById(id);
 
-        return query.Type switch
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(query.Result),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => BadRequest(response)
         };
     }
 
@@ -54,16 +55,16 @@ public class PostsController(PostService postService) : ControllerBase
         Description = "Retorna os detalhes de uma postagem, incluindo uma lista de tags associadas a ela pelo ID.")]
     public async Task<IActionResult> GetPostWithTag(int id)
     {
-        Response<QueryPostTagDto?> query = await postService.GetPostByIdWithTagAsync(id);
+        var response = await postService.GetPostByIdWithTag(id);
 
-        return query.Type switch
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(query.Result),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => BadRequest(response)
         };
     }
-    
+
     [HttpGet("{id:int}/comments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -72,31 +73,31 @@ public class PostsController(PostService postService) : ControllerBase
         Description = "Retorna os detalhes de uma postagem, incluindo uma lista de comentários associados a ela pelo ID.")]
     public async Task<IActionResult> GetPostWithComments(int id)
     {
-        Response<QueryPostCommentsDto?> query = await postService.GetPostByIdWithCommentsAsync(id);
+        var response = await postService.GetPostByIdWithComments(id);
 
-        return query.Type switch
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(query.Result),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest()
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => BadRequest(response)
         };
     }
 
-    //TODO: REVISAR ESSE ENDPOINT QUANDO ADICIONAR USERS
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [SwaggerOperation(Summary = "Cadastra uma postagem",  
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [SwaggerOperation(Summary = "Cadastra uma postagem",
         Description = "Cadastra uma postagem com base nos dados fornecidos, associada ao usuário atual.")]
-    public async Task<IActionResult> CreatePost([FromBody] CommandPostDto request)
+    public async Task<IActionResult> CreatePost([FromBody] CommandPostRequestDto request)
     {
-        Response<int> command = await postService.CreatePostAsync(request);
+        var response = await postService.CreatePost(request);
 
-        return command.Type switch
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => CreatedAtAction(nameof(CreatePost), new { id = command.Result },
-                new { id = command.Result }),
-            _ => BadRequest(command.Errors)
+            ResponseTypeEnum.Success => CreatedAtAction(nameof(CreatePost), new { id = response.Result }),
+            ResponseTypeEnum.Conflict => Conflict(response),
+            _ => BadRequest(response)
         };
     }
 
@@ -104,34 +105,52 @@ public class PostsController(PostService postService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Atualiza uma postagem",  
+    [SwaggerOperation(Summary = "Atualiza uma postagem",
         Description = "Atualiza uma postagem com base nos dados fornecidos.")]
-    public async Task<IActionResult> UpdatePost([FromBody] CommandPostDto request, int id)
+    public async Task<IActionResult> UpdatePost([FromBody] CommandPostRequestDto request, int id)
     {
-        Response<bool> command = await postService.UpdatePostAsync(request, id);
+        var response = await postService.UpdatePost(request, id);
 
-        return command.Type switch
+        return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(),
             ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest(command.Errors)
+            _ => BadRequest(response.Errors)
         };
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [SwaggerOperation(Summary = "Remove uma postagem",  
+    [SwaggerOperation(Summary = "Remove uma postagem",
         Description = "Remove uma postagem com base no ID.")]
     public async Task<IActionResult> DeletePost(int id)
     {
-        Response<bool> deleteTask = await postService.DeleteAsync(id);
+        var response = await postService.DeletePostById(id);
 
-        return deleteTask.Type switch
+        return response.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
-            ResponseTypeEnum.NotFound => NotFound(),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            _ => BadRequest()
+        };
+    }
+
+    [HttpDelete("{id:int}/soft-delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Remove uma postagem", Description = "Remove uma postagem com base no ID.")]
+    public async Task<IActionResult> SoftDeletePost(int id)
+    {
+        var response = await postService.SoftDeletePostById(id);
+
+        return response.Type switch
+        {
+            ResponseTypeEnum.Success => NoContent(),
+            ResponseTypeEnum.NotFound => NotFound(response),
             _ => BadRequest()
         };
     }

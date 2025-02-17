@@ -1,9 +1,9 @@
 ﻿#region
 
 using AutoMapper;
-using FluentValidation.Results;
 using T_Tier.BLL.DTOs.Posts;
-using T_Tier.BLL.Validators;
+using T_Tier.BLL.Interfaces;
+using T_Tier.BLL.Utils;
 using T_Tier.BLL.Wrappers;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
@@ -13,99 +13,188 @@ using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
 
 namespace T_Tier.BLL.Services;
 
-public class PostService(IPostRepository postRepository, IMapper mapper)
+public class PostService(IPostRepository postRepository, IUserService userService, IServiceProvider serviceProvider, IMapper mapper) : IPostService
 {
-    public async Task<Response<IReadOnlyList<QueryPostDto>>> GetAllPostAsync()
+    public async Task<Response<IReadOnlyList<QueryPostResponseDto>>> GetAllPost()
     {
         IReadOnlyList<Post> posts = await postRepository.GetAllAsync();
-        IReadOnlyList<QueryPostDto> response = mapper.Map<IReadOnlyList<QueryPostDto>>(posts);
+        IReadOnlyList<QueryPostResponseDto> response = mapper.Map<IReadOnlyList<QueryPostResponseDto>>(posts);
 
         return response == null || response.Count == 0
-            ? new Response<IReadOnlyList<QueryPostDto>>(new List<QueryPostDto>(), NotFound)
-            : new Response<IReadOnlyList<QueryPostDto>>(response, Success);
+            ? new Response<IReadOnlyList<QueryPostResponseDto>>([], NotFound)
+            : new Response<IReadOnlyList<QueryPostResponseDto>>(response, Success);
     }
 
-    public async Task<Response<QueryPostDto?>> GetPostByIdAsync(int id)
+    public async Task<Response<QueryPostResponseDto?>> GetPostById(int id)
     {
         Post? post = await postRepository.GetByIdAsync(id);
-        QueryPostDto? response = mapper.Map<QueryPostDto>(post);
+        QueryPostResponseDto? response = mapper.Map<QueryPostResponseDto>(post);
 
         return response == null
-            ? new Response<QueryPostDto?>(null, NotFound)
-            : new Response<QueryPostDto?>(response, Success);
+            ? new Response<QueryPostResponseDto?>(null, NotFound, "Postagem não localizada.")
+            : new Response<QueryPostResponseDto?>(response, Success);
     }
 
-    public async Task<Response<QueryPostTagDto?>> GetPostByIdWithTagAsync(int id)
+    public async Task<Response<QueryPostTagResponseDto?>> GetPostByIdWithTag(int id)
     {
         Post? post = await postRepository.GetPostByIdWithTagsAsync(id);
-        QueryPostTagDto? response = mapper.Map<QueryPostTagDto>(post);
+        QueryPostTagResponseDto? response = mapper.Map<QueryPostTagResponseDto>(post);
 
         return response == null
-            ? new Response<QueryPostTagDto?>(null, NotFound)
-            : new Response<QueryPostTagDto?>(response, Success);
+            ? new Response<QueryPostTagResponseDto?>(null, NotFound, "Postagem não localizada.")
+            : new Response<QueryPostTagResponseDto?>(response, Success);
     }
-    
-    public async Task<Response<QueryPostCommentsDto?>> GetPostByIdWithCommentsAsync(int id)
+
+    public async Task<Response<QueryPostCommentsResponseDto?>> GetPostByIdWithComments(int id)
     {
         Post? post = await postRepository.GetPostByidWithCommentsAsync(id);
-        QueryPostCommentsDto? response = mapper.Map<QueryPostCommentsDto>(post);
+        QueryPostCommentsResponseDto? response = mapper.Map<QueryPostCommentsResponseDto>(post);
 
         return response == null
-            ? new Response<QueryPostCommentsDto?>(null, NotFound)
-            : new Response<QueryPostCommentsDto?>(response, Success);
+            ? new Response<QueryPostCommentsResponseDto?>(null, NotFound, "Postagem não localizada.")
+            : new Response<QueryPostCommentsResponseDto?>(response, Success);
     }
 
-    public async Task<Response<int>> CreatePostAsync(CommandPostDto request)
+    public async Task<Response<int>> CreatePost(CommandPostRequestDto request)
     {
-        PostValidator validationRules = new();
-        ValidationResult? validationResult = await validationRules.ValidateAsync(request);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
 
-        if (!validationResult.IsValid)
+        var validationResult = await serviceProvider.ValidateAsync(request);
+
+        if (validationResult.Count > 0)
         {
-            return new Response<int>(0, InvalidInput, validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            return new Response<int>(0, InvalidInput, validationResult);
         }
 
-        Post postToCreate = mapper.Map<Post>(request);
-        int createdPostId = await postRepository.CreateAsync(postToCreate);
+        #endregion
+
+        #region ====[2.REGRA]===========================================================================================
+
+        var userId = userService.UserId;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+
+        #endregion
+
+        #region ====[3.MAPEAMENTO]======================================================================================
+
+        Post? postToCreate = mapper.Map<Post>(request);
+
+        postToCreate.UserId = userId;
+        postToCreate.CreatedBy = userId;
+
+        #endregion
+
+        #region ====[4.ACÃO]============================================================================================
+
+        var createdPostId = await postRepository.CreateAsync(postToCreate);
 
         return new Response<int>(createdPostId, Success);
+
+        #endregion
     }
 
-    public async Task<Response<bool>> UpdatePostAsync(CommandPostDto request, int id)
+    public async Task<Response<bool>> UpdatePost(CommandPostRequestDto request, int id)
     {
-        Post? postToUpdate = await postRepository.GetByIdAsync(id);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
 
-        if (postToUpdate == null)
+        var postToUpdate = await postRepository.GetByIdAsync(id);
+
+        if (postToUpdate is null)
         {
-            return new Response<bool>(false, NotFound);
+            return new Response<bool>(false, NotFound, "Postagem não encontrada.");
         }
 
-        PostValidator validationRules = new();
-        ValidationResult? validationResult = await validationRules.ValidateAsync(request);
+        var validationResult = await serviceProvider.ValidateAsync(request);
 
-        if (!validationResult.IsValid)
+        if (validationResult.Count > 0)
         {
-            return new Response<bool>(false, InvalidInput, validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            return new Response<bool>(false, InvalidInput, validationResult);
         }
+
+        #endregion
+
+        #region ====[2.REGRA]===========================================================================================
+
+        if (userService.UserId != postToUpdate.UserId)
+        {
+            throw new InvalidOperationException("Operação Inválida.");
+        }
+
+        #endregion
+
+        #region ====[3.MAPEAMENTO]======================================================================================
 
         mapper.Map(request, postToUpdate);
+
+        postToUpdate.UpdatedBy = userService.UserId;
+
+        #endregion
+
+        #region ====[4.ACÃO]============================================================================================
 
         await postRepository.UpdateAsync(postToUpdate);
 
         return new Response<bool>(true, Success);
+
+        #endregion
     }
 
-    public async Task<Response<bool>> DeleteAsync(int id)
+    public async Task<Response<bool>> DeletePostById(int id)
     {
-        Post? post = await postRepository.GetByIdAsync(id);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
 
-        if (post == null)
+        var post = await postRepository.GetByIdAsync(id);
+
+        if (post is null)
         {
-            return new Response<bool>(false, NotFound);
+            return new Response<bool>(false, NotFound, "Postagem não encontrada.");
         }
+
+        #endregion
+
+        #region ====[2.ACÃO]============================================================================================
 
         await postRepository.DeleteAsync(post);
 
         return new Response<bool>(true, Success);
+
+        #endregion
+    }
+
+    public async Task<Response<bool>> SoftDeletePostById(int id)
+    {
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        var postToDelete = await postRepository.GetByIdAsync(id);
+
+        if (postToDelete is null)
+        {
+            return new Response<bool>(false, NotFound, "Comentário não encontrado.");
+        }
+
+        #endregion
+
+        #region ====[2.REGRA]===========================================================================================
+
+        if (postToDelete.UserId != userService.UserId)
+        {
+            throw new InvalidOperationException("Operação Inválida.");
+        }
+
+        #endregion
+
+        #region ====[3.ACÃO]============================================================================================
+
+        var operation = postRepository.SoftDeleteAsync(postToDelete);
+
+        return operation.Result
+            ? new Response<bool>(true, Success)
+            : new Response<bool>(true, Error, "Erro durante a operação de deletar a postagem.");
+
+        #endregion
     }
 }

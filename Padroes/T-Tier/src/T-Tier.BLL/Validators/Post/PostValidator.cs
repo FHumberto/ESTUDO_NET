@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using T_Tier.BLL.DTOs.Posts;
 
-namespace T_Tier.BLL.Validators;
+namespace T_Tier.BLL.Validators.Post;
 
-public class PostValidator : AbstractValidator<CommandPostDto>
+public class PostValidator : AbstractValidator<CommandPostRequestDto>
 {
     public PostValidator()
     {
