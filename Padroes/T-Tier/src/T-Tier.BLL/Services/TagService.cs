@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using FluentValidation.Results;
 using T_Tier.BLL.DTOs.Tags;
-using T_Tier.BLL.Validators;
+using T_Tier.BLL.Interfaces;
+using T_Tier.BLL.Utils;
 using T_Tier.BLL.Wrappers;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
@@ -9,80 +9,110 @@ using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
 
 namespace T_Tier.BLL.Services;
 
-public class TagService(ITagRepository tagRepository, IMapper mapper)
+public class TagService(ITagRepository tagRepository, IServiceProvider serviceProvider, IMapper mapper) : ITagService
 {
-    public async Task<Response<IReadOnlyList<QueryTagDto>>> GetAllAsync()
+    public async Task<Response<IReadOnlyList<QueryTagResponseDto>>> GetAllTag()
     {
-        IReadOnlyList<Tag> query = await tagRepository.GetAllAsync();
-        IReadOnlyList<QueryTagDto>? response = mapper.Map<IReadOnlyList<QueryTagDto>>(query);
+        IReadOnlyList<Tag> tags = await tagRepository.GetAllAsync();
+        IReadOnlyList<QueryTagResponseDto> response = mapper.Map<IReadOnlyList<QueryTagResponseDto>>(tags);
 
         return response == null || response.Count == 0
-            ? new Response<IReadOnlyList<QueryTagDto>>(result: new List<QueryTagDto>(), type: NotFound)
-            : new Response<IReadOnlyList<QueryTagDto>>(result: response, type: Success);
+            ? new Response<IReadOnlyList<QueryTagResponseDto>>([], type: NotFound)
+            : new Response<IReadOnlyList<QueryTagResponseDto>>(response, Success);
     }
 
-    public async Task<Response<QueryTagDto?>> GetByIdAsync(int id)
+    public async Task<Response<QueryTagResponseDto?>> GetTagById(int id)
     {
         Tag? tag = await tagRepository.GetByIdAsync(id);
-        QueryTagDto? response = mapper.Map<QueryTagDto>(tag);
+        QueryTagResponseDto? response = mapper.Map<QueryTagResponseDto>(tag);
 
         return response == null
-            ? new Response<QueryTagDto?>(result: null, type: NotFound)
-            : new Response<QueryTagDto?>(result: response, type: Success);
+            ? new Response<QueryTagResponseDto?>(null, NotFound)
+            : new Response<QueryTagResponseDto?>(response, Success);
     }
-    
-    public async Task<Response<int>> CreateAsync(CommandTagDto request)
-    {
-        TagValidator validationRules = new(tagRepository);
-        ValidationResult? validationResult = await validationRules.ValidateAsync(request);
 
-        if (!validationResult.IsValid)
+    public async Task<Response<int>> CreateTag(CommandTagDto request)
+    {
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        var validationResult = await serviceProvider.ValidateAsync(request);
+
+        if (validationResult.Count > 0)
         {
-            return new Response<int>(result: 0, type: ResponseTypeEnum.InvalidInput, errors: validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            return new Response<int>(0, InvalidInput, validationResult);
         }
+
+        #endregion
+
+        #region ====[2.MAPEAMENTO]======================================================================================
 
         Tag tagToCreate = mapper.Map<Tag>(request);
+
+        #endregion
+
+        #region ====[3.ACÃO]============================================================================================
+
         int createdTagId = await tagRepository.CreateAsync(tagToCreate);
 
-        return new Response<int>(result: createdTagId, type: ResponseTypeEnum.Success);
-    }
-    
-    public async Task<Response<bool>> UpdateAsync(CommandTagDto request, int id)
-    {
-        Tag? tagToUpdate = await tagRepository.GetByIdAsync(id);
-        
-        if (tagToUpdate == null)
-        {
-            return new Response<bool>(result: false, type: NotFound);
-        }
-        
-        TagValidator validationRules = new(tagRepository);
-        ValidationResult? validationResult = await validationRules.ValidateAsync(request);
+        return new Response<int>(createdTagId, ResponseTypeEnum.Success);
 
-        if (!validationResult.IsValid)
+        #endregion
+    }
+
+    public async Task<Response<bool>> UpdateTag(CommandTagDto request, int id)
+    {
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        var tagToUpdate = await tagRepository.GetByIdAsync(id);
+
+        if (tagToUpdate is null)
         {
-            return new Response<bool>(result: false, type: ResponseTypeEnum.InvalidInput, errors: validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            return new Response<bool>(false, NotFound, "Tag não encontrada.");
         }
-        
+
+        var validationResult = await serviceProvider.ValidateAsync(request);
+
+        if (validationResult.Count > 0)
+        {
+            return new Response<bool>(false, InvalidInput, validationResult);
+        }
+
+        #endregion
+
+        #region ====[2.REGRA]===========================================================================================
+
         mapper.Map(request, tagToUpdate);
-        
+
+        #endregion
+
+        #region ====[3.ACÃO]============================================================================================
+
         await tagRepository.UpdateAsync(tagToUpdate);
-        
-        return new Response<bool>(result: true, type: Success);
+
+        return new Response<bool>(true, Success);
+
+        #endregion
     }
 
-    
-    public async Task<Response<bool>> DeleteAsync(int id)
+    public async Task<Response<bool>> DeleteTagById(int id)
     {
-        Tag? tag = await tagRepository.GetByIdAsync(id);
+        #region ====[1.VALIDAÇÃO]=======================================================================================
 
-        if (tag == null)
+        var tagToDelete = await tagRepository.GetByIdAsync(id);
+
+        if (tagToDelete is null)
         {
-            return new Response<bool>(result: false, type: NotFound);
+            return new Response<bool>(false, NotFound, "Tag não encontrada.");
         }
 
-        await tagRepository.DeleteAsync(tag);
+        #endregion
 
-        return new Response<bool>(result: true, type: Success);
+        #region ====[2.ACÃO]============================================================================================
+
+        await tagRepository.DeleteAsync(tagToDelete);
+
+        return new Response<bool>(true, Success);
+
+        #endregion
     }
 }

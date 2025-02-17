@@ -2,7 +2,7 @@
 using T_Tier.BLL.DTOs.Tags;
 using T_Tier.DAL.Contracts;
 
-namespace T_Tier.BLL.Validators;
+namespace T_Tier.BLL.Validators.Tag;
 
 public class TagValidator : AbstractValidator<CommandTagDto>
 {

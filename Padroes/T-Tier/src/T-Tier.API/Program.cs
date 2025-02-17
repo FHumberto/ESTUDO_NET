@@ -99,7 +99,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddScoped<SignInManager<User>>();
-builder.Services.AddScoped<TagService>();
+builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
