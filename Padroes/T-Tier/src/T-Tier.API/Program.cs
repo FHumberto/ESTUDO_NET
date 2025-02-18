@@ -2,6 +2,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 using T_Tier.API.Extensions;
 using T_Tier.BLL.Settings;
 using T_Tier.DAL.Context;
@@ -25,6 +27,19 @@ builder.Services.AddCorsPolicies();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .WriteTo.MSSqlServer(
+            connectionString: connectionString,
+            sinkOptions: new MSSqlServerSinkOptions { TableName = "Logs", AutoCreateSqlTable = true },
+            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+        );
+});
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddSwaggerServices();
@@ -34,6 +49,7 @@ builder.Services.AddAuthenticationServices(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 app.UseCorsPolicies();
 
 if (app.Environment.IsDevelopment())
