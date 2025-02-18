@@ -8,7 +8,7 @@ public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger
         int statusCode = StatusCodes.Status500InternalServerError;
         string errorMessage = "Erro interno inesperado de servidor";
 
-        logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
+        logger.LogError(exception, "exception: {Message}", exception.Message);
 
         switch (exception)
         {
