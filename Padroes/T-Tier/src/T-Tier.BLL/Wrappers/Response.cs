@@ -7,7 +7,7 @@ public class Response<T>(
     ResponseTypeEnum type = ResponseTypeEnum.Success,
     object? errors = null) // Pode ser List<string> ou Dictionary<string, List<string>>
 {
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public T? Result { get; init; } = result;
 
     public ResponseTypeEnum Type { get; init; } = type;
