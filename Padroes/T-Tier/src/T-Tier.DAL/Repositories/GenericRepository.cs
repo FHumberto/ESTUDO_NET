@@ -40,14 +40,17 @@ public class GenericRepository<T>(AppDbContext context, ILogger<GenericRepositor
 
     public async Task<int> CreateAsync(T entity)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             await context.Set<T>().AddAsync(entity);
             await context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return entity.Id;
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             logger.LogError(ex, "DAL-REPO: Erro ao criar entidade {EntityName}.", typeof(T).Name);
             return 0;
         }
@@ -55,14 +58,17 @@ public class GenericRepository<T>(AppDbContext context, ILogger<GenericRepositor
 
     public async Task<bool> DeleteAsync(T entity)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             context.Remove(entity);
             await context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return true;
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             logger.LogError(ex, "DAL-REPO: Erro ao deletar entidade {EntityName} com ID {Id}.", typeof(T).Name, entity.Id);
             return false;
         }
@@ -70,14 +76,17 @@ public class GenericRepository<T>(AppDbContext context, ILogger<GenericRepositor
 
     public async Task<bool> UpdateAsync(T entity)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             context.Entry(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return true;
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             logger.LogError(ex, "DAL-REPO: Erro ao atualizar entidade {EntityName} com ID {Id}.", typeof(T).Name, entity.Id);
             return false;
         }
@@ -85,6 +94,7 @@ public class GenericRepository<T>(AppDbContext context, ILogger<GenericRepositor
 
     public async Task<bool> SoftDeleteAsync(T entity)
     {
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
             if (entity is not ISoftDeleteEntity softDeletableEntity)
@@ -95,14 +105,14 @@ public class GenericRepository<T>(AppDbContext context, ILogger<GenericRepositor
             }
 
             softDeletableEntity.SoftDelete();
-
             context.Set<T>().Update(entity);
             await context.SaveChangesAsync();
-
+            await transaction.CommitAsync();
             return true;
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             logger.LogError(ex, "DAL-REPO: Erro ao realizar soft delete na entidade {EntityName} com ID {Id}.", typeof(T).Name, entity.Id);
             return false;
         }
