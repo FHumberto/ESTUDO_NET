@@ -8,7 +8,11 @@ public class GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger
         int statusCode = StatusCodes.Status500InternalServerError;
         string errorMessage = "Erro interno inesperado de servidor";
 
-        logger.LogError(exception, "exception: {Message}", exception.Message);
+        // Log resumido: apenas o tipo da exceção e a mensagem
+        logger.LogError("exception: {ExceptionType} - {Message} | TraceId: {TraceId}",
+            exception.GetType().Name,
+            exception.Message,
+            httpContext.TraceIdentifier);
 
         switch (exception)
         {
