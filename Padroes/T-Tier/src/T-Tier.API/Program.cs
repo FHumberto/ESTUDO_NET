@@ -1,32 +1,25 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
 using T_Tier.API.Extensions;
+using T_Tier.BLL;
 using T_Tier.BLL.Settings;
-using T_Tier.DAL.Context;
-using T_Tier.DAL.Entities;
+using T_Tier.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
-builder.Services.AddSingleton(sp =>
-    sp.GetRequiredService<IOptions<JwtSettings>>()
-        .Value);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
+builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<JwtSettings>>().Value);
+builder.Services.RegisterBLLDependencies(builder.Configuration);
+builder.Services.RegisterDALDependencies(builder.Configuration);
 builder.Services.AddExceptionHandler<GlobalExceptionMiddleware>();
 builder.Services.AddCorsPolicies();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Host.UseSerilog((context, services, configuration) =>
 {
     configuration
@@ -35,15 +28,13 @@ builder.Host.UseSerilog((context, services, configuration) =>
         .Enrich.FromLogContext()
         .WriteTo.Console()
         .WriteTo.MSSqlServer(
-            connectionString: connectionString,
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
             sinkOptions: new MSSqlServerSinkOptions { TableName = "Logs", AutoCreateSqlTable = true },
             restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
         );
 });
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddSwaggerServices();
-builder.Services.AddScopedServices();
 
 builder.Services.AddAuthenticationServices(builder.Configuration);
 
@@ -66,7 +57,6 @@ app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

@@ -121,7 +121,7 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize("Admin")]
+    [Authorize(Roles = "Admin")]
     [HttpGet("Roles")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
