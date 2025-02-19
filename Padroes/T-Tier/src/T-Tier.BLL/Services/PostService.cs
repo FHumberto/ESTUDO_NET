@@ -1,6 +1,4 @@
-﻿#region
-
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
 using T_Tier.BLL.DTOs.Posts;
 using T_Tier.BLL.Interfaces;
@@ -9,8 +7,6 @@ using T_Tier.BLL.Wrappers;
 using T_Tier.DAL.Contracts;
 using T_Tier.DAL.Entities;
 using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
-
-#endregion
 
 namespace T_Tier.BLL.Services;
 
@@ -233,7 +229,13 @@ public class PostService
 
         var createdPostId = await postRepository.CreateAsync(postToCreate);
 
+        if (createdPostId == 0)
+        {
+            return new Response<int>(0, Error);
+        }
+
         logger.LogInformation("BLL-SERV: Postagem criada com sucesso. ID: {PostId}", createdPostId);
+
         return new Response<int>(createdPostId, Success);
 
         #endregion

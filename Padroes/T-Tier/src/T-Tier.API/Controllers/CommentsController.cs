@@ -41,7 +41,7 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         {
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest(response)
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -59,7 +59,8 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         {
             ResponseTypeEnum.Success => CreatedAtAction(nameof(CreateComment), new { id = response.Result }),
             ResponseTypeEnum.Conflict => Conflict(response),
-            _ => BadRequest(response)
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -71,13 +72,14 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         Description = "Atualiza um comentário com base nos dados fornecidos.")]
     public async Task<IActionResult> UpdateComment([FromBody] UpdateCommentDto request, int id)
     {
-        var resposta = await commentService.UpdateComment(request, id);
+        var response = await commentService.UpdateComment(request, id);
 
-        return resposta.Type switch
+        return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(resposta),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest(resposta.Errors)
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -94,7 +96,7 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         {
             ResponseTypeEnum.Success => NoContent(),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest()
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -109,8 +111,8 @@ public class CommentsController(ICommentService commentService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
-            ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest()
+            ResponseTypeEnum.NotFound => NotFound(response.Type),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 }
