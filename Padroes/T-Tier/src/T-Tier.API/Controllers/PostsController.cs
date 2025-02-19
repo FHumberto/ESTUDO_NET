@@ -19,7 +19,7 @@ public class PostsController(IPostService postService) : ControllerBase
         Description = "Retorna uma lista com todas as postagens cadastradas.")]
     public async Task<IActionResult> GetAllPosts()
     {
-        var response = await postService.GetAllPost();
+        Response<IReadOnlyList<QueryPostResponseDto>>? response = await postService.GetAllPost();
 
         return response.Type switch
         {
@@ -43,7 +43,7 @@ public class PostsController(IPostService postService) : ControllerBase
         {
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest(response)
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -61,7 +61,7 @@ public class PostsController(IPostService postService) : ControllerBase
         {
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest(response)
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -79,7 +79,7 @@ public class PostsController(IPostService postService) : ControllerBase
         {
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest(response)
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -97,7 +97,8 @@ public class PostsController(IPostService postService) : ControllerBase
         {
             ResponseTypeEnum.Success => CreatedAtAction(nameof(CreatePost), new { id = response.Result }),
             ResponseTypeEnum.Conflict => Conflict(response),
-            _ => BadRequest(response)
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -114,8 +115,9 @@ public class PostsController(IPostService postService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => Ok(),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest(response.Errors)
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -134,13 +136,12 @@ public class PostsController(IPostService postService) : ControllerBase
         {
             ResponseTypeEnum.Success => NoContent(),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest()
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
     [HttpDelete("{id:int}/soft-delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Remove uma postagem", Description = "Remove uma postagem com base no ID.")]
     public async Task<IActionResult> SoftDeletePost(int id)
@@ -150,8 +151,8 @@ public class PostsController(IPostService postService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
-            ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest()
+            ResponseTypeEnum.NotFound => NotFound(response.Type),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 }

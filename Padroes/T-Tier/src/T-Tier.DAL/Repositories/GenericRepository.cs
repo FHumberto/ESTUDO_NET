@@ -53,29 +53,33 @@ public class GenericRepository<T>(AppDbContext context, ILogger<GenericRepositor
         }
     }
 
-    public async Task DeleteAsync(T entity)
+    public async Task<bool> DeleteAsync(T entity)
     {
         try
         {
             context.Remove(entity);
             await context.SaveChangesAsync();
+            return true;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "DAL-REPO: Erro ao deletar entidade {EntityName} com ID {Id}.", typeof(T).Name, entity.Id);
+            return false;
         }
     }
 
-    public async Task UpdateAsync(T entity)
+    public async Task<bool> UpdateAsync(T entity)
     {
         try
         {
             context.Entry(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
+            return true;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "DAL-REPO: Erro ao atualizar entidade {EntityName} com ID {Id}.", typeof(T).Name, entity.Id);
+            return false;
         }
     }
 
