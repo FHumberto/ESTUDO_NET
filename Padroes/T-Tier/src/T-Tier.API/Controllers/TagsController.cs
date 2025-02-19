@@ -41,7 +41,7 @@ public class TagsController(ITagService tagService) : ControllerBase
         {
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest(response)
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -58,7 +58,8 @@ public class TagsController(ITagService tagService) : ControllerBase
         {
             ResponseTypeEnum.Success => CreatedAtAction(nameof(CreateTag), new { id = response.Result }),
             ResponseTypeEnum.Conflict => Conflict(response),
-            _ => BadRequest(response)
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -73,9 +74,10 @@ public class TagsController(ITagService tagService) : ControllerBase
 
         return response.Type switch
         {
-            ResponseTypeEnum.Success => Ok(),
-            ResponseTypeEnum.NotFound => NotFound(),
-            _ => BadRequest(response.Errors)
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 
@@ -91,8 +93,8 @@ public class TagsController(ITagService tagService) : ControllerBase
         return response.Type switch
         {
             ResponseTypeEnum.Success => NoContent(),
-            ResponseTypeEnum.NotFound => NotFound(response),
-            _ => BadRequest()
+            ResponseTypeEnum.NotFound => NotFound(response.Type),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }
 }

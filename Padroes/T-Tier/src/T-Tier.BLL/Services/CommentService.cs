@@ -123,6 +123,11 @@ public class CommentService
 
         var createdCommentId = await commentRepository.CreateAsync(commentToCreate);
 
+        if (createdCommentId == 0)
+        {
+            return new Response<int>(0, Error);
+        }
+
         logger.LogInformation("BLL-SERV: Comentário criado com sucesso. ID: {CreatedCommentId}.", createdCommentId);
 
         return new Response<int>(createdCommentId);
@@ -187,7 +192,12 @@ public class CommentService
 
         logger.LogInformation("BLL-SERV: Atualizando comentário com ID {CommentId}.", id);
 
-        await commentRepository.UpdateAsync(commentToUpdate);
+        var operation = await commentRepository.UpdateAsync(commentToUpdate);
+
+        if (!operation)
+        {
+            return new Response<bool>(false, Error);
+        }
 
         logger.LogInformation("BLL-SERV: Comentário com ID {CommentId} atualizado com sucesso.", id);
 
