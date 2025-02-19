@@ -1,8 +1,5 @@
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
-using Serilog.Sinks.MSSqlServer;
 using T_Tier.API.Extensions;
 using T_Tier.BLL;
 using T_Tier.BLL.Settings;
@@ -25,13 +22,7 @@ builder.Host.UseSerilog((context, services, configuration) =>
     configuration
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .WriteTo.Console()
-        .WriteTo.MSSqlServer(
-            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-            sinkOptions: new MSSqlServerSinkOptions { TableName = "Logs", AutoCreateSqlTable = true },
-            restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
-        );
+        .Enrich.FromLogContext();
 });
 
 builder.Services.AddSwaggerServices();

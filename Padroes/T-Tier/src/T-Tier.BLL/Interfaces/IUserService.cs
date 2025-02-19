@@ -12,6 +12,7 @@ public interface IUserService
     Task<Response<IReadOnlyList<QueryUserPostsResponseDto>>> FindPostsWithUser(string userId);
     Task<Response<IReadOnlyList<QueryUserCommentsResponseDto>>> FindCommentsWithUser(string userId);
     Task<Response<IReadOnlyList<QueryUserRoleResponseDto>>> GetAllRoles();
+    Task<Response<bool>> UpdateUserRole(UpdateUserRoleRequestDto request, string userId);
     Task<Response<bool>> DeleteUser(string userId);
     Task<Response<bool>> SoftDeleteUser(string userId);
 }
