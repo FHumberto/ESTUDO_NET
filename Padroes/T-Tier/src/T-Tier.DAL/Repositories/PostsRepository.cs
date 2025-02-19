@@ -7,14 +7,14 @@ using T_Tier.DAL.Entities;
 namespace T_Tier.DAL.Repositories;
 
 public class PostsRepository(AppDbContext context, ILogger<PostsRepository> logger)
-    : GenericRepository<Post>(context), IPostRepository
+    : GenericRepository<Post>(context, logger), IPostRepository
 {
     public async Task<IReadOnlyList<Post?>> GetPostsWithUser(string userId)
     {
         try
         {
             logger.LogInformation("DAL-REPO: Buscando posts do usuário {UserId}.", userId);
-            var posts = await Context.Posts
+            var posts = await context.Posts
                 .Where(p => p.UserId == userId)
                 .ToListAsync();
 
@@ -33,7 +33,7 @@ public class PostsRepository(AppDbContext context, ILogger<PostsRepository> logg
         try
         {
             logger.LogInformation("DAL-REPO: Buscando post com ID {PostId} e suas tags.", id);
-            var post = await Context.Posts
+            var post = await context.Posts
                 .Include(p => p.Tags)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -53,7 +53,7 @@ public class PostsRepository(AppDbContext context, ILogger<PostsRepository> logg
         try
         {
             logger.LogInformation("DAL-REPO: Buscando post com ID {PostId} e seus comentários.", id);
-            var post = await Context.Posts
+            var post = await context.Posts
                 .Include(p => p.Comments)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
