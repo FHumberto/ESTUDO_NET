@@ -9,6 +9,7 @@ namespace T_Tier.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AccountController(IUserService userService) : ControllerBase
 {
     [AllowAnonymous]
@@ -34,7 +35,6 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize]
     [HttpPost("Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -56,7 +56,6 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize]
     [HttpGet("{userId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -77,7 +76,6 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize]
     [HttpGet("{userId}/posts")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -99,7 +97,6 @@ public class AccountController(IUserService userService) : ControllerBase
         };
     }
 
-    [Authorize]
     [HttpGet("{userId}/comments")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -138,6 +135,25 @@ public class AccountController(IUserService userService) : ControllerBase
             ResponseTypeEnum.NotFound => NotFound(response),
             ResponseTypeEnum.Forbidden => Forbid(),
             _ => StatusCode(StatusCodes.Status500InternalServerError, response)
+        };
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Atualiza o perfil de um usuário pelo ID",
+    Description = "Atualiza um perfil de um usuário pelo ID, com base nos dados fornecidos.")]
+    public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleRequestDto request, string userId)
+    {
+        var resposta = await userService.UpdateUserRole(request, userId);
+
+        return resposta.Type switch
+        {
+            ResponseTypeEnum.Success => Ok(),
+            ResponseTypeEnum.NotFound => NotFound(),
+            _ => BadRequest(resposta.Errors)
         };
     }
 

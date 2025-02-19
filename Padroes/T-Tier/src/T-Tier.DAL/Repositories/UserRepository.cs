@@ -66,7 +66,8 @@ public class UserRepository(AppDbContext context, ILogger<UserRepository> logger
             #region 3. REMOVER O USUÁRIO
 
             int deletedUsers = await context.Database.ExecuteSqlRawAsync(
-                           "DELETE FROM Identity.AspNetUsers WHERE Id = {0}", userId);
+                "DELETE FROM [Identity].[AspNetUsers] WHERE Id = {0}", userId);
+
             logger.LogInformation("Usuário {UserId} removido com sucesso.", userId);
 
             await context.SaveChangesAsync();
