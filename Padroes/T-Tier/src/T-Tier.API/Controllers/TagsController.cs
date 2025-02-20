@@ -63,6 +63,25 @@ public class TagsController(ITagService tagService) : ControllerBase
         };
     }
 
+    [HttpPatch("{postId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Adiciona tags a uma postagem pelo ID",
+        Description = "Adiciona tags a uma postagem com base nos IDs das Tags.")]
+    public async Task<IActionResult> AddTagToPost([FromBody] CommandAddTagPostRequest request, int postId)
+    {
+        var response = await tagService.AddTagToPost(request, postId);
+
+        return response.Type switch
+        {
+            ResponseTypeEnum.Success => Ok(response),
+            ResponseTypeEnum.NotFound => NotFound(response),
+            ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
+        };
+    }
+
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
