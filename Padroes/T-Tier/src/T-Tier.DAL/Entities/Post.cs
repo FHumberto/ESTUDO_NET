@@ -16,7 +16,7 @@ public class Post : BaseEntity, ISoftDeleteEntity
     public ICollection<Comment>? Comments { get; init; }
 
     //? prop de navegação para as tags associadas ao post
-    public ICollection<Tag>? Tags { get; init; }
+    public ICollection<Tag>? Tags { get; init; } = new List<Tag>();
 
     public void SoftDelete()
     {

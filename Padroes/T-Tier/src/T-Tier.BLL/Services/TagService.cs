@@ -10,7 +10,10 @@ using static T_Tier.BLL.Wrappers.ResponseTypeEnum;
 
 namespace T_Tier.BLL.Services;
 
-public class TagService(ITagRepository tagRepository, IServiceProvider serviceProvider, ILogger<TagService> logger, IMapper mapper) : ITagService
+public class TagService(
+    ITagRepository tagRepository,
+    IPostRepository postRepository,
+    IServiceProvider serviceProvider, ILogger<TagService> logger, IMapper mapper) : ITagService
 {
     public async Task<Response<IReadOnlyList<QueryTagResponseDto>>> GetAllTag()
     {
@@ -138,6 +141,61 @@ public class TagService(ITagRepository tagRepository, IServiceProvider servicePr
         logger.LogInformation("BLL-SERV: Tag criada com sucesso. ID: {createdTagId}", createdTagId);
 
         return new Response<int>(createdTagId, ResponseTypeEnum.Success);
+
+        #endregion
+    }
+
+    public async Task<Response<bool>> AddTagToPost(CommandAddTagPostRequest request, int postId)
+    {
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        logger.LogInformation("BLL-SERV: Iniciando validação para adição das Tags ao Post: {PostId}", postId);
+
+        Post? post = await postRepository.GetByIdAsync(postId);
+
+        if (post is null)
+        {
+            logger.LogWarning("BLL-SERV: Post com ID {PostId} não encontrado.", postId);
+            return new Response<bool>(false, NotFound, "Post não encontrado.");
+        }
+
+        var validationResult = await serviceProvider.ValidateAsync(request);
+
+        if (validationResult.Count > 0)
+        {
+            logger.LogWarning("BLL-SERV: Falha na validação ao adicionar tags. Erros: {@ValidationErrors}", validationResult);
+            return new Response<bool>(false, InvalidInput, validationResult);
+        }
+
+        // Buscar as tags no banco
+        var tags = await tagRepository.GetByIdsAsync(request.TagIds);
+        if (tags.Count != request.TagIds.Count)
+        {
+            return new Response<bool>(false, InvalidInput, "Uma ou mais tags não existem.");
+        }
+
+        #endregion
+
+        #region ====[2. ADIÇÃO DAS TAGS AO POST]=======================================================================
+
+        foreach (var tag in tags)
+        {
+            if (post.Tags!.Any(t => t.Id == tag.Id))
+            {
+                post.Tags!.Add(tag);
+            }
+        }
+
+        var opreation = await postRepository.UpdateAsync(post);
+
+        if (!opreation)
+        {
+            return new Response<bool>(false, Error);
+        }
+
+        logger.LogInformation("BLL-SERV: Tags adicionadas ao post com sucesso. PostId: {PostId}, Tags: {TagIds}", postId, string.Join(",", request.TagIds));
+
+        return new Response<bool>(true, Success);
 
         #endregion
     }
