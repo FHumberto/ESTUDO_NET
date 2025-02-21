@@ -12,8 +12,8 @@ using T_Tier.DAL.Context;
 namespace T_Tier.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250212041519_FixEntitySchemaMigration")]
-    partial class FixEntitySchemaMigration
+    [Migration("20250221082815_SeedMigration")]
+    partial class SeedMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,21 @@ namespace T_Tier.DAL.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("AspNetRoles", "Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "Default",
+                            NormalizedName = "DEFAULT"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -74,7 +88,7 @@ namespace T_Tier.DAL.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("AspNetRoleClaims", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -99,7 +113,51 @@ namespace T_Tier.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("AspNetUserClaims", "Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "nickname",
+                            ClaimValue = "adminuser",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "email",
+                            ClaimValue = "admin@example.com",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "nickname",
+                            ClaimValue = "guestuser",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "email",
+                            ClaimValue = "guest@example.com",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "nickname",
+                            ClaimValue = "default",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "email",
+                            ClaimValue = "default@example.com",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -121,7 +179,7 @@ namespace T_Tier.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("AspNetUserLogins", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -136,7 +194,24 @@ namespace T_Tier.DAL.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("AspNetUserRoles", "Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc",
+                            RoleId = "2"
+                        },
+                        new
+                        {
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd",
+                            RoleId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -155,7 +230,7 @@ namespace T_Tier.DAL.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("AspNetUserTokens", "Identity");
                 });
 
             modelBuilder.Entity("PostTag", b =>
@@ -253,26 +328,26 @@ namespace T_Tier.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Body = "Este é o primeiro comentário.",
+                            Body = "Ótimo post, admin!",
                             IsDeleted = false,
                             PostId = 1,
-                            UserId = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9"
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
                         },
                         new
                         {
                             Id = 2,
-                            Body = "Este é o segundo comentário.",
+                            Body = "Interessante ponto de vista!",
                             IsDeleted = false,
                             PostId = 2,
-                            UserId = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64"
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
                         },
                         new
                         {
                             Id = 3,
-                            Body = "Este é o terceiro comentário.",
+                            Body = "Parabéns pelo post!",
                             IsDeleted = false,
                             PostId = 3,
-                            UserId = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5"
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
                         });
                 });
 
@@ -324,26 +399,26 @@ namespace T_Tier.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Body = "Este é o corpo do primeiro post.",
+                            Body = "Este é um post do administrador.",
                             IsDeleted = false,
-                            Title = "Primeiro Post",
-                            UserId = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9"
+                            Title = "Admin's First Post",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
                         },
                         new
                         {
                             Id = 2,
-                            Body = "Este é o corpo do segundo post.",
+                            Body = "Este é um post do convidado.",
                             IsDeleted = false,
-                            Title = "Segundo Post",
-                            UserId = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64"
+                            Title = "Guest's First Post",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
                         },
                         new
                         {
                             Id = 3,
-                            Body = "Este é o corpo do terceiro post.",
+                            Body = "Este é um post do usuário padrão.",
                             IsDeleted = false,
-                            Title = "Terceiro Post",
-                            UserId = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5"
+                            Title = "Default's First Post",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
                         });
                 });
 
@@ -358,9 +433,6 @@ namespace T_Tier.DAL.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -368,9 +440,6 @@ namespace T_Tier.DAL.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -417,7 +486,6 @@ namespace T_Tier.DAL.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -480,60 +548,60 @@ namespace T_Tier.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9",
+                            Id = "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fab9caf2-6c42-4fe1-829d-e7908993d63a",
-                            Email = "joao.silva@example.com",
+                            ConcurrencyStamp = "abcdef1234567890",
+                            Email = "admin@example.com",
                             EmailConfirmed = false,
-                            FirstName = "João",
+                            FirstName = "Admin",
                             IsDeleted = false,
-                            LastName = "Silva",
+                            LastName = "User",
                             LockoutEnabled = false,
-                            NormalizedEmail = "JOAO.SILVA@EXAMPLE.COM",
-                            NormalizedUserName = "JOAO.SILVA",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA94g8Nv/oMIb/V/kXoUdnKT44tHXKkaxoRyK/o+Js6j/F2iRdpsVMoKCqHqiV8KVg==",
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMINUSER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFL1NcDnXQQmlE9E+oiCQRABamOOBcwBdvPBzNNLDB+8Qv6IGbmvag0qsLxdswDDSw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "8b550b8b-eccf-4307-95fb-c02de7432a4a",
+                            SecurityStamp = "1234567890abcdef",
                             TwoFactorEnabled = false,
-                            UserName = "joao.silva"
+                            UserName = "adminuser"
                         },
                         new
                         {
-                            Id = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64",
+                            Id = "b2c3d4e5-f6a7-890b-cdef-2345678901bc",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9dcc64f4-6a1f-42a6-b555-165aafc31b9a",
-                            Email = "maria.oliveira@example.com",
+                            ConcurrencyStamp = "1234567890abcdef",
+                            Email = "guest@example.com",
                             EmailConfirmed = false,
-                            FirstName = "Maria",
+                            FirstName = "Guest",
                             IsDeleted = false,
-                            LastName = "Oliveira",
+                            LastName = "User",
                             LockoutEnabled = false,
-                            NormalizedEmail = "MARIA.OLIVEIRA@EXAMPLE.COM",
-                            NormalizedUserName = "MARIA.OLIVEIRA",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHfXj99PLkjRGLsKeDmxuAQK3NonwpK7aKnQ+SWOHAggLvJhFH8SVEgSxv8npqLAyA==",
+                            NormalizedEmail = "GUEST@EXAMPLE.COM",
+                            NormalizedUserName = "GUESTUSER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJwHp5n8U4kmadRHRZ8MO0jjj7YHkU0MgrCEsZzotYy2zf9YPIaNAd7IrqKXJv/ZRQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "09c8ddf5-ceb9-456c-b00c-4d9f9fc1875d",
+                            SecurityStamp = "abcdef1234567890",
                             TwoFactorEnabled = false,
-                            UserName = "maria.oliveira"
+                            UserName = "guestuser"
                         },
                         new
                         {
-                            Id = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5",
+                            Id = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c5e04e20-10d6-4c44-a1fe-cdbb88238a0f",
-                            Email = "carlos.santos@example.com",
+                            ConcurrencyStamp = "0987654321fedcba",
+                            Email = "default@example.com",
                             EmailConfirmed = false,
-                            FirstName = "Carlos",
+                            FirstName = "Default",
                             IsDeleted = false,
-                            LastName = "Santos",
+                            LastName = "User",
                             LockoutEnabled = false,
-                            NormalizedEmail = "CARLOS.SANTOS@EXAMPLE.COM",
-                            NormalizedUserName = "CARLOS.SANTOS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB6d4JPMLjPGEudxIJwSNcbi7UcR/A/4nZYuiYFArp7Rng1QPRnrj25YpxTBEpX5Aw==",
+                            NormalizedEmail = "DEFAULT@EXAMPLE.COM",
+                            NormalizedUserName = "DEFAULT",
+                            PasswordHash = "AQAAAAIAAYagAAAAELCoiOQvm1OPWvY4aORXf/esrsCcwzFERM55w5Bb1WSvMUnKhKOQuDhsIrBdpQqseA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5cb7f84d-1541-47c4-8b63-d1dd38a60987",
+                            SecurityStamp = "fedcba0987654321",
                             TwoFactorEnabled = false,
-                            UserName = "carlos.santos"
+                            UserName = "default"
                         });
                 });
 
