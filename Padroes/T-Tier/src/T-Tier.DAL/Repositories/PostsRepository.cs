@@ -67,4 +67,29 @@ public class PostsRepository(AppDbContext context, ILogger<PostsRepository> logg
             return null;
         }
     }
+    public async Task<Post?> RemoveTagFromPostAsync(List<int> tags, int postId)
+    {
+        using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            // Converte a lista de tags para um formato de string correto para SQL
+            string tagIds = string.Join(",", tags);
+
+            // Executa a query para deletar as tags específicas do post
+            int deletedTags = await context.Database.ExecuteSqlRawAsync
+                ($@"DELETE FROM blog.PostTag
+                        WHERE PostId = {postId} AND TagId IN ({tagIds})");
+
+            await transaction.CommitAsync();
+
+            return await context.Posts
+                .Include(p => p.Tags)
+                .FirstOrDefaultAsync(p => p.Id == postId);
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 }

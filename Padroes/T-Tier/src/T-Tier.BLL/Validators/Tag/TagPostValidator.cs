@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using T_Tier.DAL.Contracts;
 
-public class TagPostValidator : AbstractValidator<CommandAddTagPostRequest>
+public class TagPostValidator : AbstractValidator<CommandTagPostRequest>
 {
     private readonly ITagRepository _tagRepository;
 
