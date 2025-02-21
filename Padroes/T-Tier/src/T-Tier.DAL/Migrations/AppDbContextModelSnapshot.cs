@@ -111,6 +111,50 @@ namespace T_Tier.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", "Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "nickname",
+                            ClaimValue = "adminuser",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "email",
+                            ClaimValue = "admin@example.com",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "nickname",
+                            ClaimValue = "guestuser",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "email",
+                            ClaimValue = "guest@example.com",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "nickname",
+                            ClaimValue = "default",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "email",
+                            ClaimValue = "default@example.com",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -152,17 +196,17 @@ namespace T_Tier.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
                             RoleId = "1"
                         },
                         new
                         {
-                            UserId = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc",
                             RoleId = "2"
                         },
                         new
                         {
-                            UserId = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd",
                             RoleId = "2"
                         });
                 });
@@ -281,26 +325,26 @@ namespace T_Tier.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Body = "Este é o primeiro comentário.",
+                            Body = "Ótimo post, admin!",
                             IsDeleted = false,
                             PostId = 1,
-                            UserId = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9"
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
                         },
                         new
                         {
                             Id = 2,
-                            Body = "Este é o segundo comentário.",
+                            Body = "Interessante ponto de vista!",
                             IsDeleted = false,
                             PostId = 2,
-                            UserId = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64"
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
                         },
                         new
                         {
                             Id = 3,
-                            Body = "Este é o terceiro comentário.",
+                            Body = "Parabéns pelo post!",
                             IsDeleted = false,
                             PostId = 3,
-                            UserId = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5"
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
                         });
                 });
 
@@ -352,26 +396,26 @@ namespace T_Tier.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Body = "Este é o corpo do primeiro post.",
+                            Body = "Este é um post do administrador.",
                             IsDeleted = false,
-                            Title = "Primeiro Post",
-                            UserId = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9"
+                            Title = "Admin's First Post",
+                            UserId = "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
                         },
                         new
                         {
                             Id = 2,
-                            Body = "Este é o corpo do segundo post.",
+                            Body = "Este é um post do convidado.",
                             IsDeleted = false,
-                            Title = "Segundo Post",
-                            UserId = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64"
+                            Title = "Guest's First Post",
+                            UserId = "b2c3d4e5-f6a7-890b-cdef-2345678901bc"
                         },
                         new
                         {
                             Id = 3,
-                            Body = "Este é o corpo do terceiro post.",
+                            Body = "Este é um post do usuário padrão.",
                             IsDeleted = false,
-                            Title = "Terceiro Post",
-                            UserId = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5"
+                            Title = "Default's First Post",
+                            UserId = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd"
                         });
                 });
 
@@ -501,60 +545,60 @@ namespace T_Tier.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9",
+                            Id = "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3a75633d-cc10-49ef-b53a-1932a9e229a8",
-                            Email = "joao.silva@example.com",
+                            ConcurrencyStamp = "abcdef1234567890",
+                            Email = "admin@example.com",
                             EmailConfirmed = false,
-                            FirstName = "João",
+                            FirstName = "Admin",
                             IsDeleted = false,
-                            LastName = "Silva",
+                            LastName = "User",
                             LockoutEnabled = false,
-                            NormalizedEmail = "JOAO.SILVA@EXAMPLE.COM",
-                            NormalizedUserName = "JOAO.SILVA",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEBgohFgOjqe+TxMl+LGwKPwZjAFkvLGOdKToXXlmaCXPKL0DEH7XgHfURRaUXD0gA==",
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMINUSER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFL1NcDnXQQmlE9E+oiCQRABamOOBcwBdvPBzNNLDB+8Qv6IGbmvag0qsLxdswDDSw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cdcc4a8b-fc7a-49a0-b7d0-f8d9f2905edd",
+                            SecurityStamp = "1234567890abcdef",
                             TwoFactorEnabled = false,
-                            UserName = "joao.silva"
+                            UserName = "adminuser"
                         },
                         new
                         {
-                            Id = "c7d96d38-45b1-4a3a-8a4d-746e4c929f64",
+                            Id = "b2c3d4e5-f6a7-890b-cdef-2345678901bc",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "51b319dd-c027-4756-a765-68986a0c0ef6",
-                            Email = "maria.oliveira@example.com",
+                            ConcurrencyStamp = "1234567890abcdef",
+                            Email = "guest@example.com",
                             EmailConfirmed = false,
-                            FirstName = "Maria",
+                            FirstName = "Guest",
                             IsDeleted = false,
-                            LastName = "Oliveira",
+                            LastName = "User",
                             LockoutEnabled = false,
-                            NormalizedEmail = "MARIA.OLIVEIRA@EXAMPLE.COM",
-                            NormalizedUserName = "MARIA.OLIVEIRA",
-                            PasswordHash = "AQAAAAIAAYagAAAAENVX3R49HE4cTkrFxIyldAWOv+in9GTdDGv3w6VgaZqrNlG8pQ0uJ/Md8DKbo0EZTw==",
+                            NormalizedEmail = "GUEST@EXAMPLE.COM",
+                            NormalizedUserName = "GUESTUSER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJwHp5n8U4kmadRHRZ8MO0jjj7YHkU0MgrCEsZzotYy2zf9YPIaNAd7IrqKXJv/ZRQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f1468a2d-5450-4518-a833-ddf2e8e38c3a",
+                            SecurityStamp = "abcdef1234567890",
                             TwoFactorEnabled = false,
-                            UserName = "maria.oliveira"
+                            UserName = "guestuser"
                         },
                         new
                         {
-                            Id = "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5",
+                            Id = "c3d4e5f6-a7b8-90cd-efgh-3456789012cd",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "82b4f2b8-7d21-4668-b5df-5e9610390714",
-                            Email = "carlos.santos@example.com",
+                            ConcurrencyStamp = "0987654321fedcba",
+                            Email = "default@example.com",
                             EmailConfirmed = false,
-                            FirstName = "Carlos",
+                            FirstName = "Default",
                             IsDeleted = false,
-                            LastName = "Santos",
+                            LastName = "User",
                             LockoutEnabled = false,
-                            NormalizedEmail = "CARLOS.SANTOS@EXAMPLE.COM",
-                            NormalizedUserName = "CARLOS.SANTOS",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAdQalcieZfdK/uMzQn70Zz78YX6jsXjElkCs7Rpp1AJ5mZrwxL59kP8e/CJiOFumg==",
+                            NormalizedEmail = "DEFAULT@EXAMPLE.COM",
+                            NormalizedUserName = "DEFAULT",
+                            PasswordHash = "AQAAAAIAAYagAAAAELCoiOQvm1OPWvY4aORXf/esrsCcwzFERM55w5Bb1WSvMUnKhKOQuDhsIrBdpQqseA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b744788a-75fa-4267-a88e-c0727133478f",
+                            SecurityStamp = "fedcba0987654321",
                             TwoFactorEnabled = false,
-                            UserName = "carlos.santos"
+                            UserName = "default"
                         });
                 });
 

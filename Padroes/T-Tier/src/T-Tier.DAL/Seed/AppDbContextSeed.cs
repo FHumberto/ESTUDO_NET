@@ -8,6 +8,7 @@ public static class AppDbContextSeed
     {
         modelBuilder.SeedUsers();
         modelBuilder.SeedUserRoles();
+        modelBuilder.SeedUserClaims();
         modelBuilder.SeedPosts();
         modelBuilder.SeedComments();
         modelBuilder.SeedTags();

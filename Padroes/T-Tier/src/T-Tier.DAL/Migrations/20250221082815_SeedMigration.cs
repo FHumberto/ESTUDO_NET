@@ -8,13 +8,20 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace T_Tier.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class IdentityDbConfigMigration : Migration
+    public partial class SeedMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Identity");
+
+            migrationBuilder.EnsureSchema(
+                name: "blog");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
+                schema: "Identity",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -29,10 +36,11 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUsers",
+                schema: "Identity",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -57,15 +65,14 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Tags",
+                schema: "blog",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -74,6 +81,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
+                schema: "Identity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -88,6 +96,7 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -95,6 +104,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
+                schema: "Identity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -109,6 +119,7 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -116,6 +127,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
+                schema: "Identity",
                 columns: table => new
                 {
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -129,6 +141,7 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -136,6 +149,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
+                schema: "Identity",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -147,12 +161,14 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
                         column: x => x.RoleId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -160,6 +176,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
+                schema: "Identity",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -173,6 +190,7 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -180,6 +198,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Posts",
+                schema: "blog",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -199,6 +218,7 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Posts_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -206,6 +226,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Comments",
+                schema: "blog",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -225,12 +246,14 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,
+                        principalSchema: "Identity",
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
+                        principalSchema: "blog",
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -238,6 +261,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PostTag",
+                schema: "blog",
                 columns: table => new
                 {
                     PostId = table.Column<int>(type: "int", nullable: false),
@@ -249,58 +273,100 @@ namespace T_Tier.DAL.Migrations
                     table.ForeignKey(
                         name: "FK_PostTag_Posts_PostId",
                         column: x => x.PostId,
+                        principalSchema: "blog",
                         principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PostTag_Tags_TagId",
                         column: x => x.TagId,
+                        principalSchema: "blog",
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
+                schema: "Identity",
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "Admin", "ADMIN" },
+                    { "2", null, "Default", "DEFAULT" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "Identity",
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "IsDeleted", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5", 0, "c7b1f8a4-8a66-4de0-9bf0-038cf34dec0a", "carlos.santos@example.com", false, "Carlos", false, "Santos", false, null, "CARLOS.SANTOS@EXAMPLE.COM", "CARLOS.SANTOS", "AQAAAAIAAYagAAAAEFtY7SEXXIyEZsciHj73Clnvil/GDXwobaJYn7aCxCXEhiD4aqDN5q96yXOvNFYB/w==", null, false, "10790d1c-8853-459f-ac80-b2e77c2cc7c8", false, "carlos.santos" },
-                    { "c7d96d38-45b1-4a3a-8a4d-746e4c929f64", 0, "982a001e-54e1-4145-a4ab-0cf0693ac9af", "maria.oliveira@example.com", false, "Maria", false, "Oliveira", false, null, "MARIA.OLIVEIRA@EXAMPLE.COM", "MARIA.OLIVEIRA", "AQAAAAIAAYagAAAAEJqXwgNabhv9aAKcR8j1KRLVe9NYgjpVkRqC2CFslxEIE1SIUNryavV3rZUzkgqHgA==", null, false, "dbd56d19-7fd2-42e9-849c-065b93a077c9", false, "maria.oliveira" },
-                    { "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9", 0, "b85d4a97-5c55-469a-bc27-5477319a7864", "joao.silva@example.com", false, "João", false, "Silva", false, null, "JOAO.SILVA@EXAMPLE.COM", "JOAO.SILVA", "AQAAAAIAAYagAAAAEDjdPaYPOV0gk1fLR0pBdsw1BNr0P+Dh00+a9RgAOWMlWtX08B+qN43CAE+PzjQc9A==", null, false, "2aceda86-c0b9-490c-a5c4-bd618b86c5bc", false, "joao.silva" }
+                    { "a1b2c3d4-e5f6-7890-abcd-1234567890ab", 0, "abcdef1234567890", "admin@example.com", false, "Admin", false, "User", false, null, "ADMIN@EXAMPLE.COM", "ADMINUSER", "AQAAAAIAAYagAAAAEFL1NcDnXQQmlE9E+oiCQRABamOOBcwBdvPBzNNLDB+8Qv6IGbmvag0qsLxdswDDSw==", null, false, "1234567890abcdef", false, "adminuser" },
+                    { "b2c3d4e5-f6a7-890b-cdef-2345678901bc", 0, "1234567890abcdef", "guest@example.com", false, "Guest", false, "User", false, null, "GUEST@EXAMPLE.COM", "GUESTUSER", "AQAAAAIAAYagAAAAEJwHp5n8U4kmadRHRZ8MO0jjj7YHkU0MgrCEsZzotYy2zf9YPIaNAd7IrqKXJv/ZRQ==", null, false, "abcdef1234567890", false, "guestuser" },
+                    { "c3d4e5f6-a7b8-90cd-efgh-3456789012cd", 0, "0987654321fedcba", "default@example.com", false, "Default", false, "User", false, null, "DEFAULT@EXAMPLE.COM", "DEFAULT", "AQAAAAIAAYagAAAAELCoiOQvm1OPWvY4aORXf/esrsCcwzFERM55w5Bb1WSvMUnKhKOQuDhsIrBdpQqseA==", null, false, "fedcba0987654321", false, "default" }
                 });
 
             migrationBuilder.InsertData(
+                schema: "blog",
                 table: "Tags",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Name", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "CreatedAt", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, null, null, "Tecnologia", null, null },
-                    { 2, null, null, "Educação", null, null },
-                    { 3, null, null, "Saúde", null, null }
+                    { 1, null, "Tecnologia", null },
+                    { 2, null, "Educação", null },
+                    { 3, null, "Saúde", null }
                 });
 
             migrationBuilder.InsertData(
+                schema: "Identity",
+                table: "AspNetUserClaims",
+                columns: new[] { "Id", "ClaimType", "ClaimValue", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "nickname", "adminuser", "a1b2c3d4-e5f6-7890-abcd-1234567890ab" },
+                    { 2, "email", "admin@example.com", "a1b2c3d4-e5f6-7890-abcd-1234567890ab" },
+                    { 3, "nickname", "guestuser", "b2c3d4e5-f6a7-890b-cdef-2345678901bc" },
+                    { 4, "email", "guest@example.com", "b2c3d4e5-f6a7-890b-cdef-2345678901bc" },
+                    { 5, "nickname", "default", "c3d4e5f6-a7b8-90cd-efgh-3456789012cd" },
+                    { 6, "email", "default@example.com", "c3d4e5f6-a7b8-90cd-efgh-3456789012cd" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "Identity",
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "1", "a1b2c3d4-e5f6-7890-abcd-1234567890ab" },
+                    { "2", "b2c3d4e5-f6a7-890b-cdef-2345678901bc" },
+                    { "2", "c3d4e5f6-a7b8-90cd-efgh-3456789012cd" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "blog",
                 table: "Posts",
                 columns: new[] { "Id", "Body", "CreatedAt", "CreatedBy", "Title", "UpdatedAt", "UpdatedBy", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Este é o corpo do primeiro post.", null, null, "Primeiro Post", null, null, "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9" },
-                    { 2, "Este é o corpo do segundo post.", null, null, "Segundo Post", null, null, "c7d96d38-45b1-4a3a-8a4d-746e4c929f64" },
-                    { 3, "Este é o corpo do terceiro post.", null, null, "Terceiro Post", null, null, "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5" }
+                    { 1, "Este é um post do administrador.", null, null, "Admin's First Post", null, null, "a1b2c3d4-e5f6-7890-abcd-1234567890ab" },
+                    { 2, "Este é um post do convidado.", null, null, "Guest's First Post", null, null, "b2c3d4e5-f6a7-890b-cdef-2345678901bc" },
+                    { 3, "Este é um post do usuário padrão.", null, null, "Default's First Post", null, null, "c3d4e5f6-a7b8-90cd-efgh-3456789012cd" }
                 });
 
             migrationBuilder.InsertData(
+                schema: "blog",
                 table: "Comments",
                 columns: new[] { "Id", "Body", "CreatedAt", "CreatedBy", "PostId", "UpdatedAt", "UpdatedBy", "UserId" },
                 values: new object[,]
                 {
-                    { 1, "Este é o primeiro comentário.", null, null, 1, null, null, "e3d46b61-39c2-4fd3-b36b-2a30c2c2c3e9" },
-                    { 2, "Este é o segundo comentário.", null, null, 2, null, null, "c7d96d38-45b1-4a3a-8a4d-746e4c929f64" },
-                    { 3, "Este é o terceiro comentário.", null, null, 3, null, null, "b2fcd97a-91b4-43a0-b55f-d1d5e7a8b7b5" }
+                    { 1, "Ótimo post, admin!", null, null, 1, null, null, "b2c3d4e5-f6a7-890b-cdef-2345678901bc" },
+                    { 2, "Interessante ponto de vista!", null, null, 2, null, null, "c3d4e5f6-a7b8-90cd-efgh-3456789012cd" },
+                    { 3, "Parabéns pelo post!", null, null, 3, null, null, "a1b2c3d4-e5f6-7890-abcd-1234567890ab" }
                 });
 
             migrationBuilder.InsertData(
+                schema: "blog",
                 table: "PostTag",
                 columns: new[] { "PostId", "TagId" },
                 values: new object[,]
@@ -315,11 +381,13 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
+                schema: "Identity",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
+                schema: "Identity",
                 table: "AspNetRoles",
                 column: "NormalizedName",
                 unique: true,
@@ -327,26 +395,31 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
+                schema: "Identity",
                 table: "AspNetUserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserLogins_UserId",
+                schema: "Identity",
                 table: "AspNetUserLogins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_RoleId",
+                schema: "Identity",
                 table: "AspNetUserRoles",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
+                schema: "Identity",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_Email",
+                schema: "Identity",
                 table: "AspNetUsers",
                 column: "Email",
                 unique: true,
@@ -354,6 +427,7 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
+                schema: "Identity",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
@@ -361,26 +435,31 @@ namespace T_Tier.DAL.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",
+                schema: "blog",
                 table: "Comments",
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
+                schema: "blog",
                 table: "Comments",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
+                schema: "blog",
                 table: "Posts",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostTag_TagId",
+                schema: "blog",
                 table: "PostTag",
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_Name",
+                schema: "blog",
                 table: "Tags",
                 column: "Name",
                 unique: true);
@@ -390,37 +469,48 @@ namespace T_Tier.DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
+                name: "AspNetRoleClaims",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
+                name: "AspNetUserClaims",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
+                name: "AspNetUserLogins",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
+                name: "AspNetUserRoles",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
+                name: "AspNetUserTokens",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "Comments");
+                name: "Comments",
+                schema: "blog");
 
             migrationBuilder.DropTable(
-                name: "PostTag");
+                name: "PostTag",
+                schema: "blog");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "AspNetRoles",
+                schema: "Identity");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Posts",
+                schema: "blog");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Tags",
+                schema: "blog");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetUsers",
+                schema: "Identity");
         }
     }
 }
