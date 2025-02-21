@@ -25,8 +25,8 @@ builder.Host.UseSerilog((context, services, configuration) =>
         .Enrich.FromLogContext();
 });
 
-builder.Services.AddSwaggerServices();
-
+builder.Services.AddSwaggerRoutes();
+builder.Services.AddSwaggerAuthServices();
 builder.Services.AddAuthenticationServices(builder.Configuration);
 
 var app = builder.Build();
@@ -36,12 +36,7 @@ app.UseCorsPolicies();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json",
-            "Three Layer API v1");
-    });
+    _ = app.UseSwaggerWithVersioning();
 }
 
 app.UseHttpsRedirection();

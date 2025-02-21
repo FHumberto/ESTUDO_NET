@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using T_Tier.BLL.DTOs.Tags;
 using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Wrappers;
 
-namespace T_Tier.API.Controllers;
+namespace T_Tier.API.Controllers.v1;
 
-[Route("api/[controller]")]
-[ApiController]
-[Authorize]
-public class TagsController(ITagService tagService) : ControllerBase
+[ApiVersion("1")]
+public class TagsController(ITagService tagService) : BaseApiController
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]

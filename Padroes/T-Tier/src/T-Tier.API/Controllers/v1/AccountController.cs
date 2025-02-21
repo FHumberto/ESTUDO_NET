@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using T_Tier.BLL.DTOs.Users;
 using T_Tier.BLL.Interfaces;
 using T_Tier.BLL.Wrappers;
 
-namespace T_Tier.API.Controllers;
+namespace T_Tier.API.Controllers.v1;
 
-[Route("api/[controller]")]
-[ApiController]
-[Authorize]
-public class AccountController(IUserService userService) : ControllerBase
+[ApiVersion("1")]
+public class AccountController(IUserService userService) : BaseApiController
 {
     [AllowAnonymous]
     [HttpPost("Login")]
