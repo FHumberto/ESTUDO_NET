@@ -69,7 +69,7 @@ public class TagsController(ITagService tagService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [SwaggerOperation(Summary = "Adiciona tags a uma postagem pelo ID",
         Description = "Adiciona tags a uma postagem com base nos IDs das Tags.")]
-    public async Task<IActionResult> AddTagToPost([FromBody] CommandAddTagPostRequest request, int postId)
+    public async Task<IActionResult> AddTagToPost([FromBody] CommandTagPostRequest request, int postId)
     {
         var response = await tagService.AddTagToPost(request, postId);
 
@@ -78,6 +78,23 @@ public class TagsController(ITagService tagService) : ControllerBase
             ResponseTypeEnum.Success => Ok(response),
             ResponseTypeEnum.NotFound => NotFound(response),
             ResponseTypeEnum.InvalidInput => BadRequest(response.ValidationErrors),
+            _ => StatusCode(StatusCodes.Status500InternalServerError, response)
+        };
+    }
+
+    [HttpDelete("{id:int}/posts")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [SwaggerOperation(Summary = "Remover Tags associadas a um post pelo ID", Description = "Remove uma Tag com base no ID.")]
+    public async Task<IActionResult> DeleteTagsFromPost([FromBody] CommandTagPostRequest request, int id)
+    {
+        var response = await tagService.RemoveTagFromPost(request, id);
+
+        return response.Type switch
+        {
+            ResponseTypeEnum.Success => NoContent(),
+            ResponseTypeEnum.NotFound => NotFound(response.Type),
             _ => StatusCode(StatusCodes.Status500InternalServerError, response)
         };
     }

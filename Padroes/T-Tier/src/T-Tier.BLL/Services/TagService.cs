@@ -13,7 +13,9 @@ namespace T_Tier.BLL.Services;
 public class TagService(
     ITagRepository tagRepository,
     IPostRepository postRepository,
-    IServiceProvider serviceProvider, ILogger<TagService> logger, IMapper mapper) : ITagService
+    IServiceProvider serviceProvider,
+    ILogger<TagService> logger,
+    IMapper mapper) : ITagService
 {
     public async Task<Response<IReadOnlyList<QueryTagResponseDto>>> GetAllTag()
     {
@@ -105,7 +107,8 @@ public class TagService(
 
         if (validationResult.Count > 0)
         {
-            logger.LogWarning("BLL-SERV: Falha na validação ao criar tag. Erros: {@ValidationErrors}", validationResult);
+            logger.LogWarning("BLL-SERV: Falha na validação ao criar tag. Erros: {@ValidationErrors}",
+                validationResult);
             return new Response<int>(0, InvalidInput, validationResult);
         }
 
@@ -145,13 +148,13 @@ public class TagService(
         #endregion
     }
 
-    public async Task<Response<bool>> AddTagToPost(CommandAddTagPostRequest request, int postId)
+    public async Task<Response<bool>> AddTagToPost(CommandTagPostRequest request, int postId)
     {
         #region ====[1.VALIDAÇÃO]=======================================================================================
 
         logger.LogInformation("BLL-SERV: Iniciando validação para adição das Tags ao Post: {PostId}", postId);
 
-        Post? post = await postRepository.GetByIdAsync(postId);
+        var post = await postRepository.GetPostByIdWithTagsAsync(postId);
 
         if (post is null)
         {
@@ -163,37 +166,99 @@ public class TagService(
 
         if (validationResult.Count > 0)
         {
-            logger.LogWarning("BLL-SERV: Falha na validação ao adicionar tags. Erros: {@ValidationErrors}", validationResult);
+            logger.LogWarning("BLL-SERV: Falha na validação ao adicionar tags. Erros: {@ValidationErrors}",
+                validationResult);
             return new Response<bool>(false, InvalidInput, validationResult);
         }
 
         // Buscar as tags no banco
         var tags = await tagRepository.GetByIdsAsync(request.TagIds);
+
         if (tags.Count != request.TagIds.Count)
         {
-            return new Response<bool>(false, InvalidInput, "Uma ou mais tags não existem.");
+            return new Response<bool>(false, InvalidInput, new Dictionary<string, List<string>>
+            {
+                { "TagIds", new List<string> { "Uma ou mais tags não existem." } }
+            });
+        }
+
+        List<int> tagsNotInPost = tags
+            .Where(t => post.Tags!.All(pt => pt.Id != t.Id))
+            .Select(t => t.Id)
+            .ToList();
+
+        if (tagsNotInPost.Count == 0)
+        {
+            return new Response<bool>(false, InvalidInput, new Dictionary<string, List<string>>
+            {
+                { "TagIds", new List<string> { "Todas as tags já estão associadas ao post." } }
+            });
         }
 
         #endregion
 
-        #region ====[2. ADIÇÃO DAS TAGS AO POST]=======================================================================
+        #region ====[2.MAPEAMENTO]======================================================================================
 
-        foreach (var tag in tags)
-        {
-            if (post.Tags!.Any(t => t.Id == tag.Id))
-            {
-                post.Tags!.Add(tag);
-            }
-        }
+        var operation = await tagRepository.AddTagsToPost(tagsNotInPost, postId);
 
-        var opreation = await postRepository.UpdateAsync(post);
-
-        if (!opreation)
+        if (!operation)
         {
             return new Response<bool>(false, Error);
         }
 
-        logger.LogInformation("BLL-SERV: Tags adicionadas ao post com sucesso. PostId: {PostId}, Tags: {TagIds}", postId, string.Join(",", request.TagIds));
+        logger.LogInformation("BLL-SERV: Tags adicionadas ao post com sucesso. PostId: {PostId}, Tags: {TagIds}",
+            postId, string.Join(",", request.TagIds));
+
+        return new Response<bool>(true, Success);
+
+        #endregion
+    }
+
+    public async Task<Response<bool>> RemoveTagFromPost(CommandTagPostRequest request, int postId)
+    {
+        #region ====[1.VALIDAÇÃO]=======================================================================================
+
+        logger.LogInformation("BLL-SERV: Iniciando validação para remover as {TagsIds} do Post: {postId}",
+            request.TagIds, postId);
+
+        var post = await postRepository.GetPostByIdWithTagsAsync(postId);
+
+        if (post is null)
+        {
+            logger.LogWarning("BLL-SERV: Post com ID {PostId} não encontrado.", postId);
+            return new Response<bool>(false, NotFound, "Post não encontrado.");
+        }
+
+        var validationResult = await serviceProvider.ValidateAsync(request);
+
+        if (validationResult.Count > 0)
+        {
+            logger.LogWarning($"BLL-SERV: Falha na validação ao remover tags. Erros: {validationResult}");
+            return new Response<bool>(false, InvalidInput, validationResult);
+        }
+
+        var postTagIds = post.Tags!.Select(t => t.Id).ToHashSet();
+
+        //? verificar se todos os ids contém na lista de tags do post
+        if (!request.TagIds.All(tagId => postTagIds.Contains(tagId)))
+        {
+            return new Response<bool>(false, InvalidInput, "Uma ou mais tags não estão associadas ao post.");
+        }
+
+        #endregion
+
+        #region ====[2. REMOÇÃO DAS TAGS DO POST]=======================================================================
+
+        var operation = await tagRepository.DeleteTagsWithPost(request.TagIds, postId);
+
+        if (!operation)
+        {
+            logger.LogError("Erro as excluir as [Tags] {TagId} do [Post] {postId}", request.TagIds, postId);
+            return new Response<bool>(false, Error, "Erro ao excluir as Tags.");
+        }
+
+        logger.LogInformation("[Tags] {TagId} excluídas com sucessos do [Post] {PostId}.", request.TagIds.Count,
+            postId);
 
         return new Response<bool>(true, Success);
 
@@ -218,7 +283,8 @@ public class TagService(
 
         if (validationResult.Count > 0)
         {
-            logger.LogWarning("BLL-SERV: Falha na validação ao atualizar tag. ID: {TagId}, Erros: {@ValidationErrors}", id, validationResult);
+            logger.LogWarning("BLL-SERV: Falha na validação ao atualizar tag. ID: {TagId}, Erros: {@ValidationErrors}",
+                id, validationResult);
             return new Response<bool>(false, InvalidInput, validationResult);
         }
 
