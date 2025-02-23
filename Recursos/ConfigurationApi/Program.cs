@@ -1,15 +1,21 @@
-var builder = WebApplication.CreateBuilder(args);
+using ConfigurationApi.Model;
 
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+//adiciona no inicio do projeto
+builder.Services.Configure<InfraSettings>
+    (builder.Configuration.GetSection("InfraSettings"));
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options 
-        => options.SwaggerEndpoint("/openapi/v1.json", "Configuration API"));
+    app.UseSwagger();
+    app.UseSwaggerUI(options
+        => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Configuration API"));
 }
 
 app.UseHttpsRedirection();
