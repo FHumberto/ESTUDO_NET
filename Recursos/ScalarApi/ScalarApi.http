@@ -1,0 +1,6 @@
+@ScalarApi_HostAddress = http://localhost:5000
+
+GET {{ScalarApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
