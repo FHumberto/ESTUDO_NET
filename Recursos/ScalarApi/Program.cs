@@ -1,3 +1,5 @@
+using Scalar.AspNetCore;
+
 namespace ScalarApi;
 
 public static class Program
@@ -14,6 +16,11 @@ public static class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
+            app.MapScalarApiReference(options =>
+            {
+                options.Title = "Scalar API";
+                options.Theme = ScalarTheme.DeepSpace;
+            });
         }
 
         app.UseHttpsRedirection();
