@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ScalarApi.Services;
 
 namespace ScalarApi.Controllers;
 
@@ -6,9 +7,23 @@ namespace ScalarApi.Controllers;
 [Route("[controller]")]
 public class PersonaController : Controller
 {
-    [HttpGet]
-    public IActionResult Get()
+    private readonly PersonaRepository _repository;
+
+    public PersonaController(PersonaRepository repository)
     {
-        return Ok(new { Name = "John Doe", Age = 30 });
+        _repository = repository;
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        var response = await _repository.GetPersonasAsync();
+
+        if (!response.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(response);
     }
 }
