@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using ScalarApi.Data;
+using ScalarApi.Services;
 
 namespace ScalarApi;
 
@@ -8,6 +11,8 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         
+        builder.Services.AddDbContext<ScalarApiDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddScoped<PersonaRepository>();
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
 
@@ -24,10 +29,7 @@ public static class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-
         app.MapControllers();
 
         app.Run();
