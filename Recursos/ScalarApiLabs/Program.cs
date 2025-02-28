@@ -10,7 +10,7 @@ var connextionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<ProductRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddDbContext<ScalarApiLabsDbContext>
     (options => options.UseSqlServer(connextionString));
 
