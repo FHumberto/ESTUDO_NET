@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using ScalarApiLabs.Helpers;
 using ScalarApiLabs.Models.Entities;
 
 namespace ScalarApiLabs.Data.Repositories;
@@ -13,13 +14,22 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<PagedResultDto<Product>> GetAllAsync(QueryFilters query)
     {
+        int offset = (query.PageNumber - 1) * query.PageSize;
+        int fetch = query.PageSize;
+
         try
         {
-            //? maneira antiga de fazer rawsql, precisando do dbset
-            var products = await _context.Products.FromSqlRaw("SELECT * FROM Products").ToListAsync();
-            return products;
+            var totalRecords = await _context.Products.CountAsync();
+
+            var products = await _context.Products
+                .OrderBy(p => p.Id)
+                .Skip(offset)
+                .Take(fetch)
+                .ToListAsync();
+
+            return new PagedResultDto<Product>(products, totalRecords, query.PageNumber, query.PageSize);
         }
         catch (Exception ex)
         {
