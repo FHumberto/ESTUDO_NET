@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using ScalarApiLabs.Data.Repositories;
+using ScalarApiLabs.Helpers;
 using ScalarApiLabs.Models.Dto;
 using ScalarApiLabs.Models.Entities;
 
@@ -16,17 +17,21 @@ public class ProductsController(IProductRepository productRepository) : Controll
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetProducts()
+    public async Task<IActionResult> GetProducts([FromQuery] QueryFilters query)
     {
-        var response = await productRepository.GetAllAsync();
-        return response.Any() ? Ok(response) : NotFound();
+        var response = await productRepository.GetAllAsync(query);
+        return response is not null
+            ? Ok(response)
+            : NotFound();
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById(int id)
     {
         var response = await productRepository.GetByIdAsync(id);
-        return response is not null ? Ok(response) : NotFound();
+        return response is not null
+            ? Ok(response)
+            : NotFound();
     }
 
     [HttpPost]
@@ -73,6 +78,8 @@ public class ProductsController(IProductRepository productRepository) : Controll
     public async Task<IActionResult> DeleteProduct(int id)
     {
         var response = await productRepository.DeleteAsync(id);
-        return response ? NoContent() : NotFound();
+        return response
+            ? NoContent()
+            : NotFound();
     }
 }
