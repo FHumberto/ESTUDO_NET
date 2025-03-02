@@ -33,9 +33,9 @@ public sealed class GlobalExceptionHandler(RequestDelegate next, ILogger<GlobalE
 
         var (status, message) = ex switch
         {
-            DatabaseException => (HttpStatusCode.InternalServerError, "Erro de banco de dados. Tente novamente mais tarde."),
             NotFoundException => (HttpStatusCode.NotFound, ex.Message),
             BusinessException => (HttpStatusCode.BadRequest, ex.Message),
+            DatabaseException => (HttpStatusCode.InternalServerError, "Erro de banco de dados. Tente novamente mais tarde."),
             ArgumentNullException => (HttpStatusCode.InternalServerError, "Falha na configuração do servidor."),
             _ => (HttpStatusCode.InternalServerError, "Erro interno no servidor.")
         };
