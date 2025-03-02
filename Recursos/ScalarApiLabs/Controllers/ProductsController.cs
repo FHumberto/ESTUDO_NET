@@ -6,80 +6,43 @@ using ScalarApiLabs.Models.Dto;
 using ScalarApiLabs.Models.Entities;
 
 namespace ScalarApiLabs.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController(IProductRepository productRepository) : ControllerBase
+public sealed class ProductsController(IProductRepository productRepository)
 {
-    [HttpGet("Test")]
-    public IActionResult Test()
-    {
-        return Ok("Hello World!");
-    }
+    private readonly IProductRepository _repository = productRepository
+        ?? throw new ArgumentNullException(nameof(productRepository));
 
     [HttpGet]
-    public async Task<IActionResult> GetProducts([FromQuery] QueryFilters query)
-    {
-        var response = await productRepository.GetAllAsync(query);
-        return response is not null
-            ? Ok(response)
-            : NotFound();
-    }
+    public async Task<IResult> GetProducts([FromQuery] QueryFilters query)
+        => Results.Ok(await _repository.GetAllAsync(query));
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetProductById(int id)
-    {
-        var response = await productRepository.GetByIdAsync(id);
-        return response is not null
-            ? Ok(response)
-            : NotFound();
-    }
+    [HttpGet("{id:int}")]
+    public async Task<IResult> GetProductById(int id)
+        => Results.Ok(await _repository.GetByIdAsync(id));
 
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromBody] ProductCommandRequestDto request)
+    public async Task<IResult> CreateProduct([FromBody] ProductCommandRequestDto request)
     {
-        var product = new Product
-        {
-            Name = request.Name,
-            Price = request.Price
-        };
+        var product = new Product { Name = request.Name, Price = request.Price };
+        var created = await _repository.AddAsync(product);
 
-        var response = await productRepository.AddAsync(product);
-
-        return response
-            ? CreatedAtAction(nameof(CreateProduct), request)
-            : BadRequest();
+        return Results.CreatedAtRoute(nameof(GetProductById), new { id = created }, created);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProduct([FromBody] ProductCommandRequestDto request, int id)
+    [HttpPut("{id:int}")]
+    public async Task<IResult> UpdateProduct(int id, [FromBody] ProductCommandRequestDto request)
     {
-        var productExists = await productRepository.GetByIdAsync(id) is not null;
-
-        if (!productExists)
-        {
-            return NotFound();
-        }
-
-        var product = new Product
-        {
-            Id = id,
-            Name = request.Name,
-            Price = request.Price
-        };
-
-        var response = await productRepository.UpdateAsync(product);
-
-        return response
-            ? Ok()
-            : NotFound();
+        var product = new Product { Id = id, Name = request.Name, Price = request.Price };
+        await _repository.UpdateAsync(product);
+        return Results.Ok();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteProduct(int id)
+    [HttpDelete("{id:int}")]
+    public async Task<IResult> DeleteProduct(int id)
     {
-        var response = await productRepository.DeleteAsync(id);
-        return response
-            ? NoContent()
-            : NotFound();
+        await _repository.DeleteAsync(id);
+        return Results.NoContent();
     }
 }
