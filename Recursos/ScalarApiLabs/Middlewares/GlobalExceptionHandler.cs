@@ -34,6 +34,7 @@ public sealed class GlobalExceptionHandler(RequestDelegate next, ILogger<GlobalE
         var (status, message) = ex switch
         {
             NotFoundException => (HttpStatusCode.NotFound, ex.Message),
+            CustomValidationException => (HttpStatusCode.UnprocessableEntity, ex.Message),
             BusinessException => (HttpStatusCode.BadRequest, ex.Message),
             DatabaseException => (HttpStatusCode.InternalServerError, "Erro de banco de dados. Tente novamente mais tarde."),
             ArgumentNullException => (HttpStatusCode.InternalServerError, "Falha na configuração do servidor."),

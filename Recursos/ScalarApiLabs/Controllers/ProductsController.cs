@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using ScalarApiLabs.Helpers;
 using ScalarApiLabs.Interfaces.Persistence;
 using ScalarApiLabs.Models.Dto.Product;
