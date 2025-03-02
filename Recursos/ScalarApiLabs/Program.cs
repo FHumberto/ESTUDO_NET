@@ -4,6 +4,7 @@ using Scalar.AspNetCore;
 
 using ScalarApiLabs.Data;
 using ScalarApiLabs.Data.Repositories;
+using ScalarApiLabs.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var connextionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<ScalarApiLabsDbContext>
     (options => options.UseSqlServer(connextionString));
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -29,5 +32,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();

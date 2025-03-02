@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using ScalarApiLabs.Exceptions;
 using ScalarApiLabs.Helpers;
 using ScalarApiLabs.Models.Entities;
 
@@ -33,8 +34,7 @@ public class ProductRepository : IProductRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Erro ao buscar (Produtos) | [Erro]: {ex.GetType().Name} - {ex.Message}");
-            throw;
+            throw new DatabaseException($"Erro ao buscar (Produtos)", ex);
         }
     }
 
@@ -54,23 +54,28 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<bool> AddAsync(Product product)
+    public async Task<int> AddAsync(Product product)
     {
-        var sql = "INSERT INTO Products (Name, Price) VALUES (@P0, @P1)";
+        var sql = "INSERT INTO Products (Name, Price) OUTPUT INSERTED.Id VALUES (@p0, @p1);";
 
         await using var transaction = await _context.Database.BeginTransactionAsync();
 
         try
         {
-            int affectedRows = await _context.Database.ExecuteSqlRawAsync(sql, product.Name, product.Price);
+            var newId = await _context.Products
+                .FromSqlRaw(sql, product.Name, product.Price)  // Executa o SQL
+                .Select(p => p.Id)  // Captura o ID gerado
+                .FirstOrDefaultAsync();
+
             await transaction.CommitAsync();
-            return affectedRows > 0;
+            return newId;
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
-            Console.WriteLine($"Erro ao gravar o (Produto): {product.Id} | [Erro]: {ex.GetType().Name} - {ex.Message}");
-            throw;
+            //Console.WriteLine($"Erro ao gravar o (Produto): {product.Name} | [Erro]: {ex.GetType().Name} - {ex.Message}");
+
+            await transaction.RollbackAsync();
+            throw new DatabaseException($"Erro ao inserir produto: {product.Name}", ex);
         }
     }
 
