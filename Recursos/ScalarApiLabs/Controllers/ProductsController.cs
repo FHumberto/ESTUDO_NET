@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using ScalarApiLabs.Helpers;
 using ScalarApiLabs.Interfaces.Persistence;
@@ -9,6 +10,7 @@ namespace ScalarApiLabs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public sealed class ProductsController(IProductRepository productRepository)
 {
     private readonly IProductRepository _repository = productRepository
@@ -16,7 +18,10 @@ public sealed class ProductsController(IProductRepository productRepository)
 
     [HttpGet]
     public async Task<IResult> GetProducts([FromQuery] QueryFilters query)
-        => Results.Ok(await _repository.GetAllAsync(query));
+    {
+        var response = await _repository.GetAllAsync(query);
+        return Results.Ok(response);
+    }
 
     [HttpGet("{id:int}")]
     public async Task<IResult> GetProductById(int id)

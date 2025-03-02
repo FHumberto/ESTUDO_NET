@@ -15,6 +15,7 @@ public class AccountController(IUserService userService) : ControllerBase
     public async Task<IResult> Login(LoginRequestDto request)
     => Results.Ok(await userService.Login(request));
 
+    [Authorize]
     [HttpPost("Register")]
     public async Task<IResult> Register(RegisterRequestDto request)
         => Results.Ok(await userService.Register(request));
