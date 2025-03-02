@@ -1,20 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using ScalarApiLabs.Data;
 using ScalarApiLabs.Exceptions;
 using ScalarApiLabs.Helpers;
+using ScalarApiLabs.Interfaces.Persistence;
 using ScalarApiLabs.Models.Entities;
 
-namespace ScalarApiLabs.Data.Repositories;
+namespace ScalarApiLabs.Repositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository(ScalarApiLabsDbContext context) : IProductRepository
 {
-    private readonly ScalarApiLabsDbContext _context;
-
-    public ProductRepository(ScalarApiLabsDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<PagedResultDto<Product>> GetAllAsync(QueryFilters query)
     {
         int offset = (query.PageNumber - 1) * query.PageSize;
@@ -22,9 +16,9 @@ public class ProductRepository : IProductRepository
 
         try
         {
-            var totalRecords = await _context.Products.CountAsync();
+            var totalRecords = await context.Products.CountAsync();
 
-            var products = await _context.Products
+            var products = await context.Products
                 .OrderBy(p => p.Id)
                 .Skip(offset)
                 .Take(fetch)
@@ -43,7 +37,7 @@ public class ProductRepository : IProductRepository
         try
         {
             //? rawSql não mapeado (EF_8)
-            return await _context.Database
+            return await context.Database
                 .SqlQueryRaw<Product>("SELECT Id, Name, Price FROM Products WHERE Id = @p0", id)
                 .FirstOrDefaultAsync();
         }
@@ -58,11 +52,11 @@ public class ProductRepository : IProductRepository
     {
         var sql = "INSERT INTO Products (Name, Price) OUTPUT INSERTED.Id VALUES (@p0, @p1);";
 
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await using var transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
-            var newId = await _context.Products
+            var newId = await context.Products
                 .FromSqlRaw(sql, product.Name, product.Price)  // Executa o SQL
                 .Select(p => p.Id)  // Captura o ID gerado
                 .FirstOrDefaultAsync();
@@ -83,10 +77,10 @@ public class ProductRepository : IProductRepository
     {
         var sql = "DELETE FROM Products WHERE Id = @p0";
 
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            int affectedRows = await _context.Database.ExecuteSqlRawAsync(sql, id);
+            int affectedRows = await context.Database.ExecuteSqlRawAsync(sql, id);
             await transaction.CommitAsync();
             return affectedRows > 0;
         }
@@ -102,10 +96,10 @@ public class ProductRepository : IProductRepository
     {
         var sql = "UPDATE Products SET Name = @p0, Price = @p1 WHERE Id = @p2";
 
-        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            int affectedRows = await _context.Database.ExecuteSqlRawAsync(sql, product.Name, product.Price, product.Id);
+            int affectedRows = await context.Database.ExecuteSqlRawAsync(sql, product.Name, product.Price, product.Id);
             await transaction.CommitAsync();
             return affectedRows > 0;
         }
