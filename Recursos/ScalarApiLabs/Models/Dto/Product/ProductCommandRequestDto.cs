@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ScalarApiLabs.Models.Dto;
+namespace ScalarApiLabs.Models.Dto.Product;
 
 public class ProductCommandRequestDto
 {
@@ -11,4 +11,3 @@ public class ProductCommandRequestDto
     [Range(0.01, double.MaxValue, ErrorMessage = "O preço deve ser maior que zero.")]
     public required decimal Price { get; set; }
 }
-

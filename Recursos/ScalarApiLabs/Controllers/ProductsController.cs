@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
-using ScalarApiLabs.Data.Repositories;
 using ScalarApiLabs.Helpers;
-using ScalarApiLabs.Models.Dto;
+using ScalarApiLabs.Interfaces.Persistence;
+using ScalarApiLabs.Models.Dto.Product;
 using ScalarApiLabs.Models.Entities;
 
 namespace ScalarApiLabs.Controllers;

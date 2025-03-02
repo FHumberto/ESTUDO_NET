@@ -1,7 +1,7 @@
 ﻿using ScalarApiLabs.Helpers;
 using ScalarApiLabs.Models.Entities;
 
-namespace ScalarApiLabs.Data.Repositories;
+namespace ScalarApiLabs.Interfaces.Persistence;
 
 public interface IProductRepository
 {

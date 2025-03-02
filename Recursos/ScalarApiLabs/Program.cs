@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 using ScalarApiLabs.Data;
-using ScalarApiLabs.Data.Repositories;
+using ScalarApiLabs.Interfaces.Persistence;
 using ScalarApiLabs.Middlewares;
+using ScalarApiLabs.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var connextionString = builder.Configuration.GetConnectionString("DefaultConnection");
