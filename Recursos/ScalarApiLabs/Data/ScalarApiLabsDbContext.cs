@@ -1,15 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 using ScalarApiLabs.Models.Entities;
 
 namespace ScalarApiLabs.Data;
 
-public class ScalarApiLabsDbContext : DbContext
+public class ScalarApiLabsDbContext(DbContextOptions<ScalarApiLabsDbContext> options) : IdentityDbContext<User>(options)
 {
-    public ScalarApiLabsDbContext(DbContextOptions<ScalarApiLabsDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
