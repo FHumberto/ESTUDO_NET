@@ -17,6 +17,7 @@ public sealed class ProductsController(IProductRepository productRepository)
         ?? throw new ArgumentNullException(nameof(productRepository));
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IResult> GetProducts([FromQuery] QueryFilters query)
     {
         var response = await _repository.GetAllAsync(query);
@@ -24,10 +25,15 @@ public sealed class ProductsController(IProductRepository productRepository)
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetProductById(int id)
         => Results.Ok(await _repository.GetByIdAsync(id));
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IResult> CreateProduct([FromBody] ProductCommandRequestDto request)
     {
         var product = new Product { Name = request.Name, Price = request.Price };
@@ -37,6 +43,9 @@ public sealed class ProductsController(IProductRepository productRepository)
     }
 
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> UpdateProduct(int id, [FromBody] ProductCommandRequestDto request)
     {
         var product = new Product { Id = id, Name = request.Name, Price = request.Price };
@@ -45,6 +54,9 @@ public sealed class ProductsController(IProductRepository productRepository)
     }
 
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> DeleteProduct(int id)
     {
         await _repository.DeleteAsync(id);

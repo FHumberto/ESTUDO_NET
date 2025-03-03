@@ -83,8 +83,9 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference(options =>
     {
         options.Title = "Scalar API";
-        options.Theme = ScalarTheme.DeepSpace;
+        options.Theme = ScalarTheme.Mars;
         options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+        options.WithLayout(ScalarLayout.Modern);
         options.WithPreferredScheme("Bearer");
     });
 }
