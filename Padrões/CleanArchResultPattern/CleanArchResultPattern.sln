@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CARP.Api", "src\CARP.Api\CA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CARP.Infrastructure", "src\CARP.Infrastructure\CARP.Infrastructure.csproj", "{8E4636A7-6B39-45B3-A401-29C7F72AD1B1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0741925F-ED39-4D7B-AF15-887A7ED2D8D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
