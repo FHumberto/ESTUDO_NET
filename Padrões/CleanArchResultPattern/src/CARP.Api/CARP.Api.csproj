@@ -10,4 +10,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CARP.Application\CARP.Application.csproj" />
+    <ProjectReference Include="..\CARP.Infrastructure\CARP.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
