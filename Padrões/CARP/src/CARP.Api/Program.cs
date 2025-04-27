@@ -1,8 +1,13 @@
+using CARP.Api;
+using CARP.Application;
+using CARP.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddPresentation()
+    .AddApplication()
+    .AddInfrastructure();
 
 var app = builder.Build();
 
