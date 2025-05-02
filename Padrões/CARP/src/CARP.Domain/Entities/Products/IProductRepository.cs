@@ -1,4 +1,4 @@
-﻿namespace CARP.Domain.Products;
+﻿namespace CARP.Domain.Entities.Products;
 
 public interface IProductRepository
 {

@@ -1,4 +1,4 @@
-﻿namespace CARP.Domain.Categories;
+﻿namespace CARP.Domain.Entities.Categories;
 
 public interface ICategoryRepository
 {

@@ -1,6 +1,6 @@
 ﻿using CARP.Domain.Abstractions;
 
-namespace CARP.Domain.Categories;
+namespace CARP.Domain.Entities.Categories;
 
 public static class CategoryErrors
 {
