@@ -12,6 +12,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CARP.Application", "src\CAR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CARP.Infrastructure", "src\CARP.Infrastructure\CARP.Infrastructure.csproj", "{0FB9CF15-A9E4-4883-A5EC-39FCFC9C148B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{03DAD656-DC29-47F8-979D-8278433FCE83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CARP.Domain.UnitTest", "test\CARP.Domain.UnitTest\CARP.Domain.UnitTest.csproj", "{2FC1A3A1-D6A8-45E0-80C9-3E26FF7646FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +38,10 @@ Global
 		{0FB9CF15-A9E4-4883-A5EC-39FCFC9C148B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FB9CF15-A9E4-4883-A5EC-39FCFC9C148B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FB9CF15-A9E4-4883-A5EC-39FCFC9C148B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FC1A3A1-D6A8-45E0-80C9-3E26FF7646FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC1A3A1-D6A8-45E0-80C9-3E26FF7646FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC1A3A1-D6A8-45E0-80C9-3E26FF7646FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC1A3A1-D6A8-45E0-80C9-3E26FF7646FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +51,7 @@ Global
 		{381BD2D4-6E6F-4561-BB76-3E8DB0D41D9B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{C978959C-7BB3-4B88-9412-6A05224E0D66} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{0FB9CF15-A9E4-4883-A5EC-39FCFC9C148B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2FC1A3A1-D6A8-45E0-80C9-3E26FF7646FD} = {03DAD656-DC29-47F8-979D-8278433FCE83}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2EDF3F48-57D9-4E89-B818-7E82ADA9B986}
