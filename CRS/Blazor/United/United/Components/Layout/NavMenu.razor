@@ -1,48 +1,56 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<!-- Navbar superior -->
+<div class="top-row ps-3 navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorApp2</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<!-- Navegação lateral -->
+<div class="collapse nav-scrollable" id="sidebarNav">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+                <span class="bi bi-list-nested" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="bind">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Bind
+                <span class="bi bi-list-nested" aria-hidden="true"></span> Bind
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="event">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Event
+                <span class="bi bi-list-nested" aria-hidden="true"></span> Event
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Component">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Component
+            <NavLink class="nav-link" href="component">
+                <span class="bi bi-list-nested" aria-hidden="true"></span> Component
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="dependencyinjection">
+                <span class="bi bi-list-nested" aria-hidden="true"></span> Dependency Injection
             </NavLink>
         </div>
     </nav>
 </div>
-
